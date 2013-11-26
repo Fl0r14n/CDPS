@@ -23,10 +23,10 @@ public class Location {
         public static byte[] BZIP = Bytes.toBytes("zip"); //do some reflection here?
         public static byte[] BCOUNTRY = Bytes.toBytes("country"); //do some reflection here?
 
-        private static String city;
-        private static String county;
-        private static String zip;
-        private static String country;
+        private final String city;
+        private final String county;
+        private final String zip;
+        private final String country;
     }
 
     @AllArgsConstructor
@@ -38,7 +38,7 @@ public class Location {
         public static byte[] BCFAMILY = Bytes.toBytes(CFAMILY);
         public static byte[] BResidents = Bytes.toBytes("residents"); //do some reflection here?
 
-        private static List<String> residents;
+        private final List<String> residents;
         //we might add the username as column descriptor and the hash value as payload or vice versa,
         // but I don't know how to incorporate this in the model
     }

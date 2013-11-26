@@ -6,7 +6,6 @@ import lombok.ToString;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 public class LivingData {
     public static final String TABLE = "livingData";
@@ -35,21 +34,21 @@ public class LivingData {
         public static byte[] BSOFTDRINKS = Bytes.toBytes("softDrinks"); //do some reflection here?
         public static byte[] BRISKFACTOR = Bytes.toBytes("riskFactor"); //do some reflection here?
 
-        private static int minsOfSleep;
-        private static int minsOfExcercise;
-        private static int calories;
-        private static int energy;
-        private static int fat;
-        private static int saturatedFat;
-        private static int sugars;
-        private static int sodium;
-        private static int protein;
-        private static int carbohydrates;
-        private static String vitamins;
-        private static String minerals;
-        private static int water;
-        private static int alcohol;
-        private static int softDrinks;
-        private static BigDecimal riskFactor;
+        private final int minsOfSleep;
+        private final int minsOfExcercise;
+        private final int calories;
+        private final int energy;
+        private final int fat;
+        private final int saturatedFat;
+        private final int sugars;
+        private final int sodium;
+        private final int protein;
+        private final int carbohydrates;
+        private final String vitamins;
+        private final String minerals;
+        private final int water;
+        private final int alcohol;
+        private final int softDrinks;
+        private final BigDecimal riskFactor;
     }
 }
