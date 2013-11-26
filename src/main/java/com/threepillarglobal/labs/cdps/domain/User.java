@@ -1,5 +1,6 @@
 package com.threepillarglobal.labs.cdps.domain;
 
+import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,9 +29,9 @@ public class User {
         public static byte[] BACTIVE = Bytes.toBytes("active"); //do some reflection here?
         public static byte[] BPHONE = Bytes.toBytes("phone"); //do some reflection here?
 
-        private final String secretKey;
-        private final Boolean active;
-        private final String phone;
+        private static String secretKey;
+        private static Boolean active;
+        private static String phone;
     }
 
     //should implement other hasing utilities like compare or do some super class for general table operations?
@@ -40,10 +41,15 @@ public class User {
     public static class PersonalData {
 
         public static final String CFAMILY = "pd";
+        public static byte[] BCFAMILY = Bytes.toBytes(CFAMILY);
+        public static byte[] BNAME = Bytes.toBytes("name"); //do some reflection here?
+        public static byte[] BDOB = Bytes.toBytes("dob"); //do some reflection here?
+        public static byte[] BLOCATIONID = Bytes.toBytes("locationID"); //do some reflection here?
 
-        private final String name;
-        private final String dob;
-        private final String locationId;
+
+        private static String name;
+        private static Date dob;
+        private static String locationId;
     }
 
     @AllArgsConstructor
@@ -52,10 +58,14 @@ public class User {
     public static class MedicalNotes {
 
         public static final String CFAMILY = "mn";
+        public static byte[] BCFAMILY = Bytes.toBytes(CFAMILY);
+        public static byte[] BNAME = Bytes.toBytes("notes"); //do some reflection here?
+        public static byte[] BDOB = Bytes.toBytes("smoker"); //do some reflection here?
+        public static byte[] BLOCATIONID = Bytes.toBytes("riskGroup"); //do some reflection here?
 
-        private final List<String> notes; //Not sure if this is ok. 
-        private final String smoker;
-        private final String riskGroup;
+        private static List<String> notes; //Not sure if this is ok.
+        private static Boolean smoker;
+        private static String riskGroup;
     }
 
     @AllArgsConstructor
@@ -64,6 +74,9 @@ public class User {
     public static class FamilyTree {
 
         public static final String CFAMILY = "ft";
+        public static byte[] BCFAMILY = Bytes.toBytes(CFAMILY);
+        public static byte[] BNAME = Bytes.toBytes("ancestors"); //do some reflection here?
+        public static byte[] BDOB = Bytes.toBytes("descendants"); //do some reflection here?
 
         public List<String> ancestors; //Is this the propper way to model this
         public List<String> descendants;
