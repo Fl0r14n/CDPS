@@ -2,6 +2,7 @@ package com.threepillarglobal.labs.cdps.dao.repository;
 
 import com.threepillarglobal.labs.cdps.domain.User;
 import com.threepillarglobal.labs.cdps.domain.User.AccountData;
+import com.threepillarglobal.labs.hbase.util.HAnnotation;
 import java.util.List;
 import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Put;
@@ -20,26 +21,30 @@ public class UserRepository {
     private HbaseTemplate hbaseTemplate;
 
     public List<AccountData> findAllAccountData() {
-        return hbaseTemplate.find(User.TABLE, AccountData.CFAMILY, new RowMapper<AccountData>() {
+        final String tableName = HAnnotation.getTableName(User.class);
+        final String cfamilyName= HAnnotation.getColumnFamilyName(AccountData.class);        
+        return hbaseTemplate.find(tableName, cfamilyName, new RowMapper<AccountData>() {
             @Override
             public AccountData mapRow(Result result, int rowNum) throws Exception {
-
-                return new AccountData(Bytes.toString(result.getValue(AccountData.BCFAMILY, AccountData.BSECRETKEY)),
-                        Bytes.toBoolean(result.getValue(AccountData.BCFAMILY, AccountData.BACTIVE)),
-                        Bytes.toString(result.getValue(AccountData.BCFAMILY, AccountData.BPHONE)));
+                
+                return new AccountData(Bytes.toString(result.getValue(cfamilyName.getBytes(), "secretKey".getBytes())),
+                        Bytes.toBoolean(result.getValue(cfamilyName.getBytes(), "active".getBytes())),
+                        Bytes.toString(result.getValue(cfamilyName.getBytes(), "phone".getBytes())));
             }
         });
     }
 
     public AccountData saveAccountData(final String email, final AccountData account) {
-        return hbaseTemplate.execute(User.TABLE, new TableCallback<AccountData>() {
+        final String tableName = HAnnotation.getTableName(User.class);
+        final String cfamilyName= HAnnotation.getColumnFamilyName(AccountData.class);        
+        return hbaseTemplate.execute(tableName, new TableCallback<AccountData>() {
             @Override
             public AccountData doInTable(HTableInterface table) throws Throwable {
                 Put p = new Put(User.toRowKey(email).getDigest());
                 {
-                    p.add(AccountData.BCFAMILY, AccountData.BSECRETKEY, Bytes.toBytes(account.getSecretKey()));
-                    p.add(AccountData.BCFAMILY, AccountData.BACTIVE, Bytes.toBytes(account.getActive()));
-                    p.add(AccountData.BCFAMILY, AccountData.BPHONE, Bytes.toBytes(account.getPhone()));
+                    p.add(cfamilyName.getBytes(), "secretKey".getBytes(), Bytes.toBytes(account.getSecretKey()));
+                    p.add(cfamilyName.getBytes(), "active".getBytes(), Bytes.toBytes(account.getActive()));
+                    p.add(cfamilyName.getBytes(), "phone".getBytes(), Bytes.toBytes(account.getPhone()));
                 }
                 table.put(p);
                 return account;

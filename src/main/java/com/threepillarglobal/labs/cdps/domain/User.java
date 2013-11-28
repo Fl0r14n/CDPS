@@ -1,85 +1,75 @@
 package com.threepillarglobal.labs.cdps.domain;
 
+import com.threepillarglobal.labs.hbase.annotation.HColumn;
+import com.threepillarglobal.labs.hbase.annotation.HColumnFamily;
+import com.threepillarglobal.labs.hbase.annotation.HTable;
 import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
-import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.MD5Hash;
 
+@HTable(name = "user", columnFamilies = {"ad","pd","mn","ft"})
 public class User {
 
-    public static final String TABLE = "user";
-
+    //should implement other hasing utilities like compare or do some super class for general table operations?
     public static MD5Hash toRowKey(String email) { //should I return byte[]?
         //Test the validity of email? throw some asserions?        
         return MD5Hash.digest(email);
     }
 
-    //should implement other hasing utilities like compare or do some super class for general table operations?
     @AllArgsConstructor
     @ToString
     @Getter
+    @HColumnFamily(name = "ad")
     public static class AccountData {
 
-        public static final String CFAMILY = "ad";
-        public static byte[] BCFAMILY = Bytes.toBytes(CFAMILY);
-        public static byte[] BSECRETKEY = Bytes.toBytes("secretKey"); //do some reflection here?
-        public static byte[] BACTIVE = Bytes.toBytes("active"); //do some reflection here?
-        public static byte[] BPHONE = Bytes.toBytes("phone"); //do some reflection here?
-
+        @HColumn(name = "secretKey")
         private final String secretKey;
+        @HColumn(name = "active")
         private final Boolean active;
+        @HColumn(name = "phone")
         private final String phone;
     }
 
-    //should implement other hasing utilities like compare or do some super class for general table operations?
     @AllArgsConstructor
     @ToString
     @Getter
+    @HColumnFamily(name = "pd")
     public static class PersonalData {
 
-        public static final String CFAMILY = "pd";
-        public static byte[] BCFAMILY = Bytes.toBytes(CFAMILY);
-        public static byte[] BNAME = Bytes.toBytes("name"); //do some reflection here?
-        public static byte[] BDOB = Bytes.toBytes("dob"); //do some reflection here?
-        public static byte[] BLOCATIONID = Bytes.toBytes("locationID"); //do some reflection here?
-
-
+        @HColumn(name = "name")
         private final String name;
+        @HColumn(name = "dob")
         private final Date dob;
+        @HColumn(name = "locationId")
         private final String locationId;
     }
 
     @AllArgsConstructor
     @ToString
     @Getter
+    @HColumnFamily(name = "mn")
     public static class MedicalNotes {
 
-        public static final String CFAMILY = "mn";
-        public static byte[] BCFAMILY = Bytes.toBytes(CFAMILY);
-        public static byte[] BNAME = Bytes.toBytes("notes"); //do some reflection here?
-        public static byte[] BDOB = Bytes.toBytes("smoker"); //do some reflection here?
-        public static byte[] BLOCATIONID = Bytes.toBytes("riskGroup"); //do some reflection here?
-
+        @HColumn(name = "notes")
         private final List<String> notes; //Not sure if this is ok.
+        @HColumn(name = "smoker")
         private final Boolean smoker;
+        @HColumn(name = "riskGroup")
         private final String riskGroup;
     }
 
     @AllArgsConstructor
     @ToString
     @Getter
+    @HColumnFamily(name = "ft")
     public static class FamilyTree {
 
-        public static final String CFAMILY = "ft";
-        public static byte[] BCFAMILY = Bytes.toBytes(CFAMILY);
-        public static byte[] BNAME = Bytes.toBytes("ancestors"); //do some reflection here?
-        public static byte[] BDOB = Bytes.toBytes("descendants"); //do some reflection here?
-
+        @HColumn(name = "ancestors")
         public final List<String> ancestors; //Is this the propper way to model this
+        @HColumn(name = "descendants")
         public final List<String> descendants;
     }
-
 }

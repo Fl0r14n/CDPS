@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.hadoop.hbase.HbaseTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -19,13 +18,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:integrationTests-context.xml")
-@Ignore
+//@Ignore
 public class HBaseMockDataIT {
 
     private static final Logger L = LoggerFactory.getLogger(HBaseMockDataIT.class);
-    
-    @Autowired
-    private HbaseTemplate hbaseTemplate;
     
     @Autowired
     private UserRepository userRepository;

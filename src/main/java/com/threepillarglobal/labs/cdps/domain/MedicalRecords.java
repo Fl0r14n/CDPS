@@ -1,47 +1,42 @@
 package com.threepillarglobal.labs.cdps.domain;
 
+import com.threepillarglobal.labs.hbase.annotation.HColumn;
+import com.threepillarglobal.labs.hbase.annotation.HColumnFamily;
+import com.threepillarglobal.labs.hbase.annotation.HTable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
-import org.apache.hadoop.hbase.util.Bytes;
 
 import java.util.Date;
 
+@HTable(name = "medicalRecords", columnFamilies = {"mr", "da"})
 public class MedicalRecords {
-
-    public static final String TABLE = "medicalRecords";
 
     @AllArgsConstructor
     @ToString
     @Getter
+    @HColumnFamily(name = "mr")
     public static class MedicalRecord {
 
-        public static final String CFAMILY = "mr";
-        public static byte[] BCFAMILY = Bytes.toBytes(CFAMILY);
-
-        public static byte[] BMEDICALRECORDDATE = Bytes.toBytes("medicalRecordDate"); //do some reflection here?
-        public static byte[] BBMI = Bytes.toBytes("active"); //do some reflection here?
-        public static byte[] BCHOLESTEROL = Bytes.toBytes("phone"); //do some reflection here?
-        public static byte[] BTRIGLYCERIDES = Bytes.toBytes("triglycerides"); //do some reflection here?
-        public static byte[] BFOLLOWUP = Bytes.toBytes("followUp"); //do some reflection here?
-
+        @HColumn(name = "medicalRecordDate")
         private final Date medicalRecordDate;
+        @HColumn(name = "bmi")
         private final int bmi;
+        @HColumn(name = "colesterol")
         private final int cholesterol;
+        @HColumn(name = "triglycerides")
         private final int triglycerides;
+        @HColumn(name = "followUp")
         private final String followUp;
     }
 
     @AllArgsConstructor
     @ToString
     @Getter
+    @HColumnFamily(name = "da")
     public static class DocumentsAttached {
 
-        public static final String CFAMILY = "da";
-        public static byte[] BCFAMILY = Bytes.toBytes(CFAMILY);
-
-        public static byte[] BDOCUMENTURL = Bytes.toBytes("documentURL"); //do some reflection here?
-
+        @HColumn(name = "documentURL")
         private final String documentURL;
     }
 }

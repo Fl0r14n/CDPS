@@ -5,6 +5,7 @@ import com.threepillarglobal.labs.cdps.domain.LivingData;
 import com.threepillarglobal.labs.cdps.domain.SensorData;
 import com.threepillarglobal.labs.cdps.domain.MedicalRecords;
 import com.threepillarglobal.labs.cdps.domain.Location;
+import com.threepillarglobal.labs.hbase.util.HAnnotation;
 import javax.annotation.Resource;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -28,44 +29,21 @@ public class DDL implements InitializingBean {
     }
 
     private void createTables() throws Exception {
-        //TODO create tables
-        if (!admin.tableExists(User.TABLE)) {
-            HTableDescriptor tableDescriptor = new HTableDescriptor(User.TABLE);
+        createTable(User.class);
+        createTable(LivingData.class);
+        createTable(SensorData.class);
+        createTable(MedicalRecords.class);
+        createTable(Location.class);
+    }
+
+    private void createTable(Class<?> clazz) throws Exception {
+        String tableName = HAnnotation.getTableName(clazz);
+        if (!admin.tableExists(tableName)) {
+            HTableDescriptor tableDescriptor = new HTableDescriptor(tableName);
             {
-                tableDescriptor.addFamily(new HColumnDescriptor(User.AccountData.CFAMILY));
-                tableDescriptor.addFamily(new HColumnDescriptor(User.PersonalData.CFAMILY));
-                tableDescriptor.addFamily(new HColumnDescriptor(User.FamilyTree.CFAMILY));
-                tableDescriptor.addFamily(new HColumnDescriptor(User.MedicalNotes.CFAMILY));
-            }
-            admin.createTable(tableDescriptor);
-        }
-        if (!admin.tableExists(LivingData.TABLE)) {
-            HTableDescriptor tableDescriptor = new HTableDescriptor(LivingData.TABLE);
-            {
-                tableDescriptor.addFamily(new HColumnDescriptor(LivingData.DailyPatientProfile.CFAMILY));
-            }
-            admin.createTable(tableDescriptor);
-        }
-        if (!admin.tableExists(SensorData.TABLE)) {
-            HTableDescriptor tableDescriptor = new HTableDescriptor(SensorData.TABLE);
-            {
-                tableDescriptor.addFamily(new HColumnDescriptor(SensorData.GatheredData.CFAMILY));
-            }
-            admin.createTable(tableDescriptor);
-        }
-        if (!admin.tableExists(MedicalRecords.TABLE)) {
-            HTableDescriptor tableDescriptor = new HTableDescriptor(MedicalRecords.TABLE);
-            {
-                tableDescriptor.addFamily(new HColumnDescriptor(MedicalRecords.MedicalRecord.CFAMILY));
-                tableDescriptor.addFamily(new HColumnDescriptor(MedicalRecords.DocumentsAttached.CFAMILY));
-            }
-            admin.createTable(tableDescriptor);
-        }
-        if (!admin.tableExists(Location.TABLE)) {
-            HTableDescriptor tableDescriptor = new HTableDescriptor(Location.TABLE);
-            {
-                tableDescriptor.addFamily(new HColumnDescriptor(Location.LocationDetails.CFAMILY));
-                tableDescriptor.addFamily(new HColumnDescriptor(Location.Residents.CFAMILY));
+                for (String columnFamily : HAnnotation.getColumnFamilyNames(clazz)) {
+                    tableDescriptor.addFamily(new HColumnDescriptor(columnFamily));
+                }
             }
             admin.createTable(tableDescriptor);
         }
