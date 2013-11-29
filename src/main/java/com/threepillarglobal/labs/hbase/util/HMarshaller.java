@@ -17,13 +17,12 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 public class HMarshaller {
 
-    //TODO Test
     public static <T> T unmarshall(Class<T> clazz, Result result) throws Exception {
         //get column family
         byte[] cFamily = getColumnFamilyName(clazz).getBytes();
         //create new instance
         final T instance = instantiate(clazz);
-        //opulate with values
+        //populate with values
         for (Field field : clazz.getDeclaredFields()) {
             HColumn hColumn = field.getAnnotation(HColumn.class);
             if (hColumn != null) {
