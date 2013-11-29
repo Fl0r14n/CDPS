@@ -39,12 +39,18 @@ public class HMarshallerTest {
     public void read_field_values_from_class() throws Exception {
         A a = new A();
         for (Field f : A.class.getDeclaredFields()) {
-            System.out.println(f.getName()+"|"+Bytes.toStringBinary(HMarshaller.getFieldValue(a, f)));
+            System.out.println(f.getName()+"|"+Bytes.toStringBinary(HMarshaller.getFieldValue(f, a)));
         }
+        //TODO do some asserts
     }
     
     @Test
     public void set_field_values_in_class() throws Exception {
-        //TODO
+        A a = new A();
+        for (Field f : A.class.getDeclaredFields()) {
+            byte[] oldValue = HMarshaller.getFieldValue(f, a);
+            HMarshaller.setFieldValue(f, a, oldValue);
+        }
+        //TODO do some asserts
     }
 }

@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:integrationTests-context.xml")
-//@Ignore
+@Ignore
 public class HBaseMockDataIT {
 
     private static final Logger L = LoggerFactory.getLogger(HBaseMockDataIT.class);
@@ -45,6 +45,14 @@ public class HBaseMockDataIT {
             userRepository.saveAccountData("key@"+i, ad);
         }
     }
+    
+    @Test
+    public void print_all_user_data() {
+        for(AccountData ad :userRepository.findAllAccountData()) {
+            System.out.println(ad.toString());
+        }
+    }
+    
     
 //    public static void main(String[] args) {
 //        AbstractApplicationContext context = new ClassPathXmlApplicationContext("/META-INF/spring/application-context.xml", HBaseMockDataIT.class);
