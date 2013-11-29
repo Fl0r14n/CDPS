@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CDPSDataGenerator>
+    <UserCount>500</UserCount>
+    <DataAquisition> 
+        <StartDate>2013-01-01</StartDate> 
+        <EndDate>2013-11-01</EndDate>
+        <SensorData>
+            <FullSensorDataPercent>70</FullSensorDataPercent>
+            <PartialSensorDataFillPercent>30</PartialSensorDataFillPercent> 
+        </SensorData>
+        <LivingHabits>
+            <FullLivingHabitsPercent>90</FullLivingHabitsPercent> 
+            <PartialLivingHabitsFillPercent>80</PartialLivingHabitsFillPercent>
+        </LivingHabits>
+    </DataAquisition>
+</CDPSDataGenerator>
