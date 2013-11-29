@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class TestDataGenerator {
+public class TestDataGeneratorIT {
 
     static boolean validateAgainstXSD(InputStream xml, InputStream xsd) {
         try {

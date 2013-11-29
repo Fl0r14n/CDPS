@@ -5,52 +5,61 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
+import lombok.Getter;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.junit.Test;
 
+/**
+ * Test HMarshaller class
+ */
 public class HMarshallerTest {
 
-    public static class A {
+    /**
+     * Sample class with some sample fields
+     */
+    @Getter
+    public static class SampleClass {
 
-        String s = "string";
-        boolean bool = true;
-        Boolean boole = false;
-        byte b = 16;
-        Byte bt = 15;
-        byte[] ba = {0,1,2,3,4};
-        char ch = 'a';
-        Character chr = 'b';
-        short sh = 1;
-        Short srt = 2;
-        int i = 2;
-        Integer  it = 3;
-        long l = 3;
-        Long lng = 4L;
-        float f = 4;
-        Float flt = 5f;
-        double d = 5.0;
-        Double dbl = 6.0;
-        BigDecimal bd = new BigDecimal(6);
-        Date dt = new Date();
-        Timestamp ts = new Timestamp(dt.getTime());
+        private final String s = "string";
+        private final boolean bool = true;
+        private final Boolean boole = false;
+        private final byte b = 16;
+        private final Byte bt = 15;
+        private final byte[] ba = {0,1,2,3,4};
+        private final char ch = 'a';
+        private final Character chr = 'b';
+        private final short sh = 1;
+        private final Short srt = 2;
+        private final int i = 2;
+        private final Integer  it = 3;
+        private final long l = 3;
+        private final Long lng = 4L;
+        private final float f = 4;
+        private final Float flt = 5f;
+        private final double d = 5.0;
+        private final Double dbl = 6.0;
+        private final BigDecimal bd = new BigDecimal(6);
+        private final Date dt = new Date();
+        private final Timestamp ts = new Timestamp(dt.getTime());
     }
 
     @Test
-    public void read_field_values_from_class() throws Exception {
-        A a = new A();
-        for (Field f : A.class.getDeclaredFields()) {
+    public void read_values_from_fields() throws Exception {
+        SampleClass a = new SampleClass();
+        for (Field f : SampleClass.class.getDeclaredFields()) {
             System.out.println(f.getName()+"|"+Bytes.toStringBinary(HMarshaller.getFieldValue(f, a)));
-        }
-        //TODO do some asserts
+        }        
     }
     
     @Test
-    public void set_field_values_in_class() throws Exception {
-        A a = new A();
-        for (Field f : A.class.getDeclaredFields()) {
-            byte[] oldValue = HMarshaller.getFieldValue(f, a);
-            HMarshaller.setFieldValue(f, a, oldValue);
+    public void set_values_into_fields() throws Exception {
+        SampleClass a = new SampleClass();
+        //do a loopback like test
+        for (Field f : SampleClass.class.getDeclaredFields()) {
+            //old value
+            byte[] value = HMarshaller.getFieldValue(f, a);
+            //set as new value
+            HMarshaller.setFieldValue(f, a, value);
         }
-        //TODO do some asserts
     }
 }
