@@ -1,7 +1,6 @@
 package com.threepillarglobal.labs.cpds;
 
 import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.events.XMLEvent;
@@ -38,8 +37,6 @@ public class TestDataGenerator {
                 partialSensorDataFillPercent = -1,
                 fullLivingHabitsPercent = -1,
                 partialLivingHabitsFillPercent = -1;
-
-        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 
         InputStream configFile2Validate = new FileInputStream(new File("src/test/resources/TestDataGenerator.xml"));
         InputStream schemaFile2Validate = new FileInputStream(new File("src/test/resources/TestDataGenerator.xsd"));
