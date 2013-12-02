@@ -3,11 +3,13 @@ package com.threepillarglobal.labs.cdps.domain;
 import com.threepillarglobal.labs.hbase.annotation.HColumn;
 import com.threepillarglobal.labs.hbase.annotation.HColumnFamily;
 import com.threepillarglobal.labs.hbase.annotation.HTable;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
 import java.util.List;
+import org.apache.hadoop.io.MD5Hash;
 
 @HTable(name = "sensorData")
 @HColumnFamily(name = "gd")
@@ -15,6 +17,12 @@ import java.util.List;
 @ToString
 @Getter
 public class SensorData {
+    
+        //should implement other hasing utilities like compare or do some super class for general table operations?
+    public static MD5Hash toRowKey(String email, Date eventDate) { //should I return byte[]?
+        //Test the validity of email? throw some asserions?        
+        return MD5Hash.digest(email + eventDate.toString());
+    }
 
     //TODO here List<String> should be replaced with something specific like activity description or something
     @HColumn(name = "h00")

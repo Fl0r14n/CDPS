@@ -1,12 +1,35 @@
 package com.threepillarglobal.labs.cdps.dao.repository;
 
+import com.threepillarglobal.labs.cdps.domain.SensorData;
+import com.threepillarglobal.labs.hbase.util.HAnnotation;
+import com.threepillarglobal.labs.hbase.util.HMarshaller;
+import java.util.Date;
+import org.apache.hadoop.hbase.client.HTableInterface;
+import org.apache.hadoop.hbase.client.Put;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.hadoop.hbase.HbaseTemplate;
+import org.springframework.data.hadoop.hbase.TableCallback;
 import org.springframework.stereotype.Repository;
+
 
 @Repository
 public class SensorDataRepository {
-    
+
     @Autowired
     private HbaseTemplate hbaseTemplate;
+
+    public SensorData saveSensorData(final String email, final Date eventDate, final SensorData sensorData) {
+        final String tableName = HAnnotation.getTableName(SensorData.class);
+        final String cfamilyName = HAnnotation.getColumnFamilyName(SensorData.class);
+        return hbaseTemplate.execute(tableName, new TableCallback<SensorData>() {
+            @Override
+            public SensorData doInTable(HTableInterface table) throws Throwable {
+                Put p = new Put(SensorData.toRowKey(email, eventDate).getDigest());
+                HMarshaller.marshall(sensorData, p);
+                table.put(p);
+                return sensorData;
+            }
+        });
+    }
 }
+

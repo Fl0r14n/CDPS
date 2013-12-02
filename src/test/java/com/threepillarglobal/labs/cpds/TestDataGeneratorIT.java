@@ -13,8 +13,17 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import com.threepillarglobal.labs.cdps.dao.repository.*;
+import com.threepillarglobal.labs.cdps.domain.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import org.apache.commons.lang.time.DateUtils;
 
 public class TestDataGeneratorIT {
+    
+    private static String emailPattern = "user<ID>@3pg.com";
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     static boolean validateAgainstXSD(InputStream xml, InputStream xsd) {
         try {
@@ -50,7 +59,6 @@ public class TestDataGeneratorIT {
             // Setup a new eventReader
             XMLEventReader eventReader = inputFactory.createXMLEventReader(configFile);
             // read the XML document
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
             while (eventReader.hasNext()) {
                 XMLEvent event = eventReader.nextEvent();
@@ -69,7 +77,7 @@ public class TestDataGeneratorIT {
                     if (event.asStartElement().getName().getLocalPart().equals("StartDate")) {
                         event = eventReader.nextEvent();
 
-                        startDate = df.parse(event.asCharacters().getData());
+                        startDate = dateFormat.parse(event.asCharacters().getData());
                         //System.out.println("Start date: " + startDate);
 
                         eventReader.nextEvent();
@@ -78,7 +86,7 @@ public class TestDataGeneratorIT {
                     if (event.asStartElement().getName().getLocalPart().equals("EndDate")) {
                         event = eventReader.nextEvent();
 
-                        endDate = df.parse(event.asCharacters().getData());
+                        endDate = dateFormat.parse(event.asCharacters().getData());
                         //System.out.println("End date: " + endDate);
 
                         eventReader.nextEvent();
@@ -156,9 +164,39 @@ public class TestDataGeneratorIT {
 
     protected static void writeTestUsers(int numberOfUsers)
     {
+        String rowKey;
+        String secretKey = "sk";
+        Boolean userStatus = true;
+        String userPhone = "555-";
+        String name = "John Doe #";
+        Date dob = new Date();
+        UserRepository userRepo = new UserRepository();
+        User.AccountData accData;
+        User.PersonalData persData;
+        User.MedicalNotes medNotes;
+        Random rand = new Random();
+        int locationID;
+        Boolean smoker;
+        String[] location = {"Cluj-Napoca", "Timisoara", "Washington"};
         for(int i = 1; i <= numberOfUsers; i++ )
         {
-            //TODO: generate user params
+            rowKey = emailPattern.replace("<ID>", Integer.toString(i));
+            //account data
+            secretKey = secretKey + Integer.toString(i);
+            userPhone = userPhone + Integer.toString(i);
+            accData = new User.AccountData(secretKey, userStatus, userPhone);
+            userRepo.saveAccountData(rowKey, accData);
+            //personal data
+            name = name + Integer.toString(i);
+            locationID = rand.nextInt(3);
+            persData = new User.PersonalData(name, dob, location[locationID]);
+            userRepo.savePersonalData(rowKey, persData);
+            //medical notes
+            smoker = rand.nextBoolean();
+            medNotes = new User.MedicalNotes(null, smoker, Integer.toString(locationID));
+            userRepo.saveMedicalNotes(rowKey, medNotes);
+            //TODO: family tree
+            
             //TODO: call method that writes in hbase
         }
     }
@@ -170,11 +208,51 @@ public class TestDataGeneratorIT {
         return Math.round((endDate.getTime() - startDate.getTime()) / miliSecondsInADay);
     }
 
-    protected static void writeFullTestSensorData(int rangeFrom, int RangeTo, Date startDate, Date endDate)
+    protected static void writeFullTestSensorData(int rangeFrom, int rangeTo, Date startDate, Date endDate)
     {
+        String[] activityType = {"Eating", "Sleeping", "Exercising"};
+        String at;
+        SensorDataRepository sdRepo = new SensorDataRepository();
+        int activityDuration;
+        Random rand = new Random();
+        int avgHR, avgBP, calories;
         int daysInInterval = getDaysInInterval(startDate, endDate);
-        for(int i = 1; i <= daysInInterval; i++)
+        for(int i = 0; i < daysInInterval; i++)
         {
+            for(int j = rangeFrom; j<= rangeTo; j++)
+            {
+                SensorData sd;
+                
+                    List<List<String>> dailyData = new ArrayList<>();
+                    
+                    for(int k = 0; k < 24; k++)
+                    {
+                        List<String> l = new ArrayList<>();
+                        activityDuration = rand.nextInt(61);
+                        at = activityType[rand.nextInt(3)];
+                        avgHR = rand.nextInt(200);
+                        avgBP = rand.nextInt(300);
+                        calories = rand.nextInt(3000);
+                        l.add(Integer.toString(activityDuration));
+                        l.add(at);
+                        l.add(Integer.toString(avgHR));
+                        l.add(Integer.toString(avgBP));
+                        l.add(Integer.toString(calories));
+                        dailyData.add(l);
+                    }
+                    
+                    sd = new SensorData(dailyData.get(0),dailyData.get(1),dailyData.get(2),
+                                        dailyData.get(3),dailyData.get(4),dailyData.get(5),
+                                        dailyData.get(6),dailyData.get(7),dailyData.get(8),
+                                        dailyData.get(9),dailyData.get(10),dailyData.get(11),
+                                        dailyData.get(12),dailyData.get(13),dailyData.get(14),
+                                        dailyData.get(15),dailyData.get(16),dailyData.get(17),
+                                        dailyData.get(18),dailyData.get(19),dailyData.get(20),
+                                        dailyData.get(21),dailyData.get(22),dailyData.get(23)
+                    );
+                    sdRepo.saveSensorData(emailPattern.replace("<ID>", Integer.toString(j)), DateUtils.addDays(startDate, i), sd);
+                
+            }
             //TODO: gather params for sensor & call hbase write method
         }
     }
