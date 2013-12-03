@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import org.apache.hadoop.io.MD5Hash;
 
 @HTable(name = "livingData")
 @HColumnFamily(name = "dpp")
@@ -15,6 +17,12 @@ import java.math.BigDecimal;
 @ToString
 @Getter
 public class LivingData {
+    
+    //should implement other hasing utilities like compare or do some super class for general table operations?
+    public static MD5Hash toRowKey(String email, Date eventDate) { //should I return byte[]?
+        //Test the validity of email? throw some asserions?        
+        return MD5Hash.digest(email + eventDate.toString());
+    }
 
     @HColumn(name = "minsOfSleep")
     private final int minsOfSleep;
