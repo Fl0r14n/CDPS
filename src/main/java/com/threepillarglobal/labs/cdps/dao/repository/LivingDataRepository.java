@@ -17,7 +17,7 @@ public class LivingDataRepository {
     @Autowired
     private HbaseTemplate hbaseTemplate;
     
-    public LivingData saveSensorData(final String email, final Date eventDate, final LivingData livingData) {
+    public LivingData saveLivingData(final String email, final Date eventDate, final LivingData livingData) {
         final String tableName = HAnnotation.getTableName(LivingData.class);
         final String cfamilyName = HAnnotation.getColumnFamilyName(LivingData.class);
         return hbaseTemplate.execute(tableName, new TableCallback<LivingData>() {

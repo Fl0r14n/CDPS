@@ -8,9 +8,18 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
+import org.apache.hadoop.io.MD5Hash;
 
 @HTable(name = "location", columnFamilies = {"ld", "res"})
 public class Location {
+
+    public static final String separator = "|";
+
+    //should implement other hasing utilities like compare or do some super class for general table operations?
+    public static String toRowKey(String countryName, String countyName, String cityName) { //should I return byte[]?
+        //Test the validity of email? throw some asserions?
+        return countryName + separator + countyName + separator + cityName;
+    }
 
     @AllArgsConstructor
     @ToString
@@ -22,8 +31,6 @@ public class Location {
         private final String city;
         @HColumn(name = "county")
         private final String county;
-        @HColumn(name = "zip")
-        private final String zip;
         @HColumn(name = "country")
         private final String country;
     }

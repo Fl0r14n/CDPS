@@ -11,6 +11,7 @@ import javax.xml.validation.Validator;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import com.threepillarglobal.labs.cdps.dao.repository.*;
@@ -24,7 +25,11 @@ public class TestDataGeneratorIT {
     
     private static String emailPattern = "user<ID>@3pg.com";
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static String[] location = {"Romania|Cluj|Cluj-Napoca", "Romania|Timisoara|Timisoara", "USA|Washington|Washington DC"};
     private static String[] activityType = {"Eating", "Sleeping", "Exercising"};
+    private static String[] vitaminsLookup = {"A", "B", "C", "D", "E"};
+    private static String[] mineralsLookup = {"Fe", "Zn", "Mg", "Ca", "Vn"};
+    private static String documentURLPattern = "http://docs.google.com/docID=";
 
     static boolean validateAgainstXSD(InputStream xml, InputStream xsd) {
         try {
@@ -150,6 +155,7 @@ public class TestDataGeneratorIT {
 
     public void GenerateData (TestDataGeneratorConfig tdgc)
     {
+        writeTestLocations();
         writeTestUsers(tdgc.userCount);
 
         int usersWithFullSensorData = Math.round(tdgc.userCount * tdgc.fullSensorDataPercent / 100);
@@ -160,7 +166,63 @@ public class TestDataGeneratorIT {
         int usersWithFullLivingHabitsData = Math.round(tdgc.userCount * tdgc.fullLivingHabitsPercent / 100);
         writeFullTestLivingHabitsData(0, usersWithFullLivingHabitsData, tdgc.startDate, tdgc.endDate);
         writePartialTestLivingHabitsData(0, tdgc.userCount - usersWithFullLivingHabitsData, tdgc.startDate, tdgc.endDate, tdgc.partialLivingHabitsFillPercent);
+        writeMedicalRedord(tdgc.userCount, tdgc.startDate, tdgc.endDate);
+        writeAttachedDocument(tdgc.userCount, tdgc.startDate, tdgc.endDate);
+    }
 
+    private static void writeTestLocations()
+    {
+        LocationRepository locationRepository = new LocationRepository();
+        Location.LocationDetails ld;
+        for(int i = 0; i < location.length; i++)
+        {
+            String[] locationParts = location[i].split("|");
+            ld = new Location.LocationDetails(locationParts[0], locationParts[1], locationParts[2]);
+            locationRepository.saveLocation(locationParts[0], locationParts[1], locationParts[2], ld);
+        }
+    }
+
+    private void writeAttachedDocument(int numberOfUsers, Date startDate, Date endDate) {
+
+        Random rand = new Random();
+
+        MedicalRecords.DocumentsAttached attachedDocument;
+
+        int daysInInterval = getDaysInInterval(startDate, endDate);
+
+        MedicalRecordsRepository medicalRecordsRepository = new MedicalRecordsRepository();
+
+        for(int i = 1; i <= numberOfUsers; i++ )
+        {
+            attachedDocument = new MedicalRecords.DocumentsAttached(documentURLPattern + Integer.toString(i));
+            medicalRecordsRepository.saveAttachedDocument(emailPattern.replace("<ID>", Integer.toString(i)), DateUtils.addDays(startDate, rand.nextInt(daysInInterval)), attachedDocument);
+        }
+    }
+
+    private static void writeMedicalRedord(int numberOfUsers, Date startDate, Date endDate) {
+        Random rand = new Random();
+        Date medicalRecordDate;
+        int bmi;
+        int cholesterol;
+        int triglycerides;
+        String followUp;
+        MedicalRecords.MedicalRecord medicalRecord;
+
+        int daysInInterval = getDaysInInterval(startDate, endDate);
+
+        MedicalRecordsRepository medicalRecordsRepository = new MedicalRecordsRepository();
+
+        for(int i = 1; i <= numberOfUsers; i++ )
+        {
+            medicalRecordDate =  DateUtils.addDays(startDate, rand.nextInt(daysInInterval));
+            bmi = rand.nextInt(50);
+            cholesterol = rand.nextInt(500);
+            triglycerides = rand.nextInt(500);
+            followUp = "Call by " + DateUtils.addDays(medicalRecordDate, rand.nextInt(100)).toString();
+            medicalRecord = new MedicalRecords.MedicalRecord(medicalRecordDate, bmi, cholesterol, triglycerides, followUp);
+
+            medicalRecordsRepository.saveMedicalRecord(emailPattern.replace("<ID>", Integer.toString(i)), medicalRecordDate, medicalRecord);
+        }
     }
 
     protected static void writeTestUsers(int numberOfUsers)
@@ -178,7 +240,6 @@ public class TestDataGeneratorIT {
         Random rand = new Random();
         int locationID;
         Boolean smoker;
-        String[] location = {"Cluj-Napoca", "Timisoara", "Washington"};
         for(int i = 1; i <= numberOfUsers; i++ )
         {
             rowKey = emailPattern.replace("<ID>", Integer.toString(i));
@@ -189,7 +250,7 @@ public class TestDataGeneratorIT {
             userRepo.saveAccountData(rowKey, accData);
             //personal data
             name = name + Integer.toString(i);
-            locationID = rand.nextInt(3);
+            locationID = rand.nextInt(location.length);
             persData = new User.PersonalData(name, dob, location[locationID]);
             userRepo.savePersonalData(rowKey, persData);
             //medical notes
@@ -302,23 +363,104 @@ public class TestDataGeneratorIT {
             }
         }
     }
-    protected static void writeFullTestLivingHabitsData(int rangeFrom, int RangeTo, Date startDate, Date endDate)
+    protected static void writeFullTestLivingHabitsData(int rangeFrom, int rangeTo, Date startDate, Date endDate)
     {
+        Random rand = new Random();
+        int minsInDay = 1440;
+        int minsOfSleep;
+        int minsOfExcercise;
+        int calories;
+        int energy;
+        int fat;
+        int saturatedFat;
+        int sugars;
+        int sodium;
+        int protein;
+        int carbohydrates;
+        String vitamins;
+        String minerals;
+        int water;
+        int alcohol;
+        int softDrinks;
+        BigDecimal riskFactor = new BigDecimal(1.0);
+        LivingDataRepository livingRepo = new LivingDataRepository();
+        LivingData ld;
+
         int daysInInterval = getDaysInInterval(startDate, endDate);
         for(int i = 1; i <= daysInInterval; i++)
         {
-            //TODO: gather params for sensor & call hbase write method
+            for(int j = rangeFrom; j <= rangeTo; j++)
+            {
+                minsOfSleep = rand.nextInt(minsInDay);
+                minsOfExcercise = rand.nextInt(minsInDay - minsOfSleep);
+                calories = rand.nextInt(5000);
+                energy = rand.nextInt(5000);
+                fat = rand.nextInt(1000);
+                saturatedFat = rand.nextInt(1000);
+                sugars = rand.nextInt(1000);
+                sodium = rand.nextInt(100);
+                protein = rand.nextInt(1000);
+                carbohydrates = rand.nextInt(1000);
+                vitamins = vitaminsLookup[rand.nextInt(vitaminsLookup.length)];
+                minerals = mineralsLookup[rand.nextInt(mineralsLookup.length)];
+                water = rand.nextInt(10000);
+                alcohol = rand.nextInt(10000);
+                softDrinks = rand.nextInt(10000);
+                ld = new LivingData(minsOfSleep, minsOfExcercise, calories, energy, fat, saturatedFat, sugars, sodium,
+                                    protein, carbohydrates, vitamins, minerals, water, alcohol, softDrinks, riskFactor);
+                livingRepo.saveLivingData(emailPattern.replace("<ID>", Integer.toString(j)), DateUtils.addDays(startDate, i), ld);
+            }
         }
     }
 
-    protected static void writePartialTestLivingHabitsData(int rangeFrom, int RangeTo, Date startDate, Date endDate, int completeDataPercent)
+    protected static void writePartialTestLivingHabitsData(int rangeFrom, int rangeTo, Date startDate, Date endDate, int completeDataPercent)
     {
+        Random rand = new Random();
+        int minsInDay = 1440;
+        int minsOfSleep;
+        int minsOfExcercise;
+        int calories;
+        int energy;
+        int fat;
+        int saturatedFat;
+        int sugars;
+        int sodium;
+        int protein;
+        int carbohydrates;
+        String vitamins;
+        String minerals;
+        int water;
+        int alcohol;
+        int softDrinks;
+        BigDecimal riskFactor = new BigDecimal(1.0);
+        LivingDataRepository livingRepo = new LivingDataRepository();
+        LivingData ld;
         int daysInInterval = getDaysInInterval(startDate, endDate);
         int daysWithDataToWrite = Math.round(daysInInterval * completeDataPercent / 100);
 
         for(int i = 1; i <= daysWithDataToWrite; i++)
         {
-            //TODO: gather params for sensor & call hbase write method
+            for(int j = rangeFrom; j <= rangeTo; j++)
+            {
+                minsOfSleep = rand.nextInt(minsInDay);
+                minsOfExcercise = rand.nextInt(minsInDay - minsOfSleep);
+                calories = rand.nextInt(5000);
+                energy = rand.nextInt(5000);
+                fat = rand.nextInt(1000);
+                saturatedFat = rand.nextInt(1000);
+                sugars = rand.nextInt(1000);
+                sodium = rand.nextInt(100);
+                protein = rand.nextInt(1000);
+                carbohydrates = rand.nextInt(1000);
+                vitamins = vitaminsLookup[rand.nextInt(vitaminsLookup.length)];
+                minerals = mineralsLookup[rand.nextInt(mineralsLookup.length)];
+                water = rand.nextInt(10000);
+                alcohol = rand.nextInt(10000);
+                softDrinks = rand.nextInt(10000);
+                ld = new LivingData(minsOfSleep, minsOfExcercise, calories, energy, fat, saturatedFat, sugars, sodium,
+                        protein, carbohydrates, vitamins, minerals, water, alcohol, softDrinks, riskFactor);
+                livingRepo.saveLivingData(emailPattern.replace("<ID>", Integer.toString(j)), DateUtils.addDays(startDate, i), ld);
+            }
         }
     }
 
