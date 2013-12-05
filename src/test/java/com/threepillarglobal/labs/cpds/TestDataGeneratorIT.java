@@ -24,6 +24,7 @@ import org.apache.commons.lang.time.DateUtils;
 public class TestDataGeneratorIT {
     
     private static String emailPattern = "user<ID>@3pg.com";
+    private static String namePrefix = "John Doe #";
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static String[] location = {"Romania|Cluj|Cluj-Napoca", "Romania|Timisoara|Timisoara", "USA|Washington|Washington DC"};
     private static String[] activityType = {"Eating", "Sleeping", "Exercising"};
@@ -153,7 +154,7 @@ public class TestDataGeneratorIT {
         }
     }
 
-    public void GenerateData (TestDataGeneratorConfig tdgc)
+    public static void GenerateData (TestDataGeneratorConfig tdgc) throws Exception
     {
         writeTestLocations();
         writeTestUsers(tdgc.userCount);
@@ -182,7 +183,7 @@ public class TestDataGeneratorIT {
         }
     }
 
-    private void writeAttachedDocument(int numberOfUsers, Date startDate, Date endDate) {
+    private static void writeAttachedDocument(int numberOfUsers, Date startDate, Date endDate) {
 
         Random rand = new Random();
 
@@ -231,7 +232,6 @@ public class TestDataGeneratorIT {
         String secretKey = "sk";
         Boolean userStatus = true;
         String userPhone = "555-";
-        String name = "John Doe #";
         Date dob = new Date();
         UserRepository userRepo = new UserRepository();
         User.AccountData accData;
@@ -249,9 +249,9 @@ public class TestDataGeneratorIT {
             accData = new User.AccountData(secretKey, userStatus, userPhone);
             userRepo.saveAccountData(rowKey, accData);
             //personal data
-            name = name + Integer.toString(i);
+            namePrefix = namePrefix + Integer.toString(i);
             locationID = rand.nextInt(location.length);
-            persData = new User.PersonalData(name, dob, location[locationID]);
+            persData = new User.PersonalData(namePrefix, dob, location[locationID]);
             userRepo.savePersonalData(rowKey, persData);
             //medical notes
             smoker = rand.nextBoolean();
