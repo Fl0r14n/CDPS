@@ -6,11 +6,18 @@ import com.threepillarglobal.labs.hbase.annotation.HTable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
+import org.apache.hadoop.io.MD5Hash;
 
 import java.util.Date;
 
 @HTable(name = "medicalRecords", columnFamilies = {"mr", "da"})
 public class MedicalRecords {
+
+    //should implement other hasing utilities like compare or do some super class for general table operations?
+    public static MD5Hash toRowKey(String email, Date eventDate) { //should I return byte[]?
+        //Test the validity of email? throw some asserions?
+        return MD5Hash.digest(email + eventDate.toString());
+    }
 
     @AllArgsConstructor
     @ToString
