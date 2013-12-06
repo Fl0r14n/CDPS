@@ -1,0 +1,215 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+body {
+	font-family: Arial;	
+	color:#3C3C3C;
+}
+
+h1 {
+	font-size:26px;
+}
+
+.ui-datepicker-title {
+	color:#000;
+}
+
+#sidebar {
+	position:absolute;
+	height:100%;
+	width:20%;
+	background-color:#F5BCA9;
+}
+
+
+#sidebar #main-menu {
+	padding-left:10%;
+}
+
+#sidebar  #logo {
+	position: relative;
+	left: 50%;
+	margin:40px 0 40px -70px;
+}
+
+#sidebar #main-menu .menu-item {
+	background-color:#333;
+	padding:10px 25px;
+	margin:4px 0;
+	border-radius:3px 0 0 3px;
+	color:#FFF;
+	font-weight:bold;
+}
+
+
+
+#sidebar #main-menu .menu-item:hover, #sidebar #main-menu .menu-item.selected {
+	background-color:#EFEFEB;
+	color:#262626;
+}
+
+
+
+#content {
+	position:absolute;
+	height:100%;
+	width:80%;
+	left:20%;
+	background-color:#F6D8CE;
+	-webkit-box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	box-sizing:border-box;
+	padding:40px;
+}
+
+#content .range-selectors {
+	float:right;
+}
+#content .header-area {	
+	line-height:28px;
+	margin:40px 0;
+	width:80%;
+}
+
+#inner-content {
+	/*width:80%;*/
+}
+
+#content .range-selectors input {
+	border: 0;
+	border-radius: 3px;
+	padding: 7px 22px 7px 7px;
+	background: url(img/bg.input.png)no-repeat center;
+	width: 85px;
+	text-align:center;
+	position: relative;
+	top:-1px;
+	margin:0px 10px;
+	font-weight:bold;
+}
+
+.buttongroup button {
+	display:inline-block;
+	border:0;
+	border-radius:4px;
+	background: url(img/bg.button.png) repeat-x center;
+	height:29px;
+	font-weight:bold;
+	padding:0 10px;
+	line-height:29px;
+	outline:0;
+}
+
+.buttongroup button span.icon{
+	display:inline-block;
+	height:16px;
+	width:16px;
+	position:relative;
+	top:3px;
+	margin-left:5px;
+}
+
+.buttongroup button span.icon.add{
+	background:url(img/bg.add.png) no-repeat center center;
+}
+.buttongroup button span.icon.delete{
+	background:url(img/bg.delete.png) no-repeat center center;
+}
+
+#settings-page{
+	margin-top:25px;
+}
+
+#settings-page fieldset{
+	padding:20px;
+	float: left;
+	margin: 20px 20px 20px 0;
+}
+
+#settings-page fieldset div {
+	margin:10px 0;
+}
+
+#settings-page fieldset .color {
+	width:50px;
+	padding:4px;
+	border:1px solid #262626;
+}
+
+#settings-page fieldset select {
+	width:120px;
+	padding:4px;
+}
+
+#settings-page fieldset span {
+	display: inline-block;
+	width: 140px;
+}
+
+.details {
+	padding:20px 0;
+}
+
+.details div {
+	margin-bottom: 10px;
+	background-color: #ffffff;
+	border-radius: 3px;
+	box-shadow: 1px 1px 1px #ededed;
+	padding: 10px;
+	width:80%;
+}
+
+.details div span{
+	display: inline-block;	
+	margin-right: 30px;
+	width: 280px;
+	font-weight:normal;
+}
+
+.details p {
+	margin: 10px 0;
+	font-weight:bold;
+}
+
+
+
