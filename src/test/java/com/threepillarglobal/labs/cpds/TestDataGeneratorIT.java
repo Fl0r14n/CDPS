@@ -37,6 +37,7 @@ public class TestDataGeneratorIT {
     private static String[] vitaminsLookup = {"A", "B", "C", "D", "E"};
     private static String[] mineralsLookup = {"Fe", "Zn", "Mg", "Ca", "Vn"};
     private static String documentURLPattern = "http://docs.google.com/docID=";
+    private static String bloodPressureSeparator = "/";
 
     @Test
     public void generateDataFromConfig() {
@@ -294,7 +295,7 @@ public class TestDataGeneratorIT {
         SensorDataRepository sdRepo = new SensorDataRepository();
         int activityDuration;
         Random rand = new Random();
-        int avgHR, avgBP, calories;
+        int avgHR, avgBPLow, avgBPHigh, calories;
         int daysInInterval = getDaysInInterval(startDate, endDate);
         for(int i = 0; i < daysInInterval; i++)
         {
@@ -310,12 +311,13 @@ public class TestDataGeneratorIT {
                         activityDuration = rand.nextInt(61);
                         at = activityType[rand.nextInt(3)];
                         avgHR = rand.nextInt(200);
-                        avgBP = rand.nextInt(300);
+                        avgBPLow = 50 + rand.nextInt(100);
+                        avgBPHigh = 100 + rand.nextInt(200);
                         calories = rand.nextInt(3000);
-                        l.add(Integer.toString(activityDuration));
                         l.add(at);
+                        l.add(Integer.toString(activityDuration));
                         l.add(Integer.toString(avgHR));
-                        l.add(Integer.toString(avgBP));
+                        l.add(Integer.toString(avgBPLow) + bloodPressureSeparator + Integer.toString(avgBPHigh));
                         l.add(Integer.toString(calories));
                         dailyData.add(l);
                     }
