@@ -12,7 +12,7 @@
     <context:property-placeholder location="hadoop.properties"/>
 
     <!--autowireing-->
-    <context:component-scan base-package="com.threepillarglobal.labs.cdps"/>
+    <context:component-scan base-package="com.threepillarglobal.labs.cdps.dao"/>
 	    
     <hdp:configuration id="hadoopConfiguration">        
         fs.default.name=hdfs://${hdfs.host}:${hdfs.port}

@@ -1,33 +1,15 @@
 package com.threepillarglobal.labs.cdps.web;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
 public class User {
-	
-	private String id;
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getDob() {
-		return dob;
-	}
-	public void setDob(String dob) {
-		this.dob = dob;
-	}
-	private String name;
-	private String dob;
- 
-	public User(){}
-	public User(String id, String name, String dob){
-		this.id = id;
-		this.name = name;
-		this.dob = dob;
-	}
+
+    private final String id;
+    private final String name;
+    private final String dob;
 }
