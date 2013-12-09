@@ -28,7 +28,7 @@ public class SensorDataRepository {
         return hbaseTemplate.execute(tableName, new TableCallback<SensorData>() {
             @Override
             public SensorData doInTable(HTableInterface table) throws Throwable {
-                Put p = new Put(SensorData.toRowKey(email, eventDate).getDigest());
+                Put p = new Put(SensorData.toRowKey(email, eventDate).getBytes());
                 HMarshaller.marshall(sensorData, p);
                 table.put(p);
                 return sensorData;
@@ -40,7 +40,7 @@ public class SensorDataRepository {
     {
         final String tableName = HAnnotation.getTableName(SensorData.class);
         final String cfamilyName = HAnnotation.getColumnFamilyName(SensorData.class);
-        Scan s = new Scan(new Get(SensorData.toRowKey(email, eventDate).getDigest()));
+        Scan s = new Scan(new Get(SensorData.toRowKey(email, eventDate).getBytes()));
         return hbaseTemplate.find(tableName, s,  new RowMapper<SensorData>() {
             @Override
             public SensorData mapRow(Result result, int i) throws Exception {
@@ -53,7 +53,7 @@ public class SensorDataRepository {
     {
         final String tableName = HAnnotation.getTableName(SensorData.class);
         final String cfamilyName = HAnnotation.getColumnFamilyName(SensorData.class);
-        Scan s = new Scan(SensorData.toRowKey(email, eventStartDate).getDigest(), SensorData.toRowKey(email, eventEndDate).getDigest());
+        Scan s = new Scan(SensorData.toRowKey(email, eventStartDate).getBytes(), SensorData.toRowKey(email, eventEndDate).getDigest());
         return hbaseTemplate.find(tableName, s,  new RowMapper<SensorData>() {
             @Override
             public SensorData mapRow(Result result, int i) throws Exception {

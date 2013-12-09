@@ -353,6 +353,7 @@ public class TestDataGeneratorIT {
             for(int j = rangeFrom; j<= rangeTo; j++)
             {
                 SensorData sd;
+                Date eventDate = DateUtils.addDays(startDate, i);
                 
                     List<List<String>> dailyData = new ArrayList<>();
                     
@@ -372,7 +373,7 @@ public class TestDataGeneratorIT {
                         dailyData.add(l);
                     }
                     
-                    sd = new SensorData(dailyData.get(0),dailyData.get(1),dailyData.get(2),
+                    sd = new SensorData(eventDate, dailyData.get(0),dailyData.get(1),dailyData.get(2),
                                         dailyData.get(3),dailyData.get(4),dailyData.get(5),
                                         dailyData.get(6),dailyData.get(7),dailyData.get(8),
                                         dailyData.get(9),dailyData.get(10),dailyData.get(11),
@@ -381,7 +382,7 @@ public class TestDataGeneratorIT {
                                         dailyData.get(18),dailyData.get(19),dailyData.get(20),
                                         dailyData.get(21),dailyData.get(22),dailyData.get(23)
                     );
-                    sdRepo.saveSensorData(emailPattern.replace("<ID>", Integer.toString(j)), DateUtils.addDays(startDate, i), sd);
+                    sdRepo.saveSensorData(emailPattern.replace("<ID>", Integer.toString(j)), eventDate, sd);
                 
             }
         }
