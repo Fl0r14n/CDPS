@@ -20,7 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import org.apache.commons.lang.time.DateUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "classpath*:integrationTests-context.xml")
 public class TestDataGeneratorIT {
     
     private static String emailPattern = "user<ID>@3pg.com";
@@ -31,6 +37,20 @@ public class TestDataGeneratorIT {
     private static String[] vitaminsLookup = {"A", "B", "C", "D", "E"};
     private static String[] mineralsLookup = {"Fe", "Zn", "Mg", "Ca", "Vn"};
     private static String documentURLPattern = "http://docs.google.com/docID=";
+
+    @Test
+    public void generateDataFromConfig() {
+        try{
+
+            TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
+            generateData(tdgc);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
 
     static boolean validateAgainstXSD(InputStream xml, InputStream xsd) {
         try {
@@ -154,7 +174,7 @@ public class TestDataGeneratorIT {
         }
     }
 
-    public static void GenerateData (TestDataGeneratorConfig tdgc) throws Exception
+    public static void generateData(TestDataGeneratorConfig tdgc) throws Exception
     {
         writeTestLocations();
         writeTestUsers(tdgc.userCount);
