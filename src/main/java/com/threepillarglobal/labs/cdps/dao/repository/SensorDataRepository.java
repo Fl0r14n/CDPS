@@ -53,7 +53,7 @@ public class SensorDataRepository {
     {
         final String tableName = HAnnotation.getTableName(SensorData.class);
         final String cfamilyName = HAnnotation.getColumnFamilyName(SensorData.class);
-        Scan s = new Scan(SensorData.toRowKey(email, eventStartDate).getBytes(), SensorData.toRowKey(email, eventEndDate).getDigest());
+        Scan s = new Scan(SensorData.toRowKey(email, eventStartDate).getBytes(), SensorData.toRowKey(email, eventEndDate).getBytes());
         return hbaseTemplate.find(tableName, s,  new RowMapper<SensorData>() {
             @Override
             public SensorData mapRow(Result result, int i) throws Exception {
