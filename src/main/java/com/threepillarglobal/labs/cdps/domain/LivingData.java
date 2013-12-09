@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.apache.hadoop.io.MD5Hash;
 
@@ -18,10 +19,12 @@ import org.apache.hadoop.io.MD5Hash;
 @Getter
 public class LivingData {
     
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    
     //should implement other hasing utilities like compare or do some super class for general table operations?
     public static MD5Hash toRowKey(String email, Date eventDate) { //should I return byte[]?
         //Test the validity of email? throw some asserions?        
-        return MD5Hash.digest(email + eventDate.toString());
+        return MD5Hash.digest(email) + dateFormat.format(eventDate);
     }
 
     @HColumn(name = "minsOfSleep")
