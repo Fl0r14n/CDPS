@@ -27,7 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:integrationTests-context.xml")
-public class TestDataGeneratorIT {
+public class HBaseDataGeneratorIT {
     
     private static String emailPattern = "user<ID>@3pg.com";
     private static String namePrefix = "John Doe #";
