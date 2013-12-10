@@ -17,8 +17,6 @@
         <spring.version>3.2.5.RELEASE</spring.version>
         <slf4j.version>1.7.5</slf4j.version>
         <jackson.version>1.9.13</jackson.version>
-        <jdk.version>jdk1.6.0_45</jdk.version>
-        <java.home>c:\\Program Files\\Java\\jdk1.6.0_45\\</java.home>
     </properties>
     
     <repositories>
@@ -30,15 +28,6 @@
 
     <dependencies>
     
-     <dependency>
-		    <groupId>jdk.tools</groupId>
-    		<artifactId>jdk.tools</artifactId>
-    		<scope>system</scope>
-    		<systemPath>${java.home}\\lib\\tools.jar</systemPath>
-    		<version>${jdk.version}</version>
-		</dependency> 
-    
-        
         <!-- lombok - for getter/setter annotations on DTOs -->
         <dependency>
             <groupId>org.projectlombok</groupId>
