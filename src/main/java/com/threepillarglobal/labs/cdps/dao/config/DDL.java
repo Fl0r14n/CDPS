@@ -22,8 +22,8 @@ public class DDL implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        //admin = new HBaseAdmin(config);
-        //createTables();
+        admin = new HBaseAdmin(config);
+        createTables();
     }
 
     private void createTables() throws Exception {
