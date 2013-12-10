@@ -1,7 +1,6 @@
 package com.threepillarglobal.labs.cdps.dao.repository;
 
 import com.threepillarglobal.labs.cdps.domain.Location;
-import com.threepillarglobal.labs.cdps.domain.MedicalRecords;
 import com.threepillarglobal.labs.hbase.util.HAnnotation;
 import com.threepillarglobal.labs.hbase.util.HMarshaller;
 import org.apache.hadoop.hbase.client.HTableInterface;
