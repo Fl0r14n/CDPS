@@ -16,7 +16,6 @@
         <target.version>1.7</target.version>
         <spring.version>3.2.5.RELEASE</spring.version>
         <slf4j.version>1.7.5</slf4j.version>
-        <jackson.version>1.9.13</jackson.version>
     </properties>
     
     <repositories>
