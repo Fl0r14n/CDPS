@@ -104,7 +104,7 @@ public class MockDataGenerator {
 	            //userRepo.savePersonalData(rowKey, persData);
 	            //medical notes
 	            smoker = rand.nextBoolean();
-	            medNotes = new User.MedicalNotes(null, smoker, INHERITED_RISK.HIGH);
+	            medNotes = new User.MedicalNotes(null, User.MedicalNotes.SMOKER.CASUAL, INHERITED_RISK.HIGH);
 	            //userRepo.saveMedicalNotes(rowKey, medNotes);
 	            //TODO: family tree
 	            User user = new User(accData, persData, medNotes);

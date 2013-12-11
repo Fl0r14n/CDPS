@@ -67,8 +67,14 @@ public class User {
     @EqualsAndHashCode
     public static class MedicalNotes {
 
+    	public enum SMOKER {
+    		NO, 
+    		CASUAL, 
+    		HEAVY, 
+    		PASSIVE
+    	}
+    	
         public static enum INHERITED_RISK {
-
             LOW,
             MEDIUM,
             HIGH
@@ -77,7 +83,7 @@ public class User {
         @HColumn(name = "notes")
         private final List<String> notes; //Not sure if this is ok.
         @HColumn(name = "smoker")
-        private final Boolean smoker;
+        private final SMOKER smoker;
         @HColumn(name = "inheritedRisk")
         private final INHERITED_RISK inheritedRisk;
     }

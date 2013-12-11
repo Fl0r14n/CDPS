@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-public class RiskIndexUtils {
+import com.threepillarglobal.labs.cdps.domain.User;
 
-	public enum SMOKER {NO, CASUAL, HEAVY, PASSIVE}
+public class RiskIndexUtils {
 	
 	private static NavigableMap<Integer,Integer> AGE_INDEX_THRESHOLDS =
 	        new TreeMap<Integer, Integer>();
@@ -15,8 +15,10 @@ public class RiskIndexUtils {
 	        new TreeMap<Integer, Integer>();
 	private static NavigableMap<Integer,Integer> HBP_INDEX_THRESHOLDS =
 	        new TreeMap<Integer, Integer>();
-	private static Map<SMOKER,Integer> SMOKE_THRESHOLDS =
-	        new HashMap<SMOKER, Integer>();
+	private static Map<User.MedicalNotes.SMOKER,Integer> SMOKE_THRESHOLDS =
+	        new HashMap<User.MedicalNotes.SMOKER, Integer>();
+	private static NavigableMap<User.MedicalNotes.INHERITED_RISK,Integer> INHERITED_RISKS_INDEX =
+	        new TreeMap<User.MedicalNotes.INHERITED_RISK, Integer>();
 	
 	/*
     Age		age_idx value:
@@ -42,10 +44,10 @@ public class RiskIndexUtils {
 	passive smoker	3
      */
     static {
-    	SMOKE_THRESHOLDS.put(SMOKER.NO,  0);
-    	SMOKE_THRESHOLDS.put(SMOKER.CASUAL,  5);
-    	SMOKE_THRESHOLDS.put(SMOKER.HEAVY,  8);
-    	SMOKE_THRESHOLDS.put(SMOKER.PASSIVE,  3);
+    	SMOKE_THRESHOLDS.put(User.MedicalNotes.SMOKER.NO,  0);
+    	SMOKE_THRESHOLDS.put(User.MedicalNotes.SMOKER.CASUAL,  5);
+    	SMOKE_THRESHOLDS.put(User.MedicalNotes.SMOKER.HEAVY,  8);
+    	SMOKE_THRESHOLDS.put(User.MedicalNotes.SMOKER.PASSIVE,  3);
     }
     
     /*
@@ -83,11 +85,20 @@ public class RiskIndexUtils {
     	HBP_INDEX_THRESHOLDS.put(161,  10);
     }
     
+    /**
+     * Inherited risks
+     */
+    static{
+    	INHERITED_RISKS_INDEX.put(User.MedicalNotes.INHERITED_RISK.LOW, 1);
+    	INHERITED_RISKS_INDEX.put(User.MedicalNotes.INHERITED_RISK.MEDIUM, 3);
+    	INHERITED_RISKS_INDEX.put(User.MedicalNotes.INHERITED_RISK.HIGH, 5);
+    }
+    
     public static Integer getAgeRiskIndex(Integer age){
     	return AGE_INDEX_THRESHOLDS.get(AGE_INDEX_THRESHOLDS.floorKey(age));
     }
     
-    public static Integer getSmokeIndex(SMOKER smoker){
+    public static Integer getSmokeIndex(User.MedicalNotes.SMOKER smoker){
     	return SMOKE_THRESHOLDS.get(smoker);
     }
     
@@ -99,5 +110,8 @@ public class RiskIndexUtils {
     	return HBP_INDEX_THRESHOLDS.get(HBP_INDEX_THRESHOLDS.floorKey(hbpVal));
     }
     
+    public static Integer getInheritedRiskIndex(User.MedicalNotes.INHERITED_RISK inheritedRisk){
+    	return INHERITED_RISKS_INDEX.get(INHERITED_RISKS_INDEX.get(inheritedRisk));
+    }
 	
 }

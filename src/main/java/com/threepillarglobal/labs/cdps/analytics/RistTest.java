@@ -1,12 +1,14 @@
 package com.threepillarglobal.labs.cdps.analytics;
 
+import com.threepillarglobal.labs.cdps.domain.User;
+
 
 public class RistTest {
 
 	
 	public static void main(String[] args) {
 		System.out.println(RiskIndexUtils.getAgeRiskIndex(Integer.valueOf(73)));
-		System.out.println(RiskIndexUtils.getSmokeIndex(RiskIndexUtils.SMOKER.HEAVY));
+		System.out.println(RiskIndexUtils.getSmokeIndex(User.MedicalNotes.SMOKER.HEAVY));
 		System.out.println(RiskIndexUtils.getLowBloodPressureRiskIndex(Integer.valueOf(95)));
 		System.out.println(RiskIndexUtils.getHighBloodPressureRiskIndex(Integer.valueOf(155)));
 		//

@@ -271,7 +271,7 @@ public class HBaseDataGeneratorIT {
             userRepo.savePersonalData(rowKey, persData);
             //medical notes
             smoker = rand.nextBoolean();
-            medNotes = new User.MedicalNotes(null, smoker, INHERITED_RISK.HIGH);
+            medNotes = new User.MedicalNotes(null, User.MedicalNotes.SMOKER.HEAVY, INHERITED_RISK.HIGH);
             userRepo.saveMedicalNotes(rowKey, medNotes);
             //TODO: family tree
         }
