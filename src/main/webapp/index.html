@@ -52,6 +52,7 @@ $(document).ready(function() {
 	
 	$("#w-get-data").on("click",function(){
 		getData("BP",tempdata,fromDate,toDate,"Diastolic",0);
+		getRiskData();
 	});
 	
 	
@@ -143,6 +144,20 @@ $(document).ready(function() {
 			});
 	}
 	
+	
+	function getRiskData(){
+		$.getJSON("/rest/getRiskData?id=mock" , function(data) {
+		    var tbl_body = "";
+		    $.each(data, function() {
+		        var tbl_row = "";
+		        $.each(this, function(k , v) {
+		            tbl_row += "<td>"+v+"</td>";
+		        })
+		        tbl_body += "<tr>"+tbl_row+"</tr>";                 
+		    })
+		    $("#target_table_id tbody").html(tbl_body);
+		});
+    }
 	
 	
 	
@@ -505,7 +520,7 @@ $(document).ready(function() {
 		<div id="inner-content">
 			<h1>Data graph</h1>			
 			<div id="container"></div>
-			<span><div style=" clear:both; overflow:hidden; height:1%; " class="details1"></div></span>
+			<div><table id="target_table_id"></table></div>
 			<!--div class="buttongroup">
 				<div>
 					<button id="Diastolic">Diastolic<span class="icon delete"></span></button>	

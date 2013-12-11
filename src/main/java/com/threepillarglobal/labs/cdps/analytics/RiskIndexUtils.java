@@ -11,10 +11,10 @@ public class RiskIndexUtils {
 	
 	private static NavigableMap<Integer,Integer> AGE_INDEX_THRESHOLDS =
 	        new TreeMap<Integer, Integer>();
-	private static NavigableMap<Integer,Integer> LBP_INDEX_THRESHOLDS =
-	        new TreeMap<Integer, Integer>();
-	private static NavigableMap<Integer,Integer> HBP_INDEX_THRESHOLDS =
-	        new TreeMap<Integer, Integer>();
+	private static NavigableMap<Double,Integer> LBP_INDEX_THRESHOLDS =
+	        new TreeMap<Double, Integer>();
+	private static NavigableMap<Double,Integer> HBP_INDEX_THRESHOLDS =
+	        new TreeMap<Double, Integer>();
 	private static Map<User.MedicalNotes.SMOKER,Integer> SMOKE_THRESHOLDS =
 	        new HashMap<User.MedicalNotes.SMOKER, Integer>();
 	private static NavigableMap<User.MedicalNotes.INHERITED_RISK,Integer> INHERITED_RISKS_INDEX =
@@ -58,13 +58,13 @@ public class RiskIndexUtils {
 	100					 7
     */
     static {
-    	LBP_INDEX_THRESHOLDS.put(0,  0);
-    	LBP_INDEX_THRESHOLDS.put(60,  1);
-    	LBP_INDEX_THRESHOLDS.put(75,  3);
-    	LBP_INDEX_THRESHOLDS.put(90,  4);
-    	LBP_INDEX_THRESHOLDS.put(100,  7);
-    	LBP_INDEX_THRESHOLDS.put(110,  9);
-    	LBP_INDEX_THRESHOLDS.put(111,  10);
+    	LBP_INDEX_THRESHOLDS.put(0.0,  0);
+    	LBP_INDEX_THRESHOLDS.put(60.0,  1);
+    	LBP_INDEX_THRESHOLDS.put(75.0,  3);
+    	LBP_INDEX_THRESHOLDS.put(90.0,  4);
+    	LBP_INDEX_THRESHOLDS.put(100.0,  7);
+    	LBP_INDEX_THRESHOLDS.put(110.0,  9);
+    	LBP_INDEX_THRESHOLDS.put(111.0,  10);
     }
     
     /*
@@ -76,13 +76,13 @@ public class RiskIndexUtils {
 	150+				9
     */
     static {
-    	HBP_INDEX_THRESHOLDS.put(0,    0);
-    	HBP_INDEX_THRESHOLDS.put(110,  1);
-    	HBP_INDEX_THRESHOLDS.put(120,  3);
-    	HBP_INDEX_THRESHOLDS.put(130,  4);
-    	HBP_INDEX_THRESHOLDS.put(150,  7);
-    	HBP_INDEX_THRESHOLDS.put(151,  9);
-    	HBP_INDEX_THRESHOLDS.put(161,  10);
+    	HBP_INDEX_THRESHOLDS.put(0.0,    0);
+    	HBP_INDEX_THRESHOLDS.put(110.0,  1);
+    	HBP_INDEX_THRESHOLDS.put(120.0,  3);
+    	HBP_INDEX_THRESHOLDS.put(130.0,  4);
+    	HBP_INDEX_THRESHOLDS.put(150.0,  7);
+    	HBP_INDEX_THRESHOLDS.put(151.0,  9);
+    	HBP_INDEX_THRESHOLDS.put(161.0,  10);
     }
     
     /**
@@ -102,16 +102,16 @@ public class RiskIndexUtils {
     	return SMOKE_THRESHOLDS.get(smoker);
     }
     
-    public static Integer getLowBloodPressureRiskIndex(Integer lbpVal){
+    public static Integer getLowBloodPressureRiskIndex(Double lbpVal){
     	return LBP_INDEX_THRESHOLDS.get(LBP_INDEX_THRESHOLDS.floorKey(lbpVal));
     }
     
-    public static Integer getHighBloodPressureRiskIndex(Integer hbpVal){
+    public static Integer getHighBloodPressureRiskIndex(Double hbpVal){
     	return HBP_INDEX_THRESHOLDS.get(HBP_INDEX_THRESHOLDS.floorKey(hbpVal));
     }
     
     public static Integer getInheritedRiskIndex(User.MedicalNotes.INHERITED_RISK inheritedRisk){
-    	return INHERITED_RISKS_INDEX.get(INHERITED_RISKS_INDEX.get(inheritedRisk));
+    	return INHERITED_RISKS_INDEX.get(inheritedRisk);
     }
 	
 }

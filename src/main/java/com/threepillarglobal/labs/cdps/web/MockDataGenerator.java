@@ -75,7 +75,7 @@ public class MockDataGenerator {
     private static String namePrefix = "John Doe #";
     private static String[] location = {"Romania|Cluj|Cluj-Napoca", "Romania|Timisoara|Timisoara", "USA|Washington|Washington DC"};
     
-	protected static List<User> fetchMockUserData(int numberOfUsers) {
+	public static List<User> fetchMockUserData(int numberOfUsers) {
 	        String rowKey;
 	        String secretKey = "sk";
 	        Boolean userStatus = true;
@@ -114,11 +114,11 @@ public class MockDataGenerator {
 	}
 	 
 	@SuppressWarnings("finally")
-	protected static List<SensorData> fetchMockSensorData(){
+	public static List<SensorData> fetchMockSensorData(String sDate, String eDate){
 		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 		List<SensorData> generateSensorData = new ArrayList<SensorData>();
 		try {
-			generateSensorData = generateSensorData(0, 1, dateFormat.parse("1-11-2012"), dateFormat.parse("31-11-2012"));
+			generateSensorData = generateSensorData(0, 1, dateFormat.parse(sDate), dateFormat.parse(eDate));
 			return generateSensorData;
 		} catch (ParseException e) {
 			e.printStackTrace();

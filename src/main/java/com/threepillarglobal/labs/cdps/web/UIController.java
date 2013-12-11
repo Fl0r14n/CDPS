@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.threepillarglobal.labs.cdps.domain.CardioRisk;
+import com.threepillarglobal.labs.cdps.domain.SensorData;
 import com.threepillarglobal.labs.cdps.domain.User;
  
  
@@ -37,10 +39,18 @@ public class UIController {
  
 	@RequestMapping(value = "/getChartData", method = RequestMethod.GET)
 	public @ResponseBody
-	List<com.threepillarglobal.labs.cdps.domain.SensorData> getChartData(@RequestParam String id) {
-		return  MockDataGenerator.fetchMockSensorData();		
+	List<SensorData> getChartData(@RequestParam String id) {
+		return  MockDataGenerator.fetchMockSensorData("1-11-2012", "31-11-2012");		
 	}
 	
+	
+	@RequestMapping(value = "/getRiskData", method = RequestMethod.GET)
+	public @ResponseBody
+	CardioRisk getRiskData(@RequestParam String id) {
+		CardioRisk cR = new CardioRisk();
+		cR.calculateRiskFactor(MockDataGenerator.fetchMockUserData(2).get(0), MockDataGenerator.fetchMockSensorData("1-11-2012", "3-11-2012"));
+		return  cR;
+	}
 	
 	
 }
