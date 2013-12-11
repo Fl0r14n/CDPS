@@ -119,8 +119,8 @@ $(document).ready(function() {
 					$table.append( $header );
 					
 					var $line = $( "<tr></tr>" );
-					$line.append( $( "<td></td>" ).html( suggestion.data.name ) );
-					$line.append( $( "<td></td>" ).html( suggestion.data.dob ) );
+					$line.append( $( "<td></td>" ).html( suggestion.data.personalData.name ) );
+					$line.append( $( "<td></td>" ).html( new Date(suggestion.data.personalData.dob) ) );
 					$table.append( $line );
 
 
@@ -134,7 +134,7 @@ $(document).ready(function() {
 			        return {
 			        	
 			            suggestions: $.map($.parseJSON(response), function(item) {
-			                return { value: item.id, data: item };
+			                return { value: item.personalData.name, data: item };
 			            })
 			            
 			        };
