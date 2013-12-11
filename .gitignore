@@ -27,6 +27,8 @@ target-eclipse
 .classpath
 .project
 .settings
+*.tmp
+*.java.tmp
 
 *.log
 *.log*
@@ -38,3 +40,4 @@ logs
 *.vim
 
 *.orig
+*.tmp

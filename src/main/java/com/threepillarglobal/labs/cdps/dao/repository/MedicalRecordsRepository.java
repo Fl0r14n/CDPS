@@ -25,7 +25,7 @@ public class MedicalRecordsRepository {
         return hbaseTemplate.execute(tableName, new TableCallback<MedicalRecord>() {
             @Override
             public MedicalRecord doInTable(HTableInterface table) throws Throwable {
-                Put p = new Put(MedicalRecords.toRowKey(email, recordDate).getDigest());
+                Put p = new Put(MedicalRecords.toRowKey(email, recordDate));
                 HMarshaller.marshall(medicalRecord, p);
                 table.put(p);
                 return medicalRecord;
@@ -41,7 +41,7 @@ public class MedicalRecordsRepository {
         return hbaseTemplate.execute(tableName, new TableCallback<DocumentsAttached>() {
             @Override
             public DocumentsAttached doInTable(HTableInterface table) throws Throwable {
-                Put p = new Put(MedicalRecords.toRowKey(email, recordDate).getDigest());
+                Put p = new Put(MedicalRecords.toRowKey(email, recordDate));
                 HMarshaller.marshall(attachedDocument, p);
                 table.put(p);
                 return attachedDocument;

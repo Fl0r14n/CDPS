@@ -1,4 +1,4 @@
-package com.threepillarglobal.labs.cdps.domain;
+    package com.threepillarglobal.labs.cdps.domain;
 
 import com.threepillarglobal.labs.hbase.annotation.HColumn;
 import com.threepillarglobal.labs.hbase.annotation.HColumnFamily;
@@ -6,6 +6,7 @@ import com.threepillarglobal.labs.hbase.annotation.HTable;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -14,16 +15,15 @@ public class Location {
 
     public static final String separator = "|";
 
-    //should implement other hasing utilities like compare or do some super class for general table operations?
-    public static String toRowKey(String countryName, String countyName, String cityName) { //should I return byte[]?
-        //Test the validity of email? throw some asserions?
-        return countryName + separator + countyName + separator + cityName;
+    public static byte[] toRowKey(String countryName, String countyName, String cityName) {
+        return (countryName + separator + countyName + separator + cityName).getBytes();
     }
 
+    @HColumnFamily(name = "ld")
     @AllArgsConstructor
     @ToString
     @Getter
-    @HColumnFamily(name = "ld")
+    @EqualsAndHashCode
     public static class LocationDetails {
 
         @HColumn(name = "city")
@@ -34,10 +34,11 @@ public class Location {
         private final String country;
     }
 
+    @HColumnFamily(name = "res")
     @AllArgsConstructor
     @ToString
     @Getter
-    @HColumnFamily(name = "res")
+    @EqualsAndHashCode
     public static class Residents {
 
         @HColumn(name = "residents")

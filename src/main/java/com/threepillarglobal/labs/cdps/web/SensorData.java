@@ -197,10 +197,10 @@ public class SensorData {
 		
 		if(riskIndex>9){
 			if(metric.equals(Metric.LBP)){
-				text = text + " [ " + hour + " LBP RI: " +  riskIndex + "] (" + value + ")<br/>" ;
+				text = text + " [ " + hour + " Systolic RI: " +  riskIndex + "] (" + value + ")<br/>" ;
 			}else
 				if(metric.equals(Metric.HBP)){
-					text = text + " [ " + hour + " HBP RI: " +  riskIndex + "] (" + value + ")<br/>" ;
+					text = text + " [ " + hour + " Diastolic RI: " +  riskIndex + "] (" + value + ")<br/>" ;
 				}
 		}
 		return text;

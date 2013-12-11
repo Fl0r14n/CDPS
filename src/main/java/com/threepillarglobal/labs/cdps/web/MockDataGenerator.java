@@ -69,12 +69,14 @@ public class MockDataGenerator {
 		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 		List<SensorData> sdList = new ArrayList<SensorData>();
 		try{
-			sdList.add(MockDataGenerator.generateSensorData(dateFormat.parse("11-11-2012")));
-			sdList.add(MockDataGenerator.generateSensorData(dateFormat.parse("12-11-2012")));
+			for(int i=1; i<32; i++){
+			sdList.add(MockDataGenerator.generateSensorData(dateFormat.parse(i+"-11-2012")));
+			/*sdList.add(MockDataGenerator.generateSensorData(dateFormat.parse("12-11-2012")));
 			sdList.add(MockDataGenerator.generateSensorData(dateFormat.parse("13-11-2012")));
 			sdList.add(MockDataGenerator.generateSensorData(dateFormat.parse("14-11-2012")));
 			sdList.add(MockDataGenerator.generateSensorData(dateFormat.parse("15-11-2012")));
-			sdList.add(MockDataGenerator.generateSensorData(dateFormat.parse("16-11-2012")));
+			sdList.add(MockDataGenerator.generateSensorData(dateFormat.parse("16-11-2012")));*/
+			}
 		}catch(Exception ex){}
 		return sdList;
 	}

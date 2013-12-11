@@ -22,7 +22,7 @@ public class LocationRepository {
         return hbaseTemplate.execute(tableName, new TableCallback<Location.LocationDetails>() {
             @Override
             public Location.LocationDetails doInTable(HTableInterface table) throws Throwable {
-                Put p = new Put(Location.toRowKey(countryName, countyName, cityName).getBytes());
+                Put p = new Put(Location.toRowKey(countryName, countyName, cityName));
                 HMarshaller.marshall(locationDetails, p);
                 table.put(p);
                 return locationDetails;
@@ -38,7 +38,7 @@ public class LocationRepository {
         return hbaseTemplate.execute(tableName, new TableCallback<Location.Residents>() {
             @Override
             public Location.Residents doInTable(HTableInterface table) throws Throwable {
-                Put p = new Put(Location.toRowKey(countryName, countyName, cityName).getBytes());
+                Put p = new Put(Location.toRowKey(countryName, countyName, cityName));
                 HMarshaller.marshall(locationResidents, p);
                 table.put(p);
                 return locationResidents;
