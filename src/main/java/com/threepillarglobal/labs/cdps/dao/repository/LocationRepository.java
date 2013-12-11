@@ -17,7 +17,7 @@ public class LocationRepository {
     private HbaseTemplate hbaseTemplate;
 
     public Location.LocationDetails saveLocation(final String countryName, final String countyName, final String cityName, final Location.LocationDetails locationDetails ) {
-        final String tableName = HAnnotation.getTableName(Location.LocationDetails.class);
+        final String tableName = HAnnotation.getTableName(Location.class);
         final String cfamilyName = HAnnotation.getColumnFamilyName(Location.LocationDetails.class);
         return hbaseTemplate.execute(tableName, new TableCallback<Location.LocationDetails>() {
             @Override

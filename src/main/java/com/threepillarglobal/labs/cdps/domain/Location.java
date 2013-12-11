@@ -8,7 +8,6 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
-import org.apache.hadoop.io.MD5Hash;
 
 @HTable(name = "location", columnFamilies = {"ld", "res"})
 public class Location {
