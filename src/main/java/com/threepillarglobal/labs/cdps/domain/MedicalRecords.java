@@ -9,20 +9,20 @@ import lombok.ToString;
 import org.apache.hadoop.io.MD5Hash;
 
 import java.util.Date;
+import lombok.EqualsAndHashCode;
 
 @HTable(name = "medicalRecords", columnFamilies = {"mr", "da"})
 public class MedicalRecords {
 
-    //should implement other hasing utilities like compare or do some super class for general table operations?
-    public static MD5Hash toRowKey(String email, Date eventDate) { //should I return byte[]?
-        //Test the validity of email? throw some asserions?
-        return MD5Hash.digest(email + eventDate.toString());
+    public static byte[] toRowKey(String email, Date eventDate) {
+        return MD5Hash.digest(email + eventDate.toString()).getDigest();
     }
 
+    @HColumnFamily(name = "mr")
     @AllArgsConstructor
     @ToString
     @Getter
-    @HColumnFamily(name = "mr")
+    @EqualsAndHashCode
     public static class MedicalRecord {
 
         @HColumn(name = "medicalRecordDate")
@@ -37,10 +37,11 @@ public class MedicalRecords {
         private final String followUp;
     }
 
+    @HColumnFamily(name = "da")
     @AllArgsConstructor
     @ToString
     @Getter
-    @HColumnFamily(name = "da")
+    @EqualsAndHashCode
     public static class DocumentsAttached {
 
         @HColumn(name = "documentURL")

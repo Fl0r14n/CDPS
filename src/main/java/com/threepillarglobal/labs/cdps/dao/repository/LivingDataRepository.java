@@ -23,7 +23,7 @@ public class LivingDataRepository {
         return hbaseTemplate.execute(tableName, new TableCallback<LivingData>() {
             @Override
             public LivingData doInTable(HTableInterface table) throws Throwable {
-                Put p = new Put(LivingData.toRowKey(email, eventDate).getBytes());
+                Put p = new Put(LivingData.toRowKey(email, eventDate));
                 HMarshaller.marshall(livingData, p);
                 table.put(p);
                 return livingData;

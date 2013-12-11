@@ -49,7 +49,7 @@ public class UserRepository {
         return hbaseTemplate.execute(tableName, new TableCallback<AccountData>() {
             @Override
             public AccountData doInTable(HTableInterface table) throws Throwable {
-                Put p = new Put(User.toRowKey(email).getDigest());
+                Put p = new Put(User.toRowKey(email));
                 HMarshaller.marshall(account, p);
                 table.put(p);
                 return account;
@@ -87,7 +87,7 @@ public class UserRepository {
         return hbaseTemplate.execute(tableName, new TableCallback<PersonalData>() {
             @Override
             public PersonalData doInTable(HTableInterface table) throws Throwable {
-                Put p = new Put(User.toRowKey(email).getDigest());
+                Put p = new Put(User.toRowKey(email));
                 HMarshaller.marshall(personalData, p);
                 table.put(p);
                 return personalData;
@@ -112,7 +112,7 @@ public class UserRepository {
         return hbaseTemplate.execute(tableName, new TableCallback<MedicalNotes>() {
             @Override
             public MedicalNotes doInTable(HTableInterface table) throws Throwable {
-                Put p = new Put(User.toRowKey(email).getDigest());
+                Put p = new Put(User.toRowKey(email));
                 HMarshaller.marshall(medicalNotes, p);
                 table.put(p);
                 return medicalNotes;
@@ -139,7 +139,7 @@ public class UserRepository {
         return hbaseTemplate.execute(tableName, new TableCallback<FamilyTree>() {
             @Override
             public FamilyTree doInTable(HTableInterface table) throws Throwable {
-                Put p = new Put(User.toRowKey(email).getDigest());
+                Put p = new Put(User.toRowKey(email));
                 HMarshaller.marshall(familyTree, p);
                 table.put(p);
                 return familyTree;
