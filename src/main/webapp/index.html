@@ -147,15 +147,20 @@ $(document).ready(function() {
 	
 	function getRiskData(){
 		$.getJSON("/rest/getRiskData?id=mock" , function(data) {
-		    var tbl_body = "";
-		    $.each(data, function() {
-		        var tbl_row = "";
-		        $.each(this, function(k , v) {
-		            tbl_row += "<td>"+v+"</td>";
-		        })
-		        tbl_body += "<tr>"+tbl_row+"</tr>";                 
-		    })
-		    $("#target_table_id tbody").html(tbl_body);
+		    $("#target_table_id").empty();
+		    var tbl_head = "";
+			tbl_head += "<thead><tr>";
+			tbl_head += "<th>Inheritance RI</th>";  
+			tbl_head += "<th>Smoking RI</th>";
+			tbl_head += "<th>RISK FACTOR</th>";  
+			tbl_head += "</tr></thead>";  				
+	        tbl_head += "<tbody><tr>";
+			tbl_head += "<td>"+data.inheritanceIndex+"</td>";  
+			tbl_head += "<td>"+data.smokingIndex+"</td>";
+			tbl_head += "<td>"+data.riskFactor+"</td>";  
+			tbl_head += "</tr></tbody>";				
+
+		    $("#target_table_id").append(tbl_head);
 		});
     }
 	
