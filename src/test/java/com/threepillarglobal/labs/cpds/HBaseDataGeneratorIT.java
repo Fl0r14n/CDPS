@@ -14,11 +14,14 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import com.threepillarglobal.labs.cdps.dao.repository.*;
 import com.threepillarglobal.labs.cdps.domain.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +31,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:integrationTests-context.xml")
 public class HBaseDataGeneratorIT {
-    
+
     private static String emailPattern = "user<ID>@3pg.com";
     private static String namePrefix = "John Doe #";
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -37,17 +40,14 @@ public class HBaseDataGeneratorIT {
     private static String[] vitaminsLookup = {"A", "B", "C", "D", "E"};
     private static String[] mineralsLookup = {"Fe", "Zn", "Mg", "Ca", "Vn"};
     private static String documentURLPattern = "http://docs.google.com/docID=";
-    private static String bloodPressureSeparator = "/";
 
     @Test
     public void generateDataFromConfig() {
-        try{
+        try {
 
-            //TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
-            //generateData(tdgc);
-        }
-        catch (Exception e)
-        {
+            TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
+            generateData(tdgc);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -175,8 +175,7 @@ public class HBaseDataGeneratorIT {
         }
     }
 
-    public static void generateData(TestDataGeneratorConfig tdgc) throws Exception
-    {
+    public static void generateData(TestDataGeneratorConfig tdgc) throws Exception {
         writeTestLocations();
         writeTestUsers(tdgc.userCount);
 
@@ -192,13 +191,11 @@ public class HBaseDataGeneratorIT {
         writeAttachedDocument(tdgc.userCount, tdgc.startDate, tdgc.endDate);
     }
 
-    private static void writeTestLocations()
-    {
+    private static void writeTestLocations() {
         LocationRepository locationRepository = new LocationRepository();
         Location.LocationDetails ld;
-        for(int i = 0; i < location.length; i++)
-        {
-            String[] locationParts = location[i].split("|");
+        for (String location1 : location) {
+            String[] locationParts = location1.split("[|]");
             ld = new Location.LocationDetails(locationParts[0], locationParts[1], locationParts[2]);
             locationRepository.saveLocation(locationParts[0], locationParts[1], locationParts[2], ld);
         }
@@ -214,8 +211,7 @@ public class HBaseDataGeneratorIT {
 
         MedicalRecordsRepository medicalRecordsRepository = new MedicalRecordsRepository();
 
-        for(int i = 1; i <= numberOfUsers; i++ )
-        {
+        for (int i = 1; i <= numberOfUsers; i++) {
             attachedDocument = new MedicalRecords.DocumentsAttached(documentURLPattern + Integer.toString(i));
             medicalRecordsRepository.saveAttachedDocument(emailPattern.replace("<ID>", Integer.toString(i)), DateUtils.addDays(startDate, rand.nextInt(daysInInterval)), attachedDocument);
         }
@@ -234,9 +230,8 @@ public class HBaseDataGeneratorIT {
 
         MedicalRecordsRepository medicalRecordsRepository = new MedicalRecordsRepository();
 
-        for(int i = 1; i <= numberOfUsers; i++ )
-        {
-            medicalRecordDate =  DateUtils.addDays(startDate, rand.nextInt(daysInInterval));
+        for (int i = 1; i <= numberOfUsers; i++) {
+            medicalRecordDate = DateUtils.addDays(startDate, rand.nextInt(daysInInterval));
             bmi = rand.nextInt(50);
             cholesterol = rand.nextInt(500);
             triglycerides = rand.nextInt(500);
@@ -247,8 +242,7 @@ public class HBaseDataGeneratorIT {
         }
     }
 
-    protected static void writeTestUsers(int numberOfUsers)
-    {
+    protected static void writeTestUsers(int numberOfUsers) {
         String rowKey;
         String secretKey = "sk";
         Boolean userStatus = true;
@@ -261,8 +255,7 @@ public class HBaseDataGeneratorIT {
         Random rand = new Random();
         int locationID;
         Boolean smoker;
-        for(int i = 1; i <= numberOfUsers; i++ )
-        {
+        for (int i = 1; i <= numberOfUsers; i++) {
             rowKey = emailPattern.replace("<ID>", Integer.toString(i));
             //account data
             secretKey = secretKey + Integer.toString(i);
@@ -282,113 +275,98 @@ public class HBaseDataGeneratorIT {
         }
     }
 
-    protected static int getDaysInInterval(Date startDate, Date endDate)
-    {
+    protected static int getDaysInInterval(Date startDate, Date endDate) {
         //get the number of days in the specified interval
         final long miliSecondsInADay = 1000 * 60 * 60 * 24;
         return Math.round((endDate.getTime() - startDate.getTime()) / miliSecondsInADay);
     }
 
-    protected static void writeFullTestSensorData(int rangeFrom, int rangeTo, Date startDate, Date endDate)
-    {
-        String at;
+    protected static void writeFullTestSensorData(int rangeFrom, int rangeTo, Date startDate, Date endDate) {
+        String currentActivityType;
         SensorDataRepository sdRepo = new SensorDataRepository();
         int activityDuration;
         Random rand = new Random();
-        int avgHR, avgBPLow, avgBPHigh, calories;
+        int avgHR, diastolicBP, systolicBP, calories;
         int daysInInterval = getDaysInInterval(startDate, endDate);
-        for(int i = 0; i < daysInInterval; i++)
-        {
-            for(int j = rangeFrom; j<= rangeTo; j++)
-            {
+        for (int i = 0; i < daysInInterval; i++) {
+            for (int j = rangeFrom; j <= rangeTo; j++) {
                 SensorData sd;
-                
-                    List<List<String>> dailyData = new ArrayList<>();
-                    Date eventDate = DateUtils.addDays(startDate, i);
-                    
-                    for(int k = 0; k < 24; k++)
-                    {
-                        List<String> l = new ArrayList<>();
-                        activityDuration = rand.nextInt(61);
-                        at = activityType[rand.nextInt(3)];
-                        avgHR = rand.nextInt(200);
-                        avgBPLow = 50 + rand.nextInt(100);
-                        avgBPHigh = 100 + rand.nextInt(200);
-                        calories = rand.nextInt(3000);
-                        l.add(at);
-                        l.add(Integer.toString(activityDuration));
-                        l.add(Integer.toString(avgHR));
-                        l.add(Integer.toString(avgBPLow) + bloodPressureSeparator + Integer.toString(avgBPHigh));
-                        l.add(Integer.toString(calories));
-                        dailyData.add(l);
-                    }
-                    
-                    sd = new SensorData(eventDate, dailyData.get(0),dailyData.get(1),dailyData.get(2),
-                                        dailyData.get(3),dailyData.get(4),dailyData.get(5),
-                                        dailyData.get(6),dailyData.get(7),dailyData.get(8),
-                                        dailyData.get(9),dailyData.get(10),dailyData.get(11),
-                                        dailyData.get(12),dailyData.get(13),dailyData.get(14),
-                                        dailyData.get(15),dailyData.get(16),dailyData.get(17),
-                                        dailyData.get(18),dailyData.get(19),dailyData.get(20),
-                                        dailyData.get(21),dailyData.get(22),dailyData.get(23)
-                    );
-                    sdRepo.saveSensorData(emailPattern.replace("<ID>", Integer.toString(j)), eventDate, sd);
-                
+
+                List<HourlyData> dailyData = new ArrayList<>();
+                Date eventDate = DateUtils.addDays(startDate, i);
+
+                for (int k = 0; k < 24; k++) {
+                    HourlyData hh;
+                    activityDuration = rand.nextInt(61);
+                    currentActivityType = activityType[rand.nextInt(3)];
+                    avgHR = rand.nextInt(200);
+                    diastolicBP = 50 + rand.nextInt(100);
+                    systolicBP = 100 + rand.nextInt(200);
+                    calories = rand.nextInt(3000);
+                    hh = new HourlyData(currentActivityType, activityDuration, avgHR, systolicBP, diastolicBP, calories);
+                    dailyData.add(hh);
+                }
+
+                sd = new SensorData(eventDate, dailyData.get(0), dailyData.get(1), dailyData.get(2),
+                        dailyData.get(3), dailyData.get(4), dailyData.get(5),
+                        dailyData.get(6), dailyData.get(7), dailyData.get(8),
+                        dailyData.get(9), dailyData.get(10), dailyData.get(11),
+                        dailyData.get(12), dailyData.get(13), dailyData.get(14),
+                        dailyData.get(15), dailyData.get(16), dailyData.get(17),
+                        dailyData.get(18), dailyData.get(19), dailyData.get(20),
+                        dailyData.get(21), dailyData.get(22), dailyData.get(23)
+                );
+                sdRepo.saveSensorData(emailPattern.replace("<ID>", Integer.toString(j)), eventDate, sd);
+
             }
         }
     }
 
-    protected static void writePartialTestSensorData(int rangeFrom, int rangeTo, Date startDate, Date endDate, int completeDataPercent)
-    {
-        String at;
+    protected static void writePartialTestSensorData(int rangeFrom, int rangeTo, Date startDate, Date endDate, int completeDataPercent) {
+        String currentActivityType;
         SensorDataRepository sdRepo = new SensorDataRepository();
         int activityDuration;
         Random rand = new Random();
-        int avgHR, avgBP, calories;
+        int avgHR, diastolicBP, systolicBP, calories;
         int daysInInterval = getDaysInInterval(startDate, endDate);
         int daysWithDataToWrite = Math.round(daysInInterval * completeDataPercent / 100);
 
-        for(int i = 1; i <= daysWithDataToWrite; i++)
-        {
-            for(int j = rangeFrom; j<= rangeTo; j++)
-            {
+        for (int i = 1; i <= daysWithDataToWrite; i++) {
+            for (int j = rangeFrom; j <= rangeTo; j++) {
                 SensorData sd;
                 Date eventDate = DateUtils.addDays(startDate, i);
-                
-                    List<List<String>> dailyData = new ArrayList<>();
-                    
-                    for(int k = 0; k < 24; k++)
-                    {
-                        List<String> l = new ArrayList<>();
-                        activityDuration = rand.nextInt(61);
-                        at = activityType[rand.nextInt(3)];
-                        avgHR = rand.nextInt(200);
-                        avgBP = rand.nextInt(300);
-                        calories = rand.nextInt(3000);
-                        l.add(Integer.toString(activityDuration));
-                        l.add(at);
-                        l.add(Integer.toString(avgHR));
-                        l.add(Integer.toString(avgBP));
-                        l.add(Integer.toString(calories));
-                        dailyData.add(l);
-                    }
-                    
-                    sd = new SensorData(eventDate, dailyData.get(0),dailyData.get(1),dailyData.get(2),
-                                        dailyData.get(3),dailyData.get(4),dailyData.get(5),
-                                        dailyData.get(6),dailyData.get(7),dailyData.get(8),
-                                        dailyData.get(9),dailyData.get(10),dailyData.get(11),
-                                        dailyData.get(12),dailyData.get(13),dailyData.get(14),
-                                        dailyData.get(15),dailyData.get(16),dailyData.get(17),
-                                        dailyData.get(18),dailyData.get(19),dailyData.get(20),
-                                        dailyData.get(21),dailyData.get(22),dailyData.get(23)
-                    );
-                    sdRepo.saveSensorData(emailPattern.replace("<ID>", Integer.toString(j)), eventDate, sd);
-                
+
+                List<HourlyData> dailyData = new ArrayList<>();
+
+                for (int k = 0; k < 24; k++) {
+                    HourlyData hourlyData;
+                    activityDuration = rand.nextInt(61);
+                    currentActivityType = activityType[rand.nextInt(3)];
+                    avgHR = rand.nextInt(200);
+                    diastolicBP = 50 + rand.nextInt(100);
+                    systolicBP = 100 + rand.nextInt(200);
+                    calories = rand.nextInt(3000);
+                    hourlyData = new HourlyData(currentActivityType, activityDuration, avgHR, systolicBP, diastolicBP, calories);
+
+                    dailyData.add(hourlyData);
+                }
+
+                sd = new SensorData(eventDate, dailyData.get(0), dailyData.get(1), dailyData.get(2),
+                        dailyData.get(3), dailyData.get(4), dailyData.get(5),
+                        dailyData.get(6), dailyData.get(7), dailyData.get(8),
+                        dailyData.get(9), dailyData.get(10), dailyData.get(11),
+                        dailyData.get(12), dailyData.get(13), dailyData.get(14),
+                        dailyData.get(15), dailyData.get(16), dailyData.get(17),
+                        dailyData.get(18), dailyData.get(19), dailyData.get(20),
+                        dailyData.get(21), dailyData.get(22), dailyData.get(23)
+                );
+                sdRepo.saveSensorData(emailPattern.replace("<ID>", Integer.toString(j)), eventDate, sd);
+
             }
         }
     }
-    protected static void writeFullTestLivingHabitsData(int rangeFrom, int rangeTo, Date startDate, Date endDate)
-    {
+
+    protected static void writeFullTestLivingHabitsData(int rangeFrom, int rangeTo, Date startDate, Date endDate) {
         Random rand = new Random();
         int minsInDay = 1440;
         int minsOfSleep;
@@ -411,10 +389,8 @@ public class HBaseDataGeneratorIT {
         LivingData ld;
 
         int daysInInterval = getDaysInInterval(startDate, endDate);
-        for(int i = 1; i <= daysInInterval; i++)
-        {
-            for(int j = rangeFrom; j <= rangeTo; j++)
-            {
+        for (int i = 1; i <= daysInInterval; i++) {
+            for (int j = rangeFrom; j <= rangeTo; j++) {
                 minsOfSleep = rand.nextInt(minsInDay);
                 minsOfExcercise = rand.nextInt(minsInDay - minsOfSleep);
                 calories = rand.nextInt(5000);
@@ -431,14 +407,13 @@ public class HBaseDataGeneratorIT {
                 alcohol = rand.nextInt(10000);
                 softDrinks = rand.nextInt(10000);
                 ld = new LivingData(minsOfSleep, minsOfExcercise, calories, energy, fat, saturatedFat, sugars, sodium,
-                                    protein, carbohydrates, vitamins, minerals, water, alcohol, softDrinks, riskFactor);
+                        protein, carbohydrates, vitamins, minerals, water, alcohol, softDrinks, riskFactor);
                 livingRepo.saveLivingData(emailPattern.replace("<ID>", Integer.toString(j)), DateUtils.addDays(startDate, i), ld);
             }
         }
     }
 
-    protected static void writePartialTestLivingHabitsData(int rangeFrom, int rangeTo, Date startDate, Date endDate, int completeDataPercent)
-    {
+    protected static void writePartialTestLivingHabitsData(int rangeFrom, int rangeTo, Date startDate, Date endDate, int completeDataPercent) {
         Random rand = new Random();
         int minsInDay = 1440;
         int minsOfSleep;
@@ -462,10 +437,8 @@ public class HBaseDataGeneratorIT {
         int daysInInterval = getDaysInInterval(startDate, endDate);
         int daysWithDataToWrite = Math.round(daysInInterval * completeDataPercent / 100);
 
-        for(int i = 1; i <= daysWithDataToWrite; i++)
-        {
-            for(int j = rangeFrom; j <= rangeTo; j++)
-            {
+        for (int i = 1; i <= daysWithDataToWrite; i++) {
+            for (int j = rangeFrom; j <= rangeTo; j++) {
                 minsOfSleep = rand.nextInt(minsInDay);
                 minsOfExcercise = rand.nextInt(minsInDay - minsOfSleep);
                 calories = rand.nextInt(5000);
