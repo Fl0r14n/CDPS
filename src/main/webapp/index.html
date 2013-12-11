@@ -37,6 +37,13 @@ $(document).ready(function() {
 	var fromDate = new Date().yyyymmdd();
 	var toDate = new Date().yyyymmdd();	
 	
+	t();
+	
+	function t(){
+		//alert (new Date(1351720800000));
+		//alert( parseInt(01) );
+	}
+	
 	chartloaded=false;
 	renderChart();
 	getOptions();
@@ -63,9 +70,9 @@ $(document).ready(function() {
 					dataset=createobjects(response);
 				}
 				else {
-					dataset=createobjects1(response,"lowBloodPressure");
+					dataset=createobjects1(response,"diastolicPressure");
 					renderChartByMetric(dataset, "Diastolic");
-					dataset=createobjects1(response,"highBloodPressure");
+					dataset=createobjects1(response,"systolicPressure");
 					renderChartByMetric(dataset, "Systolic");
 				}
 				
@@ -97,7 +104,7 @@ $(document).ready(function() {
 	function getOptions(){
 			$('#w-input-search').autocomplete({
 				serviceUrl: '/rest/getUid',
-				paramName: "tagName",
+				paramName: "userName",
 				delimiter: ",",
 				
 				onSelect: function(suggestion){
@@ -148,9 +155,34 @@ $(document).ready(function() {
 	});
 	
 	
-	
-	
 	function createobjects1(obj,metric) {
+		var returndata=[];
+		//obj = jQuery.parseJSON(obj);
+		$(".details1").empty();
+		for (var i=0; i<obj.length; i++){
+				var myDate = new Date(obj[i].eventDate);
+				//$(".details1").append(obj[i].riskInfo);
+				var offset = myDate.getTimezoneOffset() * 1000;
+				var withOffset = myDate.getTime();
+				var withoutOffset = withOffset - offset;
+				var basetimestamp = parseInt(withOffset);	
+				for (var key in obj[i]) {
+					if (key!="id" && key !="eventDate" && key!="riskInfo"){
+						timestamp = 0;
+						var hour = parseInt(key.substring(1));
+						value=parseFloat(obj[i][key][metric]);
+						if(!isNaN(value)){
+						    timestamp = basetimestamp + parseInt(hour*3600*1000)
+							returndata.push([timestamp,value]);
+						}
+					 }
+				}
+			}
+		return returndata;	
+	}
+	
+	
+	function createobjects1Orig(obj,metric) {
 		var returndata=[];
 		//obj = jQuery.parseJSON(obj);
 		$(".details1").empty();

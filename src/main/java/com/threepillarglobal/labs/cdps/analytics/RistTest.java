@@ -20,11 +20,11 @@ public class RistTest {
 		System.out.println(RiskIndexUtils.getLowBloodPressureRiskIndex(Integer.valueOf(95)));
 		System.out.println(RiskIndexUtils.getHighBloodPressureRiskIndex(Integer.valueOf(155)));
 		//
-		checkRisk();
+		//checkRisk();
 	}
 
 	
-	private static void checkRisk(){
+	/*private static void checkRisk(){
 		String[] activityType = {"Eating", "Sleeping", "Exercising"};
 		List<List<String>> dailyData = new ArrayList<>();
 		int activityDuration;
@@ -62,7 +62,7 @@ public class RistTest {
         
         SensorData wSD = new SensorData(sd);
         System.out.println(wSD.toJSONString());
-	}
+	}*/
 	
 	
 }

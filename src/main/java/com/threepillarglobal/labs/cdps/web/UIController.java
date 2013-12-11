@@ -5,37 +5,29 @@ import java.util.List;
 
 import javax.ws.rs.Path;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.threepillarglobal.labs.cdps.domain.User;
  
  
 @Controller
 @Path("/")
 public class UIController {
  
-
-	
-	//private static List<SensorData> sdList = MockDataGenerator.fetchMockSensorData();
-	private static List<User> data = MockDataGenerator.fetchMockUserData();
- 
-	
+	private static List<User> userList = MockDataGenerator.fetchMockUserData(10);
  
 	@RequestMapping(value = "/getUid", method = RequestMethod.GET)
 	public @ResponseBody
-	List<User> getTags(@RequestParam String tagName) {
- 
+	List<User> getTags(@RequestParam String userName) {
 		List<User> result = new ArrayList<User>();
-		 
-		// iterate a list and filter by tagName
-		for (User tag : data) {
-			if (tag.getId().contains(tagName)) {
-				result.add(tag);
+		// iterate a list and filter by userName
+		for (User user : userList) {
+			if (user.getPersonalData().getName().contains(userName)) {						
+				result.add(user);
 			}
 		}
  
@@ -45,24 +37,10 @@ public class UIController {
  
 	@RequestMapping(value = "/getChartData", method = RequestMethod.GET)
 	public @ResponseBody
-	String getChartData(@RequestParam String id) {
-		List<SensorData> sdList  = MockDataGenerator.fetchMockSensorData();
-		JSONArray resJsonArray =  new JSONArray();
-		for(SensorData sD: sdList){
-			try {
-				resJsonArray.put(new JSONObject(sD.toJSONString()));
-			} catch (JSONException e) {}
-		}
-		return resJsonArray.toString();
+	List<com.threepillarglobal.labs.cdps.domain.SensorData> getChartData(@RequestParam String id) {
+		return  MockDataGenerator.fetchMockSensorData();		
 	}
 	
-
-	@RequestMapping(value="/getUser", method=RequestMethod.GET)
-	public @ResponseBody List<User> getUser() {
-		List<User> lU = new ArrayList<>();
-		lU.add(new User("123", "Nick Balboa", "22.04.1972"));
-		lU.add(new User("124", "Johny Balboa", "22.04.1972"));		
-	    return lU;
-	}
+	
 	
 }

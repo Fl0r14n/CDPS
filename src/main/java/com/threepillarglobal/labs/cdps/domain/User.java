@@ -3,21 +3,33 @@ package com.threepillarglobal.labs.cdps.domain;
 import com.threepillarglobal.labs.hbase.annotation.HColumn;
 import com.threepillarglobal.labs.hbase.annotation.HColumnFamily;
 import com.threepillarglobal.labs.hbase.annotation.HTable;
+
 import java.util.Date;
 import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+
 import org.apache.hadoop.io.MD5Hash;
 
 @HTable(name = "user", columnFamilies = {"ad", "pd", "mn", "ft"})
+@AllArgsConstructor
+@ToString
+@Getter
+@EqualsAndHashCode
 public class User {
 
     public static byte[] toRowKey(String email) {
         return MD5Hash.digest(email).getDigest();
     }
 
+    private AccountData accountData;
+    private PersonalData personalData;
+    private MedicalNotes medicalNotes;
+    
+    
     @HColumnFamily(name = "ad")
     @AllArgsConstructor
     @ToString

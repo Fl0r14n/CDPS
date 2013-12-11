@@ -8,6 +8,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -17,6 +18,7 @@ import java.util.Date;
 
 import com.threepillarglobal.labs.cdps.dao.repository.*;
 import com.threepillarglobal.labs.cdps.domain.*;
+import com.threepillarglobal.labs.cdps.domain.User.MedicalNotes.INHERITED_RISK;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -269,7 +271,7 @@ public class HBaseDataGeneratorIT {
             userRepo.savePersonalData(rowKey, persData);
             //medical notes
             smoker = rand.nextBoolean();
-            medNotes = new User.MedicalNotes(null, smoker, Integer.toString(locationID));
+            medNotes = new User.MedicalNotes(null, smoker, INHERITED_RISK.HIGH);
             userRepo.saveMedicalNotes(rowKey, medNotes);
             //TODO: family tree
         }

@@ -49,7 +49,7 @@ public class RiskIndexUtils {
     }
     
     /*
-    lbp values			blood_pressure_idx
+    lbp/diastolic values			blood_pressure_idx
 	60  				 1	
 	75	 				 3		
 	90	 				 4
@@ -66,7 +66,7 @@ public class RiskIndexUtils {
     }
     
     /*
-    hbp values			blood_pressure_idx
+    hbp/systolic values			blood_pressure_idx
 	110  				1	
 	120	 				3		
 	130	 				4
