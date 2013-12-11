@@ -56,6 +56,13 @@ public class UIController {
 		return resJsonArray.toString();
 	}
 	
-	
+
+	@RequestMapping(value="/getUser", method=RequestMethod.GET)
+	public @ResponseBody List<User> getUser() {
+		List<User> lU = new ArrayList<>();
+		lU.add(new User("123", "Nick Balboa", "22.04.1972"));
+		lU.add(new User("124", "Johny Balboa", "22.04.1972"));		
+	    return lU;
+	}
 	
 }

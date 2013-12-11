@@ -44,7 +44,7 @@ $(document).ready(function() {
 	var chart=$('#container').highcharts();	
 	
 	$("#w-get-data").on("click",function(){
-		getData("BP",tempdata,fromDate,toDate,"LowBloodPressure",0);
+		getData("BP",tempdata,fromDate,toDate,"Diastolic",0);
 	});
 	
 	
@@ -64,9 +64,9 @@ $(document).ready(function() {
 				}
 				else {
 					dataset=createobjects1(response,"lowBloodPressure");
-					renderChartByMetric(dataset, "LowBloodPressure");
+					renderChartByMetric(dataset, "Diastolic");
 					dataset=createobjects1(response,"highBloodPressure");
-					renderChartByMetric(dataset, "HighBloodPressure");
+					renderChartByMetric(dataset, "Systolic");
 				}
 				
 							
@@ -162,7 +162,7 @@ $(document).ready(function() {
 				var withoutOffset = withOffset - offset;
 				var basetimestamp = parseInt(withOffset);	
 				for (var key in obj[i]) {
-					if (key!="id" && key !="day" && key!="_id"){
+					if (key!="id" && key !="date" && key!="riskInfo"){
 						timestamp = 0;
 						var hour = parseInt(key);
 						value=parseFloat(obj[i][key][metric]);
@@ -288,15 +288,15 @@ $(document).ready(function() {
 
 			yAxis:[
 				{
-				id:"LowBloodPressureAxis",
+				id:"DiastolicAxis",
 				title:{
-					text:"mmHgs"
+					text:"mmHg"
 					}
 				},
 				{
-				id:"HighBloodPressureAxis",
+				id:"SystolicAxis",
 				title:{
-					text:"mg/L"
+					text:"mmHg"
 					}
 				}						
 			],
@@ -323,10 +323,10 @@ $(document).ready(function() {
 		
 	};
 
-	$("#LowBloodPressure").on("click",function(){
+	$("#Diastolic").on("click",function(){
 		$(this).find(".icon").toggleClass("add");
 		$(this).find(".icon").toggleClass("delete");	
-		var series = getseriesbyname("LowBloodPressure");
+		var series = getseriesbyname("Diastolic");
 		if (series.visible){
 			series.hide();
 			chart.get("BloodPressureAxis").update({				
@@ -344,20 +344,20 @@ $(document).ready(function() {
 		}	
 	});
 	
-	$("#HighBloodPressure").on("click",function(){	
+	$("#Systolic").on("click",function(){	
 		$(this).find(".icon").toggleClass("add");
 		$(this).find(".icon").toggleClass("delete");	
-		var series = getseriesbyname("HighBloodPressure");
+		var series = getseriesbyname("Systolic");
 		if (series.visible){
 			series.hide();
-			chart.get("HighBloodPressureAxis").update({				
+			chart.get("SystolicAxis").update({				
 				title: {
 					text: null
 				}
 			});
 		}else {
 			series.show();
-			chart.get("HighBloodPressureAxis").update({				
+			chart.get("SystolicAxis").update({				
 				title:{
 					text:"mg/L"
 					}
@@ -390,7 +390,7 @@ $(document).ready(function() {
 		onSelect: function(){
 			fromDate= new Date($(this).val()).yyyymmdd();
 			$(".range-selectors input#to").datepicker( "option", "minDate", new Date($(this).val()) );
-			//getData("Temp",tempdata,fromDate,toDate,"LowBloodPressure",0)
+			//getData("Temp",tempdata,fromDate,toDate,"Diastolic",0)
 		}
 	});
 	
@@ -399,7 +399,7 @@ $(document).ready(function() {
 		onSelect: function(){
 			toDate= new Date($(this).val()).yyyymmdd();
 			$(".range-selectors input#from").datepicker( "option", "maxDate", new Date($(this).val()) );
-			//getData("Temp",tempdata,fromDate,toDate,"LowBloodPressure",0)
+			//getData("Temp",tempdata,fromDate,toDate,"Diastolic",0)
 		}
 	});
 	
@@ -476,9 +476,9 @@ $(document).ready(function() {
 			<span><div style=" clear:both; overflow:hidden; height:1%; " class="details1"></div></span>
 			<!--div class="buttongroup">
 				<div>
-					<button id="LowBloodPressure">LowBloodPressure<span class="icon delete"></span></button>	
-					Color:<input data-series="LowBloodPressure" class="color {hash:true}" value="66ff00">
-					<select data-series="LowBloodPressure" class="series-type">
+					<button id="Diastolic">Diastolic<span class="icon delete"></span></button>	
+					Color:<input data-series="Diastolic" class="color {hash:true}" value="66ff00">
+					<select data-series="Diastolic" class="series-type">
 						<option value="line">Line</option>
 						<option value="area">Area</option>					
 						<option value="column">Column</option>						
