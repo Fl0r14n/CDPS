@@ -1,1 +1,1 @@
-mvn clean install t7:run
+mvn clean install t7:run -DskipTests

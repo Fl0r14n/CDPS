@@ -9,10 +9,11 @@
 	http://www.springframework.org/schema/hadoop http://www.springframework.org/schema/hadoop/spring-hadoop.xsd">
 
     <!--properties-->
-    <context:property-placeholder location="hadoop.properties"/>
+    <context:property-placeholder location="classpath:hadoop.properties"/>
 
-    <!--autowireing-->
+    <!--autowiring-->
     <context:component-scan base-package="com.threepillarglobal.labs.cdps.dao"/>
+    <context:component-scan base-package="com.threepillarglobal.labs.cdps.service"/>
 	    
     <hdp:configuration id="hadoopConfiguration">        
         fs.default.name=hdfs://${hdfs.host}:${hdfs.port}
