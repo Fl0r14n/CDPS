@@ -29,7 +29,7 @@ globaldata={};
 
 $(document).ready(function() {
 	
-	var uid;
+	var uid="n/a";
 	var personalData;
 	var speeddata=[];
 	var tempdata=[];
@@ -53,7 +53,10 @@ $(document).ready(function() {
 	
 	$("#w-get-data").on("click",function(){
 		//getData("BP",tempdata,fromDate,toDate,"Diastolic",0);
-		getRiskData(fromDate,toDate);
+		if(uid != 'n/a')
+			getRiskData(fromDate,toDate);
+		else
+			alert('Select user firstly');
 	});
 	
 	
