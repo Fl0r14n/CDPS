@@ -1,7 +1,12 @@
 package com.threepillarglobal.labs.cdps.web;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.ws.rs.QueryParam;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,21 +18,25 @@ import com.threepillarglobal.labs.cdps.domain.CardioRisk;
 import com.threepillarglobal.labs.cdps.domain.SensorData;
 import com.threepillarglobal.labs.cdps.domain.User;
 import com.threepillarglobal.labs.cdps.service.api.ChartService;
-import com.threepillarglobal.labs.cdps.service.api.RiskFactorsService;
+import com.threepillarglobal.labs.cdps.service.api.RiskService;
 import com.threepillarglobal.labs.cdps.service.api.UserService;
+import com.threepillarglobal.labs.cdps.service.mock.MockDataGenerator;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 @Controller
 public class UIController {
 
+	private static DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+	 
     @Autowired
     @Qualifier(value = "chartServiceMock")
     private ChartService chartService;
 
     @Autowired
     @Qualifier(value = "riskFactorServiceMock")
-    private RiskFactorsService riskFactorsService;
+    private RiskService riskFactorsService;
 
     @Autowired
     @Qualifier(value = "userServiceMock")
@@ -45,23 +54,28 @@ public class UIController {
                 result.add(user);
             }
         }
-
         return result;
-
     }
 
-    @RequestMapping(value = "/getChartData", method = RequestMethod.GET)
+    /*@RequestMapping(value = "/getChartData", method = RequestMethod.GET)
     public @ResponseBody
-    List<SensorData> getChartData(@RequestParam String id) {
-        return chartService.getSensorData(id);
-    }
+    List<SensorData> getChartData(@RequestParam String uid, @QueryParam("from") String from,
+            @QueryParam("to") String to) {
+    	try {
+    		return chartService.getSensorData(dateFormat.parse(from), dateFormat.parse(to));
+		} catch (ParseException e) { e.printStackTrace();}
+		return new ArrayList<>();        
+    }*/
 
     @RequestMapping(value = "/getRiskData", method = RequestMethod.GET)
-    public @ResponseBody
-    CardioRisk getRiskData(@RequestParam String id) {
-        CardioRisk cR = new CardioRisk();
-        cR.calculateRiskFactor(MockDataGenerator.fetchMockUserData(2).get(0), chartService.getSensorData("1-11-2012", "3-11-2012"));
-        return cR;
-    }
+	public @ResponseBody
+	CardioRisk getRiskData(@RequestParam String uid,  @QueryParam("from") String from,
+            @QueryParam("to") String to) {
+    	try {
+    		return riskFactorsService.getCardioRisk(uid, dateFormat.parse(from), dateFormat.parse(to));
+		} catch (ParseException e) { e.printStackTrace();}
+		return new CardioRisk(); 		
+	}
+    
 
 }

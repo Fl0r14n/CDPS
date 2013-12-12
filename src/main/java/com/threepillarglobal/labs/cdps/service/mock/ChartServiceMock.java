@@ -3,6 +3,7 @@ package com.threepillarglobal.labs.cdps.service.mock;
 import com.threepillarglobal.labs.cdps.domain.HourlyData;
 import com.threepillarglobal.labs.cdps.domain.SensorData;
 import com.threepillarglobal.labs.cdps.service.api.ChartService;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,30 +11,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.stereotype.Service;
 
 @Service(value = "chartServiceMock")
 public class ChartServiceMock implements ChartService {
 
-    @Override
-    public List<SensorData> getSensorData(String id) {
-        return getSensorData("1-11-2012", "31-11-2012");
-    }
 
     @SuppressWarnings("finally")
     @Override
-    public List<SensorData> getSensorData(String sDate, String eDate) {
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        List<SensorData> generateSensorData = new ArrayList<>();
-        try {
-            generateSensorData = generateSensorData(0, 1, dateFormat.parse(sDate), dateFormat.parse(eDate));
-            return generateSensorData;
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } finally {
-            return generateSensorData;
-        }
+    public List<SensorData> getSensorData(Date sDate, Date eDate) {
+    	return MockDataGenerator.fetchMockSensorData(sDate, eDate);
     }
 
     private List<SensorData> generateSensorData(int rangeFrom, int rangeTo, Date startDate, Date endDate) {

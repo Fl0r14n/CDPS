@@ -9,6 +9,8 @@ import com.threepillarglobal.labs.cdps.domain.User;
 
 public class RiskIndexUtils {
 	
+	private static NavigableMap<Double,String> STROKE_RISK =
+	        new TreeMap<Double, String>();
 	private static NavigableMap<Integer,Integer> AGE_INDEX_THRESHOLDS =
 	        new TreeMap<Integer, Integer>();
 	private static NavigableMap<Double,Integer> LBP_INDEX_THRESHOLDS =
@@ -20,6 +22,16 @@ public class RiskIndexUtils {
 	private static NavigableMap<User.MedicalNotes.INHERITED_RISK,Integer> INHERITED_RISKS_INDEX =
 	        new TreeMap<User.MedicalNotes.INHERITED_RISK, Integer>();
 	
+	/*
+	 * Stroke risk factor
+	 */
+    static {
+        STROKE_RISK.put(0.0, "LOW");
+        STROKE_RISK.put(4.0, "MEDIUM");
+        STROKE_RISK.put(6.0, "HIGH");
+        STROKE_RISK.put(99.0, "IMMINENT");
+    }
+    
 	/*
     Age		age_idx value:
 	0-25yr 		1
@@ -114,4 +126,8 @@ public class RiskIndexUtils {
     	return INHERITED_RISKS_INDEX.get(inheritedRisk);
     }
 	
+    public static String getStrokeRisk(Double dbl){
+    	return STROKE_RISK.get(STROKE_RISK.floorKey(dbl));
+    }
+    
 }

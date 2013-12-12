@@ -51,15 +51,15 @@ $(document).ready(function() {
 	var chart=$('#container').highcharts();	
 	
 	$("#w-get-data").on("click",function(){
-		getData("BP",tempdata,fromDate,toDate,"Diastolic",0);
-		getRiskData();
+		//getData("BP",tempdata,fromDate,toDate,"Diastolic",0);
+		getRiskData(fromDate,toDate);
 	});
 	
 	
 	
 	function getData(api,dataset, from, to, label, axis){
 		$.ajax({
-			url: "/rest/getChartData?id="+ api,
+			url: "/rest/getChartData?uid="+ api,
 			dataType: "json",
 			data: {
 				from: from,
@@ -109,29 +109,19 @@ $(document).ready(function() {
 				delimiter: ",",
 				
 				onSelect: function(suggestion){
-				 $(".details").empty();
+				 //$(".details").empty();
 				 
-				 
-				 var $table = $( "<table border='1'></table>" );
-
-				 	var $header = $( "<tr></tr>" );
-					$header.append( $( "<th></th>" ).html( "Name" ) );
-					$header.append( $( "<th></th>" ).html( "Date of birth" ) );
-					$table.append( $header );
-					
-					var $line = $( "<tr></tr>" );
-					$line.append( $( "<td></td>" ).html( suggestion.data.personalData.name ) );
-					$line.append( $( "<td></td>" ).html( new Date(suggestion.data.personalData.dob) ) );
-					$table.append( $line );
-
-
-				 $('.details').append($table);			
+				$(".details").empty();
+		    
+				var out = '<dl>';
+				out += '<dt>' + "Name: " + '</dt><dd>' + suggestion.data.personalData.name + '</dd>';  
+				out += '<dt>' + "Date of birth: " + '</dt><dd>' + new Date(suggestion.data.personalData.dob).yyyymmdd() + '</dd>';  
+				out += '</dl>';
+				$(".details").append( out );
 				},
 				
 			    transformResult: function(response) {
 
-					
-	
 			        return {
 			        	
 			            suggestions: $.map($.parseJSON(response), function(item) {
@@ -145,23 +135,35 @@ $(document).ready(function() {
 	}
 	
 	
-	function getRiskData(){
-		$.getJSON("/rest/getRiskData?id=mock" , function(data) {
-		    $("#target_table_id").empty();
-		    var tbl_head = "";
-			tbl_head += "<thead><tr>";
-			tbl_head += "<th>Inheritance RI</th>";  
-			tbl_head += "<th>Smoking RI</th>";
-			tbl_head += "<th>RISK FACTOR</th>";  
-			tbl_head += "</tr></thead>";  				
-	        tbl_head += "<tbody><tr>";
-			tbl_head += "<td>"+data.inheritanceIndex+"</td>";  
-			tbl_head += "<td>"+data.smokingIndex+"</td>";
-			tbl_head += "<td>"+data.riskFactor+"</td>";  
-			tbl_head += "</tr></tbody>";				
-
-		    $("#target_table_id").append(tbl_head);
-		});
+	function getRiskData(from, to){
+		$.ajax({
+				url: "/rest/getRiskData?uid=mockUser",
+				dataType: "json",
+				data: {
+					from: from,
+					to: to
+				},			
+				success: function( response) {	
+					
+					$("#risk").empty();
+					
+					var out = '<div id="riskBlock"><dl>';
+					out += '<dt>' + "Stroke RISK: " + '</dt><dd>' + response.riskFactor + " (" + response.strokeRisk + ")" + '</dd>';  
+					out += '<dt>' + "Age RI: " + '</dt><dd>' + response.ageIndex + '</dd>';  
+					out += '<dt>' + "Smoking RI: " + '</dt><dd>' + response.smokingIndex + '</dd>';  
+					out += '<dt>' + "Diastolic RI: " + '</dt><dd>' + response.diastolicIndex + '</dd>';  
+					out += '<dt>' + "Systolic RI: " + '</dt><dd>' + response.systolicIndex + '</dd>';  
+					out += '</dl></div>';
+		
+					$("#risk").append( out );												
+					
+					dataset=createobjects1(response.sensorData,"diastolicPressure");
+					renderChartByMetric(dataset, "Diastolic");
+					dataset=createobjects1(response.sensorData,"systolicPressure");
+					renderChartByMetric(dataset, "Systolic");
+					
+				}
+			});
     }
 	
 	
@@ -169,7 +171,7 @@ $(document).ready(function() {
 	$(document).ajaxStart(function(){
 		//chart.showLoading('Loading data from server...');
 	});
-	
+		
 	$(document).ajaxStop(function(){
 		chart.hideLoading();	
 	});
@@ -525,18 +527,7 @@ $(document).ready(function() {
 		<div id="inner-content">
 			<h1>Data graph</h1>			
 			<div id="container"></div>
-			<div><table id="target_table_id"></table></div>
-			<!--div class="buttongroup">
-				<div>
-					<button id="Diastolic">Diastolic<span class="icon delete"></span></button>	
-					Color:<input data-series="Diastolic" class="color {hash:true}" value="66ff00">
-					<select data-series="Diastolic" class="series-type">
-						<option value="line">Line</option>
-						<option value="area">Area</option>					
-						<option value="column">Column</option>						
-					</select>
-				</div>
-			</div-->
+			<div id="risk"></div>
 		</div>
 	</div>
 </div>
