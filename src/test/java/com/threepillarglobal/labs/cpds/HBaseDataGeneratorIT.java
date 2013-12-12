@@ -62,13 +62,13 @@ public class HBaseDataGeneratorIT {
 
     @Before
     public void setUp() throws IOException {
-        //table should be created at startup by DDL bu to be sure
+        //table should be created at startup by DDL but to be sure
         HOperations.createTable(User.class, new HBaseAdmin(config));
         HOperations.createTable(SensorData.class, new HBaseAdmin(config));
         HOperations.createTable(LivingData.class, new HBaseAdmin(config));
         HOperations.createTable(Location.class, new HBaseAdmin(config));
         HOperations.createTable(MedicalRecords.class, new HBaseAdmin(config));
-        
+
     }
 
     @After
@@ -102,8 +102,7 @@ public class HBaseDataGeneratorIT {
 
     static boolean validateAgainstXSD(InputStream xml, InputStream xsd) {
         try {
-            SchemaFactory factory
-                    = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema schema = factory.newSchema(new StreamSource(xsd));
             Validator validator = schema.newValidator();
             validator.validate(new StreamSource(xml));
@@ -211,9 +210,9 @@ public class HBaseDataGeneratorIT {
                 }
             }
         }
-        if (userCount != -1 && startDate != new Date(0) && endDate != new Date(0) &&
-                fullSensorDataPercent != -1 && partialSensorDataFillPercent != -1 && fullLivingHabitsPercent != -1 &&
-                partialLivingHabitsFillPercent != -1) {
+        if (userCount != -1 && startDate != new Date(0) && endDate != new Date(0)
+                && fullSensorDataPercent != -1 && partialSensorDataFillPercent != -1 && fullLivingHabitsPercent != -1
+                && partialLivingHabitsFillPercent != -1) {
 
             return new TestDataGeneratorConfig(userCount, startDate, endDate, fullSensorDataPercent, partialSensorDataFillPercent, fullLivingHabitsPercent, partialLivingHabitsFillPercent);
 
@@ -223,12 +222,12 @@ public class HBaseDataGeneratorIT {
     }
 
     public static void generateData(TestDataGeneratorConfig tdgc) throws Exception {
-        System.out.println("Generating data for: " + Integer.toString(tdgc.userCount) + " users between " +
-                dateFormat.format(tdgc.startDate) + " and " + dateFormat.format(tdgc.endDate) + " with " +
-                Integer.toString(tdgc.fullSensorDataPercent) + " full sensor data percent, " +
-                Integer.toString(tdgc.partialSensorDataFillPercent) + " partial sensor data fill percent, " +
-                Integer.toString(tdgc.fullLivingHabitsPercent) + " full living habits percent, " +
-                Integer.toString(tdgc.partialLivingHabitsFillPercent) + " partial living habits fill percent.");
+        System.out.println("Generating data for: " + Integer.toString(tdgc.userCount) + " users between "
+                + dateFormat.format(tdgc.startDate) + " and " + dateFormat.format(tdgc.endDate) + " with "
+                + Integer.toString(tdgc.fullSensorDataPercent) + " full sensor data percent, "
+                + Integer.toString(tdgc.partialSensorDataFillPercent) + " partial sensor data fill percent, "
+                + Integer.toString(tdgc.fullLivingHabitsPercent) + " full living habits percent, "
+                + Integer.toString(tdgc.partialLivingHabitsFillPercent) + " partial living habits fill percent.");
         writeTestLocations();
         writeTestUsers(tdgc.userCount);
 
@@ -259,7 +258,7 @@ public class HBaseDataGeneratorIT {
     private static void writeAttachedDocument(int numberOfUsers, Date startDate, Date endDate) {
 
         System.out.println("Starting to write attached documents for " + Integer.toString(numberOfUsers) + " users, between "
-        + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
+                + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
 
         Random rand = new Random();
 
@@ -346,8 +345,8 @@ public class HBaseDataGeneratorIT {
     }
 
     protected static void writeFullTestSensorData(int rangeFrom, int rangeTo, Date startDate, Date endDate) {
-        System.out.println("Starting to write full sensor data for users between" + Integer.toString(rangeFrom) + " and " +
-                Integer.toString(rangeTo) + " and dates between "
+        System.out.println("Starting to write full sensor data for users between" + Integer.toString(rangeFrom) + " and "
+                + Integer.toString(rangeTo) + " and dates between "
                 + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
         String currentActivityType;
         SensorDataRepository sdRepo = new SensorDataRepository();
@@ -391,8 +390,8 @@ public class HBaseDataGeneratorIT {
     }
 
     protected static void writePartialTestSensorData(int rangeFrom, int rangeTo, Date startDate, Date endDate, int completeDataPercent) {
-        System.out.println("Starting to write partial sensor data for users between " + Integer.toString(rangeFrom) + " and " +
-                Integer.toString(rangeTo) + " and dates between "
+        System.out.println("Starting to write partial sensor data for users between " + Integer.toString(rangeFrom) + " and "
+                + Integer.toString(rangeTo) + " and dates between "
                 + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
         String currentActivityType;
         SensorDataRepository sdRepo = new SensorDataRepository();
@@ -439,8 +438,8 @@ public class HBaseDataGeneratorIT {
     }
 
     protected static void writeFullTestLivingHabitsData(int rangeFrom, int rangeTo, Date startDate, Date endDate) {
-        System.out.println("Starting to full living habits for users between " + Integer.toString(rangeFrom) + " and " +
-                Integer.toString(rangeTo) + " and dates between "
+        System.out.println("Starting to full living habits for users between " + Integer.toString(rangeFrom) + " and "
+                + Integer.toString(rangeTo) + " and dates between "
                 + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
         Random rand = new Random();
         int minsInDay = 1440;
@@ -490,8 +489,8 @@ public class HBaseDataGeneratorIT {
     }
 
     protected static void writePartialTestLivingHabitsData(int rangeFrom, int rangeTo, Date startDate, Date endDate, int completeDataPercent) {
-        System.out.println("Starting to write partial living habits for users between " + Integer.toString(rangeFrom) + " and " +
-                Integer.toString(rangeTo) + " and dates between "
+        System.out.println("Starting to write partial living habits for users between " + Integer.toString(rangeFrom) + " and "
+                + Integer.toString(rangeTo) + " and dates between "
                 + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
         Random rand = new Random();
         int minsInDay = 1440;
@@ -571,8 +570,6 @@ public class HBaseDataGeneratorIT {
             this.partialLivingHabitsFillPercent = 50;
         }
 
-
     }
 
 }
-

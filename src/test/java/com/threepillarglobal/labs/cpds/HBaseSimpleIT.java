@@ -35,7 +35,7 @@ public class HBaseSimpleIT {
 
     @Before
     public void setUp() throws IOException {
-        //table should be created at startup by DDL bu to be sure
+        //table should be created at startup by DDL but to be sure
         HOperations.createTable(User.class, new HBaseAdmin(config));
     }
 
