@@ -58,7 +58,7 @@ h1 {
 	position:absolute;
 	height:100%;
 	width:20%;
-	background-color:#F5BCA9;
+	background-color:#01A9DB;
 }
 
 
@@ -95,7 +95,7 @@ h1 {
 	height:100%;
 	width:80%;
 	left:20%;
-	background-color:#F6D8CE;
+	background-color:#01A9DB;
 	-webkit-box-sizing:border-box;
 	-moz-box-sizing:border-box;
 	box-sizing:border-box;
@@ -218,7 +218,7 @@ dl {
 }
  
 dl dt {
-    background-color:#F5BCA9;
+    background-color:#0489B1;
     float:left; 
     font-weight:bold; 
     margin-right:10px; 
@@ -230,4 +230,8 @@ dl dd {
     margin:2px 0; 
     padding:5px 0;
 	font-size:18px;
+}
+
+legend{
+    font-weight:bold; 
 }

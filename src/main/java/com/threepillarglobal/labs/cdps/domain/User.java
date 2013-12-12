@@ -25,6 +25,7 @@ public class User {
         return MD5Hash.digest(email).getDigest();
     }
 
+    private String email;
     private AccountData accountData;
     private PersonalData personalData;
     private MedicalNotes medicalNotes;

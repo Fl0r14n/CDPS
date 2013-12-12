@@ -29,13 +29,14 @@ globaldata={};
 
 $(document).ready(function() {
 	
+	var uid;
 	var personalData;
 	var speeddata=[];
 	var tempdata=[];
 	var pressdata=[];
 	
 	var fromDate = new Date().yyyymmdd();
-	var toDate = new Date().yyyymmdd();	
+	var toDate = new Date().yyyymmdd();
 	
 	t();
 	
@@ -102,6 +103,7 @@ $(document).ready(function() {
  				}
 	}
 	
+	
 	function getOptions(){
 			$('#w-input-search').autocomplete({
 				serviceUrl: '/rest/getUid',
@@ -111,20 +113,22 @@ $(document).ready(function() {
 				onSelect: function(suggestion){
 				 //$(".details").empty();
 				 
+				uid = suggestion.data.email; 
 				$(".details").empty();
 		    
-				var out = '<dl>';
-				out += '<dt>' + "Name: " + '</dt><dd>' + suggestion.data.personalData.name + '</dd>';  
-				out += '<dt>' + "Date of birth: " + '</dt><dd>' + new Date(suggestion.data.personalData.dob).yyyymmdd() + '</dd>';  
-				out += '</dl>';
-				$(".details").append( out );
+					var out = '<dl>';
+					out += '<dt>' + "Name: " + '</dt><dd>' + suggestion.data.personalData.name + '</dd>';  
+					out += '<dt>' + "Date of birth: " + '</dt><dd>' + new Date(suggestion.data.personalData.dob).yyyymmdd() + '</dd>';  
+					out += '<dt>' + "Email: " + '</dt><dd>' + suggestion.data.email + '</dd>';
+					out += '</dl>';
+					$(".details").append( out );
 				},
 				
 			    transformResult: function(response) {
 
 			        return {
 			        	
-			            suggestions: $.map($.parseJSON(response), function(item) {
+			            suggestions: $.map($.parseJSON(response), function(item) {			            	
 			                return { value: item.personalData.name, data: item };
 			            })
 			            
@@ -137,7 +141,7 @@ $(document).ready(function() {
 	
 	function getRiskData(from, to){
 		$.ajax({
-				url: "/rest/getRiskData?uid=mockUser",
+				url: "/rest/getRiskData?uid=" + uid,
 				dataType: "json",
 				data: {
 					from: from,
@@ -527,7 +531,10 @@ $(document).ready(function() {
 		<div id="inner-content">
 			<h1>Data graph</h1>			
 			<div id="container"></div>
-			<div id="risk"></div>
+			<fieldset>
+				<legend>Cardiovascular risks</legend>					
+				<div id="risk"></div>
+			</fieldset> 
 		</div>
 	</div>
 </div>
