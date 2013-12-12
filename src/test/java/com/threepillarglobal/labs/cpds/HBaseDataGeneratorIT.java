@@ -1,5 +1,6 @@
 package com.threepillarglobal.labs.cpds;
 
+import javax.annotation.Resource;
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -11,6 +12,7 @@ import javax.xml.validation.Validator;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -24,15 +26,56 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.threepillarglobal.labs.hbase.util.HOperations;
 import org.apache.commons.lang.time.DateUtils;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.client.HBaseAdmin;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:integrationTests-context.xml")
 public class HBaseDataGeneratorIT {
+
+    private static final Logger L = LoggerFactory.getLogger(HBaseSimpleIT.class);
+
+    @Resource(name = "hbaseConfiguration")
+    private Configuration config;
+
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private SensorDataRepository sensorDataRepository;
+    @Autowired
+    private MedicalRecordsRepository medicalRecordsRepository;
+    @Autowired
+    private LivingDataRepository livingDataRepository;
+    @Autowired
+    private LocationRepository locationRepository;
+
+    @Before
+    public void setUp() throws IOException {
+        //table should be created at startup by DDL bu to be sure
+        HOperations.createTable(User.class, new HBaseAdmin(config));
+        HOperations.createTable(SensorData.class, new HBaseAdmin(config));
+        HOperations.createTable(LivingData.class, new HBaseAdmin(config));
+        HOperations.createTable(Location.class, new HBaseAdmin(config));
+        HOperations.createTable(MedicalRecords.class, new HBaseAdmin(config));
+        
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        //delete table
+        //HOperations.deleteTable(User.class, new HBaseAdmin(config));
+    }
 
     private static String emailPattern = "user<ID>@3pg.com";
     private static String namePrefix = "John Doe #";
@@ -45,9 +88,11 @@ public class HBaseDataGeneratorIT {
 
     @Test
     public void generateDataFromConfig() {
+        System.out.println("Test entry point");
         try {
-
+            System.out.println("Preparing to read the config...");
             TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
+            System.out.println("Starting to write...");
             generateData(tdgc);
         } catch (Exception e) {
             e.printStackTrace();
@@ -178,6 +223,12 @@ public class HBaseDataGeneratorIT {
     }
 
     public static void generateData(TestDataGeneratorConfig tdgc) throws Exception {
+        System.out.println("Generating data for: " + Integer.toString(tdgc.userCount) + " users between " +
+                dateFormat.format(tdgc.startDate) + " and " + dateFormat.format(tdgc.endDate) + " with " +
+                Integer.toString(tdgc.fullSensorDataPercent) + " full sensor data percent, " +
+                Integer.toString(tdgc.partialSensorDataFillPercent) + " partial sensor data fill percent, " +
+                Integer.toString(tdgc.fullLivingHabitsPercent) + " full living habits percent, " +
+                Integer.toString(tdgc.partialLivingHabitsFillPercent) + " partial living habits fill percent.");
         writeTestLocations();
         writeTestUsers(tdgc.userCount);
 
@@ -194,6 +245,7 @@ public class HBaseDataGeneratorIT {
     }
 
     private static void writeTestLocations() {
+        System.out.println("Starting to write locations");
         LocationRepository locationRepository = new LocationRepository();
         Location.LocationDetails ld;
         for (String location1 : location) {
@@ -201,9 +253,13 @@ public class HBaseDataGeneratorIT {
             ld = new Location.LocationDetails(locationParts[0], locationParts[1], locationParts[2]);
             locationRepository.saveLocation(locationParts[0], locationParts[1], locationParts[2], ld);
         }
+        System.out.println("Wrote locations!");
     }
 
     private static void writeAttachedDocument(int numberOfUsers, Date startDate, Date endDate) {
+
+        System.out.println("Starting to write attached documents for " + Integer.toString(numberOfUsers) + " users, between "
+        + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
 
         Random rand = new Random();
 
@@ -217,9 +273,12 @@ public class HBaseDataGeneratorIT {
             attachedDocument = new MedicalRecords.DocumentsAttached(documentURLPattern + Integer.toString(i));
             medicalRecordsRepository.saveAttachedDocument(emailPattern.replace("<ID>", Integer.toString(i)), DateUtils.addDays(startDate, rand.nextInt(daysInInterval)), attachedDocument);
         }
+        System.out.println("Finished writing attached documents!");
     }
 
     private static void writeMedicalRedord(int numberOfUsers, Date startDate, Date endDate) {
+        System.out.println("Starting to write medical records for " + Integer.toString(numberOfUsers) + " users, between "
+                + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
         Random rand = new Random();
         Date medicalRecordDate;
         int bmi;
@@ -242,9 +301,11 @@ public class HBaseDataGeneratorIT {
 
             medicalRecordsRepository.saveMedicalRecord(emailPattern.replace("<ID>", Integer.toString(i)), medicalRecordDate, medicalRecord);
         }
+        System.out.println("Finished writing medical records!");
     }
 
     protected static void writeTestUsers(int numberOfUsers) {
+        System.out.println("Starting to write test users: " + Integer.toString(numberOfUsers));
         String rowKey;
         String secretKey = "sk";
         Boolean userStatus = true;
@@ -275,6 +336,7 @@ public class HBaseDataGeneratorIT {
             userRepo.saveMedicalNotes(rowKey, medNotes);
             //TODO: family tree
         }
+        System.out.println("Finished writing test users");
     }
 
     protected static int getDaysInInterval(Date startDate, Date endDate) {
@@ -284,6 +346,9 @@ public class HBaseDataGeneratorIT {
     }
 
     protected static void writeFullTestSensorData(int rangeFrom, int rangeTo, Date startDate, Date endDate) {
+        System.out.println("Starting to write full sensor data for users between" + Integer.toString(rangeFrom) + " and " +
+                Integer.toString(rangeTo) + " and dates between "
+                + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
         String currentActivityType;
         SensorDataRepository sdRepo = new SensorDataRepository();
         int activityDuration;
@@ -322,9 +387,13 @@ public class HBaseDataGeneratorIT {
 
             }
         }
+        System.out.println("Finished generating full sensor data!");
     }
 
     protected static void writePartialTestSensorData(int rangeFrom, int rangeTo, Date startDate, Date endDate, int completeDataPercent) {
+        System.out.println("Starting to write partial sensor data for users between " + Integer.toString(rangeFrom) + " and " +
+                Integer.toString(rangeTo) + " and dates between "
+                + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
         String currentActivityType;
         SensorDataRepository sdRepo = new SensorDataRepository();
         int activityDuration;
@@ -366,9 +435,13 @@ public class HBaseDataGeneratorIT {
 
             }
         }
+        System.out.println("Finished writing partial sensor data!");
     }
 
     protected static void writeFullTestLivingHabitsData(int rangeFrom, int rangeTo, Date startDate, Date endDate) {
+        System.out.println("Starting to full living habits for users between " + Integer.toString(rangeFrom) + " and " +
+                Integer.toString(rangeTo) + " and dates between "
+                + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
         Random rand = new Random();
         int minsInDay = 1440;
         int minsOfSleep;
@@ -413,9 +486,13 @@ public class HBaseDataGeneratorIT {
                 livingRepo.saveLivingData(emailPattern.replace("<ID>", Integer.toString(j)), DateUtils.addDays(startDate, i), ld);
             }
         }
+        System.out.println("Finished writing full living habits!");
     }
 
     protected static void writePartialTestLivingHabitsData(int rangeFrom, int rangeTo, Date startDate, Date endDate, int completeDataPercent) {
+        System.out.println("Starting to write partial living habits for users between " + Integer.toString(rangeFrom) + " and " +
+                Integer.toString(rangeTo) + " and dates between "
+                + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
         Random rand = new Random();
         int minsInDay = 1440;
         int minsOfSleep;
@@ -461,6 +538,7 @@ public class HBaseDataGeneratorIT {
                 livingRepo.saveLivingData(emailPattern.replace("<ID>", Integer.toString(j)), DateUtils.addDays(startDate, i), ld);
             }
         }
+        System.out.println("Finished writing partial living habits!");
     }
 
     public class TestDataGeneratorConfig {
