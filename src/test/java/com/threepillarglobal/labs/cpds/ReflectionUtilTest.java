@@ -1,6 +1,6 @@
 package com.threepillarglobal.labs.cpds;
 
-import com.threepillarglobal.labs.hbase.util.HMarshaller;
+import com.threepillarglobal.labs.hbase.util.ReflectionUtil;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -12,7 +12,7 @@ import org.junit.Test;
 /**
  * Test HMarshaller class
  */
-public class HMarshallerTest {
+public class ReflectionUtilTest {
 
     /**
      * Sample class with some sample fields
@@ -47,7 +47,7 @@ public class HMarshallerTest {
     public void read_values_from_fields() throws Exception {
         SampleClass a = new SampleClass();
         for (Field f : SampleClass.class.getDeclaredFields()) {
-            System.out.println(f.getName()+"|"+Bytes.toStringBinary(HMarshaller.getFieldValue(f, a)));
+            System.out.println(f.getName()+"|"+Bytes.toStringBinary(ReflectionUtil.getFieldValue(f, a)));
         }        
     }
     
@@ -57,9 +57,9 @@ public class HMarshallerTest {
         //do a loopback like test
         for (Field f : SampleClass.class.getDeclaredFields()) {
             //old value
-            byte[] value = HMarshaller.getFieldValue(f, a);
+            byte[] value = ReflectionUtil.getFieldValue(f, a);
             //set as new value
-            HMarshaller.setFieldValue(f, a, value);
+            ReflectionUtil.setFieldValue(f, a, value);
         }
     }
 }
