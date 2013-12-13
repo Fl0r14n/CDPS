@@ -55,7 +55,6 @@ public class UserRepository {
     public MedicalNotes findMedicalNotesForUser(final byte[] rowKey) {
         return medicalNotesRepository.findOne(rowKey);
     }
-
     public MedicalNotes saveMedicalNotes(final String email, final MedicalNotes medicalNotes) {
         return medicalNotesRepository.save(User.toRowKey(email), medicalNotes);
     }
@@ -63,7 +62,7 @@ public class UserRepository {
     public FamilyTree findFamilyTreeForUser(final byte[] rowKey) {
         return familyTreeRepo.findOne(rowKey);
     }
-
+    
     public FamilyTree saveFamilyTree(final String email, final FamilyTree familyTree) {
         return familyTreeRepo.save(User.toRowKey(email), familyTree);
     }
