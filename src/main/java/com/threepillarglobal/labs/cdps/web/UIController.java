@@ -43,11 +43,11 @@ public class UIController {
     @Qualifier(value = "userServiceMock")
     private UserService userService;
 
-    private static List<User> userList = MockDataGenerator.fetchMockUserData(10);
 
     @RequestMapping(value = "/getUid", method = RequestMethod.GET)
     public @ResponseBody
     List<User> getTags(@RequestParam String userName) {
+    	List<User> userList = userService.getUsers();
         List<User> result = new ArrayList<User>();
         // iterate a list and filter by userName
         for (User user : userList) {
@@ -57,16 +57,6 @@ public class UIController {
         }
         return result;
     }
-
-    /*@RequestMapping(value = "/getChartData", method = RequestMethod.GET)
-    public @ResponseBody
-    List<SensorData> getChartData(@RequestParam String uid, @QueryParam("from") String from,
-            @QueryParam("to") String to) {
-    	try {
-    		return chartService.getSensorData(dateFormat.parse(from), dateFormat.parse(to));
-		} catch (ParseException e) { e.printStackTrace();}
-		return new ArrayList<>();        
-    }*/
 
     @RequestMapping(value = "/getRiskData", method = RequestMethod.GET)
 	public @ResponseBody
@@ -79,6 +69,16 @@ public class UIController {
 		} catch (ParseException e) { e.printStackTrace();}
 		return new CardioRisk(); 		
 	}
+
     
+    /*@RequestMapping(value = "/getChartData", method = RequestMethod.GET)
+    public @ResponseBody
+    List<SensorData> getChartData(@RequestParam String uid, @QueryParam("from") String from,
+            @QueryParam("to") String to) {
+    	try {
+    		return chartService.getSensorData(dateFormat.parse(from), dateFormat.parse(to));
+		} catch (ParseException e) { e.printStackTrace();}
+		return new ArrayList<>();        
+    }*/
 
 }
