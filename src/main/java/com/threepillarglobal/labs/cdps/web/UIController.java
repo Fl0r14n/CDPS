@@ -75,7 +75,7 @@ public class UIController {
     	try {    		
     		Date sDate = dateFormat.parse(from);
 			Date eDate = dateFormat.parse(to);
-			return riskFactorsService.getCardioRisk(uid, sDate, eDate);
+			return riskFactorsService.getCardioRisk(uid, sDate, eDate); 
 		} catch (ParseException e) { e.printStackTrace();}
 		return new CardioRisk(); 		
 	}

@@ -66,7 +66,7 @@ public class MockDataGenerator {
 	
 	
 	 protected static int getDaysInInterval(Date startDate, Date endDate) {
-		return Days.daysBetween(new DateTime(startDate), new DateTime(endDate)).getDays() +1;
+		return Days.daysBetween(new DateTime(startDate), new DateTime(endDate)).getDays() +1; 
 	 }
 	 
 	
