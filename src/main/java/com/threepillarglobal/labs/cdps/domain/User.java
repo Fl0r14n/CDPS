@@ -77,14 +77,22 @@ public class User {
             NO,
             CASUAL,
             HEAVY,
-            PASSIVE
+            PASSIVE;
+            
+            public static SMOKER getRandom() {
+                    return values()[(int) (Math.random() * values().length)];
+            }
         }
 
         public static enum INHERITED_RISK {
 
             LOW,
             MEDIUM,
-            HIGH
+            HIGH;
+            
+            public static INHERITED_RISK getRandom() {
+                return values()[(int) (Math.random() * values().length)];
+            }
         }
 
         @HColumn(name = "notes")

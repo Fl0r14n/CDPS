@@ -23,10 +23,12 @@ import com.threepillarglobal.labs.cdps.domain.*;
 import com.threepillarglobal.labs.cdps.domain.User.MedicalNotes.INHERITED_RISK;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import com.threepillarglobal.labs.hbase.util.HOperations;
+import java.util.Collections;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
@@ -45,6 +47,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class HBaseDataGeneratorIT {
 
     private static final Logger L = LoggerFactory.getLogger(HBaseSimpleIT.class);
+    private static final String emailPattern = "user<ID>@3pg.com";
+    private static final String namePrefix = "John Doe #";
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final String[] location = {"Romania|Cluj|Cluj-Napoca", "Romania|Timisoara|Timisoara", "USA|Washington|Washington DC"};
+    private static final String[] activityType = {"Eating", "Sleeping", "Exercising"};
+    private static final String[] vitaminsLookup = {"A", "B", "C", "D", "E"};
+    private static final String[] mineralsLookup = {"Fe", "Zn", "Mg", "Ca", "Vn"};
+    private static final String documentURLPattern = "http://docs.google.com/docID=";
 
     @Resource(name = "hbaseConfiguration")
     private Configuration config;
@@ -62,7 +72,7 @@ public class HBaseDataGeneratorIT {
 
     @Before
     public void setUp() throws IOException {
-        //table should be created at startup by DDL but to be sure
+        //table should be created at startup by DDL bu to be sure
         HOperations.createTable(User.class, new HBaseAdmin(config));
         HOperations.createTable(SensorData.class, new HBaseAdmin(config));
         HOperations.createTable(LivingData.class, new HBaseAdmin(config));
@@ -77,32 +87,10 @@ public class HBaseDataGeneratorIT {
         //HOperations.deleteTable(User.class, new HBaseAdmin(config));
     }
 
-    private static String emailPattern = "user<ID>@3pg.com";
-    private static String namePrefix = "John Doe #";
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private static String[] location = {"Romania|Cluj|Cluj-Napoca", "Romania|Timisoara|Timisoara", "USA|Washington|Washington DC"};
-    private static String[] activityType = {"Eating", "Sleeping", "Exercising"};
-    private static String[] vitaminsLookup = {"A", "B", "C", "D", "E"};
-    private static String[] mineralsLookup = {"Fe", "Zn", "Mg", "Ca", "Vn"};
-    private static String documentURLPattern = "http://docs.google.com/docID=";
-
-    @Test
-    public void generateDataFromConfig() {
-        System.out.println("Test entry point");
-        try {
-            System.out.println("Preparing to read the config...");
-            TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
-            System.out.println("Starting to write...");
-            generateData(tdgc);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
     static boolean validateAgainstXSD(InputStream xml, InputStream xsd) {
         try {
-            SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            SchemaFactory factory
+                    = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema schema = factory.newSchema(new StreamSource(xsd));
             Validator validator = schema.newValidator();
             validator.validate(new StreamSource(xml));
@@ -112,7 +100,7 @@ public class HBaseDataGeneratorIT {
         }
     }
 
-    public TestDataGeneratorConfig readDataGeneratorConfig() throws Exception {
+    public TestDataGeneratorConfig readDataGeneratorConfig() {
         Date startDate = new Date(0),
                 endDate = new Date(0);
         int userCount = -1,
@@ -120,153 +108,143 @@ public class HBaseDataGeneratorIT {
                 partialSensorDataFillPercent = -1,
                 fullLivingHabitsPercent = -1,
                 partialLivingHabitsFillPercent = -1;
+        try {
+            InputStream configFile2Validate = new FileInputStream(new File("src/test/resources/TestDataGenerator.xml"));
+            InputStream schemaFile2Validate = new FileInputStream(new File("src/test/resources/TestDataGenerator.xsd"));
 
-        InputStream configFile2Validate = new FileInputStream(new File("src/test/resources/TestDataGenerator.xml"));
-        InputStream schemaFile2Validate = new FileInputStream(new File("src/test/resources/TestDataGenerator.xsd"));
+            InputStream configFile = new FileInputStream(new File("src/test/resources/TestDataGenerator.xml"));
 
-        InputStream configFile = new FileInputStream(new File("src/test/resources/TestDataGenerator.xml"));
+            if (!validateAgainstXSD(configFile2Validate, schemaFile2Validate)) {
+                throw new Exception("Failed xsd validation!");
+            } else {
+                XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+                // Setup a new eventReader
+                XMLEventReader eventReader = inputFactory.createXMLEventReader(configFile);
+                // read the XML document
 
-        if (!validateAgainstXSD(configFile2Validate, schemaFile2Validate)) {
-            throw new Exception("Failed xsd validation!");
-        } else {
-            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-            // Setup a new eventReader
-            XMLEventReader eventReader = inputFactory.createXMLEventReader(configFile);
-            // read the XML document
+                while (eventReader.hasNext()) {
+                    XMLEvent event = eventReader.nextEvent();
 
-            while (eventReader.hasNext()) {
-                XMLEvent event = eventReader.nextEvent();
+                    if (event.isStartElement()) {
+                        if (event.asStartElement().getName().getLocalPart().equals("UserCount")) {
 
-                if (event.isStartElement()) {
-                    if (event.asStartElement().getName().getLocalPart().equals("UserCount")) {
+                            event = eventReader.nextEvent();
 
-                        event = eventReader.nextEvent();
+                            userCount = Integer.parseInt(event.asCharacters().getData());
+                            //System.out.println("User count: " + userCount);
+                            event = eventReader.nextEvent();
+                            continue;
+                        }
 
-                        userCount = Integer.parseInt(event.asCharacters().getData());
-                        //System.out.println("User count: " + userCount);
-                        event = eventReader.nextEvent();
-                        continue;
+                        if (event.asStartElement().getName().getLocalPart().equals("StartDate")) {
+                            event = eventReader.nextEvent();
+
+                            startDate = dateFormat.parse(event.asCharacters().getData());
+                            //System.out.println("Start date: " + startDate);
+
+                            eventReader.nextEvent();
+                            continue;
+                        }
+                        if (event.asStartElement().getName().getLocalPart().equals("EndDate")) {
+                            event = eventReader.nextEvent();
+
+                            endDate = dateFormat.parse(event.asCharacters().getData());
+                            //System.out.println("End date: " + endDate);
+
+                            eventReader.nextEvent();
+                            continue;
+                        }
+
+                        if (event.asStartElement().getName().getLocalPart().equals("FullSensorDataPercent")) {
+                            event = eventReader.nextEvent();
+
+                            fullSensorDataPercent = Integer.parseInt(event.asCharacters().getData());
+                            //System.out.println("Full Sensor Data Percent: " + fullSensorDataPercent);
+
+                            eventReader.nextEvent();
+                            continue;
+                        }
+
+                        if (event.asStartElement().getName().getLocalPart().equals("PartialSensorDataFillPercent")) {
+                            event = eventReader.nextEvent();
+
+                            partialSensorDataFillPercent = Integer.parseInt(event.asCharacters().getData());
+                            //System.out.println("Partial Sensor Data Fill Percent: " + partialSensorDataFillPercent);
+
+                            eventReader.nextEvent();
+                            continue;
+                        }
+
+                        if (event.asStartElement().getName().getLocalPart().equals("FullLivingHabitsPercent")) {
+                            event = eventReader.nextEvent();
+
+                            fullLivingHabitsPercent = Integer.parseInt(event.asCharacters().getData());
+                            //System.out.println("Full Living Habits Percent: " + fullLivingHabitsPercent);
+
+                            eventReader.nextEvent();
+                            continue;
+                        }
+
+                        if (event.asStartElement().getName().getLocalPart().equals("PartialLivingHabitsFillPercent")) {
+                            event = eventReader.nextEvent();
+
+                            partialLivingHabitsFillPercent = Integer.parseInt(event.asCharacters().getData());
+                            //System.out.println("Partial Living Habits Fill Percent: " + partialLivingHabitsFillPercent);
+
+                            eventReader.nextEvent();
+                            continue;
+                        }
+
                     }
-
-                    if (event.asStartElement().getName().getLocalPart().equals("StartDate")) {
-                        event = eventReader.nextEvent();
-
-                        startDate = dateFormat.parse(event.asCharacters().getData());
-                        //System.out.println("Start date: " + startDate);
-
-                        eventReader.nextEvent();
-                        continue;
-                    }
-                    if (event.asStartElement().getName().getLocalPart().equals("EndDate")) {
-                        event = eventReader.nextEvent();
-
-                        endDate = dateFormat.parse(event.asCharacters().getData());
-                        //System.out.println("End date: " + endDate);
-
-                        eventReader.nextEvent();
-                        continue;
-                    }
-
-                    if (event.asStartElement().getName().getLocalPart().equals("FullSensorDataPercent")) {
-                        event = eventReader.nextEvent();
-
-                        fullSensorDataPercent = Integer.parseInt(event.asCharacters().getData());
-                        //System.out.println("Full Sensor Data Percent: " + fullSensorDataPercent);
-
-                        eventReader.nextEvent();
-                        continue;
-                    }
-
-                    if (event.asStartElement().getName().getLocalPart().equals("PartialSensorDataFillPercent")) {
-                        event = eventReader.nextEvent();
-
-                        partialSensorDataFillPercent = Integer.parseInt(event.asCharacters().getData());
-                        //System.out.println("Partial Sensor Data Fill Percent: " + partialSensorDataFillPercent);
-
-                        eventReader.nextEvent();
-                        continue;
-                    }
-
-                    if (event.asStartElement().getName().getLocalPart().equals("FullLivingHabitsPercent")) {
-                        event = eventReader.nextEvent();
-
-                        fullLivingHabitsPercent = Integer.parseInt(event.asCharacters().getData());
-                        //System.out.println("Full Living Habits Percent: " + fullLivingHabitsPercent);
-
-                        eventReader.nextEvent();
-                        continue;
-                    }
-
-                    if (event.asStartElement().getName().getLocalPart().equals("PartialLivingHabitsFillPercent")) {
-                        event = eventReader.nextEvent();
-
-                        partialLivingHabitsFillPercent = Integer.parseInt(event.asCharacters().getData());
-                        //System.out.println("Partial Living Habits Fill Percent: " + partialLivingHabitsFillPercent);
-
-                        eventReader.nextEvent();
-                        continue;
-                    }
-
                 }
             }
-        }
-        if (userCount != -1 && startDate != new Date(0) && endDate != new Date(0)
-                && fullSensorDataPercent != -1 && partialSensorDataFillPercent != -1 && fullLivingHabitsPercent != -1
-                && partialLivingHabitsFillPercent != -1) {
+            if (userCount != -1 && startDate != new Date(0) && endDate != new Date(0)
+                    && fullSensorDataPercent != -1 && partialSensorDataFillPercent != -1 && fullLivingHabitsPercent != -1
+                    && partialLivingHabitsFillPercent != -1) {
 
-            return new TestDataGeneratorConfig(userCount, startDate, endDate, fullSensorDataPercent, partialSensorDataFillPercent, fullLivingHabitsPercent, partialLivingHabitsFillPercent);
+                return new TestDataGeneratorConfig(userCount, startDate, endDate, fullSensorDataPercent, partialSensorDataFillPercent, fullLivingHabitsPercent, partialLivingHabitsFillPercent);
 
-        } else {
-            return new TestDataGeneratorConfig();
+            } else {
+                return new TestDataGeneratorConfig();
+            }
+        } catch (Exception ex) {
+            if (userCount != -1 && startDate != new Date(0) && endDate != new Date(0)
+                    && fullSensorDataPercent != -1 && partialSensorDataFillPercent != -1 && fullLivingHabitsPercent != -1
+                    && partialLivingHabitsFillPercent != -1) {
+
+                return new TestDataGeneratorConfig(userCount, startDate, endDate, fullSensorDataPercent, partialSensorDataFillPercent, fullLivingHabitsPercent, partialLivingHabitsFillPercent);
+
+            } else {
+                return new TestDataGeneratorConfig();
+            }
         }
     }
 
-    public void generateData(TestDataGeneratorConfig tdgc) throws Exception {
-        System.out.println("Generating data for: " + Integer.toString(tdgc.userCount) + " users between "
-                + dateFormat.format(tdgc.startDate) + " and " + dateFormat.format(tdgc.endDate) + " with "
-                + Integer.toString(tdgc.fullSensorDataPercent) + " full sensor data percent, "
-                + Integer.toString(tdgc.partialSensorDataFillPercent) + " partial sensor data fill percent, "
-                + Integer.toString(tdgc.fullLivingHabitsPercent) + " full living habits percent, "
-                + Integer.toString(tdgc.partialLivingHabitsFillPercent) + " partial living habits fill percent.");
-        writeTestLocations();
-        writeTestUsers(tdgc.userCount);
-
-        int usersWithFullSensorData = Math.round(tdgc.userCount * tdgc.fullSensorDataPercent / 100);
-        writeFullTestSensorData(0, usersWithFullSensorData, tdgc.startDate, tdgc.endDate);
-
-        writePartialTestSensorData(0, tdgc.userCount - usersWithFullSensorData, tdgc.startDate, tdgc.endDate, tdgc.partialSensorDataFillPercent);
-
-        int usersWithFullLivingHabitsData = Math.round(tdgc.userCount * tdgc.fullLivingHabitsPercent / 100);
-        writeFullTestLivingHabitsData(0, usersWithFullLivingHabitsData, tdgc.startDate, tdgc.endDate);
-        writePartialTestLivingHabitsData(0, tdgc.userCount - usersWithFullLivingHabitsData, tdgc.startDate, tdgc.endDate, tdgc.partialLivingHabitsFillPercent);
-        writeMedicalRedord(tdgc.userCount, tdgc.startDate, tdgc.endDate);
-        writeAttachedDocument(tdgc.userCount, tdgc.startDate, tdgc.endDate);
-    }
-
-    private void writeTestLocations() {
+    @Test
+    public void testWriteLocations() {
         System.out.println("Starting to write locations");
-        LocationRepository locationRepository = new LocationRepository();
-        Location.LocationDetails ld;
         for (String location1 : location) {
+            //LocationRepository locationRepository = new LocationRepository();
+            Location.LocationDetails ld;
             String[] locationParts = location1.split("[|]");
             ld = new Location.LocationDetails(locationParts[0], locationParts[1], locationParts[2]);
-            locationRepository.saveLocation(locationParts[0], locationParts[1], locationParts[2], ld);
+            locationRepository.saveLocation(locationParts[2], locationParts[1], locationParts[0], ld);
         }
         System.out.println("Wrote locations!");
     }
 
-    private void writeAttachedDocument(int numberOfUsers, Date startDate, Date endDate) {
-
+    @Test
+    public void testWriteAttachedDocument() {
+        TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
+        int numberOfUsers = tdgc.userCount;
+        Date startDate = tdgc.startDate;
+        Date endDate = tdgc.endDate;
         System.out.println("Starting to write attached documents for " + Integer.toString(numberOfUsers) + " users, between "
                 + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
 
         Random rand = new Random();
-
         MedicalRecords.DocumentsAttached attachedDocument;
-
         int daysInInterval = getDaysInInterval(startDate, endDate);
-
-        MedicalRecordsRepository medicalRecordsRepository = new MedicalRecordsRepository();
 
         for (int i = 1; i <= numberOfUsers; i++) {
             attachedDocument = new MedicalRecords.DocumentsAttached(documentURLPattern + Integer.toString(i));
@@ -275,7 +253,12 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished writing attached documents!");
     }
 
-    private void writeMedicalRedord(int numberOfUsers, Date startDate, Date endDate) {
+    @Test
+    public void testWriteMedicalRedord() {
+        TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
+        int numberOfUsers = tdgc.userCount;
+        Date startDate = tdgc.startDate;
+        Date endDate = tdgc.endDate;
         System.out.println("Starting to write medical records for " + Integer.toString(numberOfUsers) + " users, between "
                 + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
         Random rand = new Random();
@@ -285,11 +268,8 @@ public class HBaseDataGeneratorIT {
         int triglycerides;
         String followUp;
         MedicalRecords.MedicalRecord medicalRecord;
-
         int daysInInterval = getDaysInInterval(startDate, endDate);
-
-        MedicalRecordsRepository medicalRecordsRepository = new MedicalRecordsRepository();
-
+        
         for (int i = 1; i <= numberOfUsers; i++) {
             medicalRecordDate = DateUtils.addDays(startDate, rand.nextInt(daysInInterval));
             bmi = rand.nextInt(50);
@@ -303,7 +283,10 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished writing medical records!");
     }
 
-    protected void writeTestUsers(int numberOfUsers) {
+    @Test
+    public void testWriteTestUsers() {
+        TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
+        int numberOfUsers = tdgc.userCount;
         System.out.println("Starting to write test users: " + Integer.toString(numberOfUsers));
         String rowKey;
         String secretKey = "sk";
@@ -315,7 +298,6 @@ public class HBaseDataGeneratorIT {
         User.MedicalNotes medNotes;
         Random rand = new Random();
         int locationID;
-        Boolean smoker;
         for (int i = 1; i <= numberOfUsers; i++) {
             rowKey = emailPattern.replace("<ID>", Integer.toString(i));
             //account data
@@ -324,31 +306,35 @@ public class HBaseDataGeneratorIT {
             accData = new User.AccountData(secretKey, userStatus, userPhone);
             userRepository.saveAccountData(rowKey, accData);
             //personal data
-            namePrefix = namePrefix + Integer.toString(i);
             locationID = rand.nextInt(location.length);
-            persData = new User.PersonalData(namePrefix, dob, location[locationID]);
+            persData = new User.PersonalData(namePrefix + Integer.toString(i), dob, location[locationID]);
             userRepository.savePersonalData(rowKey, persData);
             //medical notes
-            smoker = rand.nextBoolean();
-            medNotes = new User.MedicalNotes(null, User.MedicalNotes.SMOKER.HEAVY, INHERITED_RISK.HIGH);
+            
+            medNotes = new User.MedicalNotes(null, User.MedicalNotes.SMOKER.getRandom(), User.MedicalNotes.INHERITED_RISK.getRandom());
             userRepository.saveMedicalNotes(rowKey, medNotes);
             //TODO: family tree
         }
         System.out.println("Finished writing test users");
     }
 
-    protected int getDaysInInterval(Date startDate, Date endDate) {
+    protected static int getDaysInInterval(Date startDate, Date endDate) {
         //get the number of days in the specified interval
         final long miliSecondsInADay = 1000 * 60 * 60 * 24;
         return Math.round((endDate.getTime() - startDate.getTime()) / miliSecondsInADay);
     }
 
-    protected void writeFullTestSensorData(int rangeFrom, int rangeTo, Date startDate, Date endDate) {
+    @Test
+    public void testWriteFullTestSensorData() {
+        TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
+        int rangeFrom = 0;
+        int rangeTo = Math.round(tdgc.userCount * tdgc.fullSensorDataPercent / 100);
+        Date startDate = tdgc.startDate;
+        Date endDate = tdgc.endDate;
         System.out.println("Starting to write full sensor data for users between" + Integer.toString(rangeFrom) + " and "
                 + Integer.toString(rangeTo) + " and dates between "
                 + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
         String currentActivityType;
-        SensorDataRepository sdRepo = new SensorDataRepository();
         int activityDuration;
         Random rand = new Random();
         int avgHR, diastolicBP, systolicBP, calories;
@@ -381,19 +367,24 @@ public class HBaseDataGeneratorIT {
                         dailyData.get(18), dailyData.get(19), dailyData.get(20),
                         dailyData.get(21), dailyData.get(22), dailyData.get(23)
                 );
-                sdRepo.saveSensorData(emailPattern.replace("<ID>", Integer.toString(j)), eventDate, sd);
-
+                sensorDataRepository.saveSensorData(emailPattern.replace("<ID>", Integer.toString(j)), eventDate, sd);
             }
         }
         System.out.println("Finished generating full sensor data!");
     }
 
-    protected void writePartialTestSensorData(int rangeFrom, int rangeTo, Date startDate, Date endDate, int completeDataPercent) {
+    @Test
+    public void testWritePartialTestSensorData() {
+        TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
+        int rangeFrom = Math.round(tdgc.userCount * tdgc.fullSensorDataPercent / 100) + 1;
+        int rangeTo = tdgc.userCount;
+        Date startDate = tdgc.startDate; 
+        Date endDate = tdgc.endDate; 
+        int completeDataPercent = tdgc.partialSensorDataFillPercent;
         System.out.println("Starting to write partial sensor data for users between " + Integer.toString(rangeFrom) + " and "
                 + Integer.toString(rangeTo) + " and dates between "
                 + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
         String currentActivityType;
-        SensorDataRepository sdRepo = new SensorDataRepository();
         int activityDuration;
         Random rand = new Random();
         int avgHR, diastolicBP, systolicBP, calories;
@@ -429,14 +420,20 @@ public class HBaseDataGeneratorIT {
                         dailyData.get(18), dailyData.get(19), dailyData.get(20),
                         dailyData.get(21), dailyData.get(22), dailyData.get(23)
                 );
-                sdRepo.saveSensorData(emailPattern.replace("<ID>", Integer.toString(j)), eventDate, sd);
+                sensorDataRepository.saveSensorData(emailPattern.replace("<ID>", Integer.toString(j)), eventDate, sd);
 
             }
         }
         System.out.println("Finished writing partial sensor data!");
     }
 
-    protected void writeFullTestLivingHabitsData(int rangeFrom, int rangeTo, Date startDate, Date endDate) {
+    @Test
+    public void testWriteFullTestLivingHabitsData() {
+        TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
+        int rangeFrom = 0;
+        int rangeTo = Math.round(tdgc.userCount * tdgc.fullLivingHabitsPercent / 100);
+        Date startDate = tdgc.startDate;
+        Date endDate = tdgc.endDate;
         System.out.println("Starting to full living habits for users between " + Integer.toString(rangeFrom) + " and "
                 + Integer.toString(rangeTo) + " and dates between "
                 + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
@@ -458,7 +455,6 @@ public class HBaseDataGeneratorIT {
         int alcohol;
         int softDrinks;
         BigDecimal riskFactor = new BigDecimal(1.0);
-        LivingDataRepository livingRepo = new LivingDataRepository();
         LivingData ld;
 
         int daysInInterval = getDaysInInterval(startDate, endDate);
@@ -481,18 +477,25 @@ public class HBaseDataGeneratorIT {
                 softDrinks = rand.nextInt(10000);
                 ld = new LivingData(minsOfSleep, minsOfExcercise, calories, energy, fat, saturatedFat, sugars, sodium,
                         protein, carbohydrates, vitamins, minerals, water, alcohol, softDrinks, riskFactor);
-                livingRepo.saveLivingData(emailPattern.replace("<ID>", Integer.toString(j)), DateUtils.addDays(startDate, i), ld);
+                livingDataRepository.saveLivingData(emailPattern.replace("<ID>", Integer.toString(j)), DateUtils.addDays(startDate, i), ld);
             }
         }
         System.out.println("Finished writing full living habits!");
     }
 
-    protected void writePartialTestLivingHabitsData(int rangeFrom, int rangeTo, Date startDate, Date endDate, int completeDataPercent) {
+    @Test
+    public void testWritePartialTestLivingHabitsData() {
+        TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
+        int rangeFrom = Math.round(tdgc.userCount * tdgc.fullLivingHabitsPercent / 100) + 1;
+        int rangeTo = tdgc.userCount;
+        Date startDate = tdgc.startDate; 
+        Date endDate = tdgc.endDate; 
+        int completeDataPercent = tdgc.partialLivingHabitsFillPercent;
         System.out.println("Starting to write partial living habits for users between " + Integer.toString(rangeFrom) + " and "
                 + Integer.toString(rangeTo) + " and dates between "
                 + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
         Random rand = new Random();
-        int minsInDay = 1440;
+        final int minsInDay = 1440;
         int minsOfSleep;
         int minsOfExcercise;
         int calories;
@@ -509,7 +512,6 @@ public class HBaseDataGeneratorIT {
         int alcohol;
         int softDrinks;
         BigDecimal riskFactor = new BigDecimal(1.0);
-        LivingDataRepository livingRepo = new LivingDataRepository();
         LivingData ld;
         int daysInInterval = getDaysInInterval(startDate, endDate);
         int daysWithDataToWrite = Math.round(daysInInterval * completeDataPercent / 100);
@@ -533,7 +535,7 @@ public class HBaseDataGeneratorIT {
                 softDrinks = rand.nextInt(10000);
                 ld = new LivingData(minsOfSleep, minsOfExcercise, calories, energy, fat, saturatedFat, sugars, sodium,
                         protein, carbohydrates, vitamins, minerals, water, alcohol, softDrinks, riskFactor);
-                livingRepo.saveLivingData(emailPattern.replace("<ID>", Integer.toString(j)), DateUtils.addDays(startDate, i), ld);
+                livingDataRepository.saveLivingData(emailPattern.replace("<ID>", Integer.toString(j)), DateUtils.addDays(startDate, i), ld);
             }
         }
         System.out.println("Finished writing partial living habits!");
