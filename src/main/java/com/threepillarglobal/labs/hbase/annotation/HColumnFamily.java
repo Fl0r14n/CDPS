@@ -10,12 +10,13 @@ import java.lang.annotation.Target;
  * Describes an HBase Column Family
  */
 @Documented
-@Target(value = {ElementType.TYPE})
+@Target(value = {ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface HColumnFamily {
 
     /**
      * HBase column family name
+     *
      * @return column family name
      */
     public String name();

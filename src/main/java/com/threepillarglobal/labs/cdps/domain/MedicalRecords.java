@@ -11,7 +11,7 @@ import org.apache.hadoop.io.MD5Hash;
 import java.util.Date;
 import lombok.EqualsAndHashCode;
 
-@HTable(name = "medicalRecords", columnFamilies = {"mr", "da"})
+@HTable(name = "medicalRecords")
 @AllArgsConstructor
 @Getter
 @ToString
@@ -22,7 +22,9 @@ public class MedicalRecords {
         return MD5Hash.digest(email + eventDate.toString()).getDigest();
     }
 
+    @HColumnFamily(name = "mr")
     private final MedicalRecord medicalRecord;
+    @HColumnFamily(name = "da")
     private final DocumentsAttached documentsAttached;
 
     @HColumnFamily(name = "mr")

@@ -14,7 +14,7 @@ import lombok.ToString;
 
 import org.apache.hadoop.io.MD5Hash;
 
-@HTable(name = "user", columnFamilies = {"ad", "pd", "mn", "ft"})
+@HTable(name = "user")
 @AllArgsConstructor
 @Getter
 @ToString
@@ -26,9 +26,14 @@ public class User {
     }
 
     private final String email;
+    @HColumnFamily(name = "ad")
     private final AccountData accountData;
+    @HColumnFamily(name = "pd")
     private final PersonalData personalData;
+    @HColumnFamily(name = "mn")
     private final MedicalNotes medicalNotes;
+    @HColumnFamily(name = "ft")
+    private final FamilyTree familyTree;
 
     @HColumnFamily(name = "ad")
     @AllArgsConstructor

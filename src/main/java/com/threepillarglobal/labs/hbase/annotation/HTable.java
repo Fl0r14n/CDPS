@@ -13,16 +13,12 @@ import java.lang.annotation.Target;
 @Target(value = {ElementType.TYPE})
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface HTable {
-    
+
     /**
      * HBase table name
+     *
      * @return table name
      */
     public String name();
-    
-    /**
-     * HBase column tables associated to this table
-     * @return column families
-     */
-    public String[] columnFamilies() default {};
+
 }

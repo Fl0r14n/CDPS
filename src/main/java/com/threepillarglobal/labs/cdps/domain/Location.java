@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-@HTable(name = "location", columnFamilies = {"ld", "res"})
+@HTable(name = "location")
 @AllArgsConstructor
 @Getter
 @ToString
@@ -23,7 +23,9 @@ public class Location {
         return (countryName + separator + countyName + separator + cityName).getBytes();
     }
 
+    @HColumnFamily(name = "ld")
     private final LocationDetails locationDetails;
+    @HColumnFamily(name = "res")
     private final Residents residents;
     
     @HColumnFamily(name = "ld")

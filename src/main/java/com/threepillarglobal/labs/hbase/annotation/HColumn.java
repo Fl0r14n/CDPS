@@ -16,6 +16,7 @@ public @interface HColumn {
 
     /**
      * HBase column name
+     *
      * @return column name
      */
     public String name();
