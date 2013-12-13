@@ -12,16 +12,23 @@ import java.util.Date;
 import lombok.EqualsAndHashCode;
 
 @HTable(name = "medicalRecords", columnFamilies = {"mr", "da"})
+@AllArgsConstructor
+@Getter
+@ToString
+@EqualsAndHashCode
 public class MedicalRecords {
 
     public static byte[] toRowKey(String email, Date eventDate) {
         return MD5Hash.digest(email + eventDate.toString()).getDigest();
     }
 
+    private final MedicalRecord medicalRecord;
+    private final DocumentsAttached documentsAttached;
+
     @HColumnFamily(name = "mr")
     @AllArgsConstructor
-    @ToString
     @Getter
+    @ToString
     @EqualsAndHashCode
     public static class MedicalRecord {
 
@@ -39,8 +46,8 @@ public class MedicalRecords {
 
     @HColumnFamily(name = "da")
     @AllArgsConstructor
-    @ToString
     @Getter
+    @ToString
     @EqualsAndHashCode
     public static class DocumentsAttached {
 

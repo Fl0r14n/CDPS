@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Util class. Handless HBase annotated entities
  */
-public class HAnnotation {
+public abstract class HAnnotation {
 
     /**
      * Obtain HBase table Name from annotated entity

@@ -16,8 +16,8 @@ import org.apache.hadoop.io.MD5Hash;
 
 @HTable(name = "user", columnFamilies = {"ad", "pd", "mn", "ft"})
 @AllArgsConstructor
-@ToString
 @Getter
+@ToString
 @EqualsAndHashCode
 public class User {
 
@@ -25,16 +25,15 @@ public class User {
         return MD5Hash.digest(email).getDigest();
     }
 
-    private String email;
-    private AccountData accountData;
-    private PersonalData personalData;
-    private MedicalNotes medicalNotes;
-    
-    
+    private final String email;
+    private final AccountData accountData;
+    private final PersonalData personalData;
+    private final MedicalNotes medicalNotes;
+
     @HColumnFamily(name = "ad")
     @AllArgsConstructor
-    @ToString
     @Getter
+    @ToString
     @EqualsAndHashCode
     public static class AccountData {
 
@@ -48,8 +47,8 @@ public class User {
 
     @HColumnFamily(name = "pd")
     @AllArgsConstructor
-    @ToString
     @Getter
+    @ToString
     @EqualsAndHashCode
     public static class PersonalData {
 
@@ -63,19 +62,21 @@ public class User {
 
     @HColumnFamily(name = "mn")
     @AllArgsConstructor
-    @ToString
     @Getter
+    @ToString
     @EqualsAndHashCode
     public static class MedicalNotes {
 
-    	public enum SMOKER {
-    		NO, 
-    		CASUAL, 
-    		HEAVY, 
-    		PASSIVE
-    	}
-    	
+        public enum SMOKER {
+
+            NO,
+            CASUAL,
+            HEAVY,
+            PASSIVE
+        }
+
         public static enum INHERITED_RISK {
+
             LOW,
             MEDIUM,
             HIGH
@@ -91,8 +92,8 @@ public class User {
 
     @HColumnFamily(name = "ft")
     @AllArgsConstructor
-    @ToString
     @Getter
+    @ToString
     @EqualsAndHashCode
     public static class FamilyTree {
 

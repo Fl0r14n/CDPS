@@ -14,7 +14,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 /**
  * Some helper merthods with reflection
  */
-public class ReflectionUtil {
+public abstract class ReflectionUtil {
 
     /**
      * Obtain a byte[] representation of the value inside a field

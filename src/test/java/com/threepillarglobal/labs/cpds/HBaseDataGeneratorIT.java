@@ -221,7 +221,7 @@ public class HBaseDataGeneratorIT {
         }
     }
 
-    public static void generateData(TestDataGeneratorConfig tdgc) throws Exception {
+    public void generateData(TestDataGeneratorConfig tdgc) throws Exception {
         System.out.println("Generating data for: " + Integer.toString(tdgc.userCount) + " users between "
                 + dateFormat.format(tdgc.startDate) + " and " + dateFormat.format(tdgc.endDate) + " with "
                 + Integer.toString(tdgc.fullSensorDataPercent) + " full sensor data percent, "
@@ -243,7 +243,7 @@ public class HBaseDataGeneratorIT {
         writeAttachedDocument(tdgc.userCount, tdgc.startDate, tdgc.endDate);
     }
 
-    private static void writeTestLocations() {
+    private void writeTestLocations() {
         System.out.println("Starting to write locations");
         LocationRepository locationRepository = new LocationRepository();
         Location.LocationDetails ld;
@@ -255,7 +255,7 @@ public class HBaseDataGeneratorIT {
         System.out.println("Wrote locations!");
     }
 
-    private static void writeAttachedDocument(int numberOfUsers, Date startDate, Date endDate) {
+    private void writeAttachedDocument(int numberOfUsers, Date startDate, Date endDate) {
 
         System.out.println("Starting to write attached documents for " + Integer.toString(numberOfUsers) + " users, between "
                 + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
@@ -275,7 +275,7 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished writing attached documents!");
     }
 
-    private static void writeMedicalRedord(int numberOfUsers, Date startDate, Date endDate) {
+    private void writeMedicalRedord(int numberOfUsers, Date startDate, Date endDate) {
         System.out.println("Starting to write medical records for " + Integer.toString(numberOfUsers) + " users, between "
                 + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
         Random rand = new Random();
@@ -303,14 +303,13 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished writing medical records!");
     }
 
-    protected static void writeTestUsers(int numberOfUsers) {
+    protected void writeTestUsers(int numberOfUsers) {
         System.out.println("Starting to write test users: " + Integer.toString(numberOfUsers));
         String rowKey;
         String secretKey = "sk";
         Boolean userStatus = true;
         String userPhone = "555-";
         Date dob = new Date();
-        UserRepository userRepo = new UserRepository();
         User.AccountData accData;
         User.PersonalData persData;
         User.MedicalNotes medNotes;
@@ -323,28 +322,28 @@ public class HBaseDataGeneratorIT {
             secretKey = secretKey + Integer.toString(i);
             userPhone = userPhone + Integer.toString(i);
             accData = new User.AccountData(secretKey, userStatus, userPhone);
-            userRepo.saveAccountData(rowKey, accData);
+            userRepository.saveAccountData(rowKey, accData);
             //personal data
             namePrefix = namePrefix + Integer.toString(i);
             locationID = rand.nextInt(location.length);
             persData = new User.PersonalData(namePrefix, dob, location[locationID]);
-            userRepo.savePersonalData(rowKey, persData);
+            userRepository.savePersonalData(rowKey, persData);
             //medical notes
             smoker = rand.nextBoolean();
             medNotes = new User.MedicalNotes(null, User.MedicalNotes.SMOKER.HEAVY, INHERITED_RISK.HIGH);
-            userRepo.saveMedicalNotes(rowKey, medNotes);
+            userRepository.saveMedicalNotes(rowKey, medNotes);
             //TODO: family tree
         }
         System.out.println("Finished writing test users");
     }
 
-    protected static int getDaysInInterval(Date startDate, Date endDate) {
+    protected int getDaysInInterval(Date startDate, Date endDate) {
         //get the number of days in the specified interval
         final long miliSecondsInADay = 1000 * 60 * 60 * 24;
         return Math.round((endDate.getTime() - startDate.getTime()) / miliSecondsInADay);
     }
 
-    protected static void writeFullTestSensorData(int rangeFrom, int rangeTo, Date startDate, Date endDate) {
+    protected void writeFullTestSensorData(int rangeFrom, int rangeTo, Date startDate, Date endDate) {
         System.out.println("Starting to write full sensor data for users between" + Integer.toString(rangeFrom) + " and "
                 + Integer.toString(rangeTo) + " and dates between "
                 + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
@@ -389,7 +388,7 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished generating full sensor data!");
     }
 
-    protected static void writePartialTestSensorData(int rangeFrom, int rangeTo, Date startDate, Date endDate, int completeDataPercent) {
+    protected void writePartialTestSensorData(int rangeFrom, int rangeTo, Date startDate, Date endDate, int completeDataPercent) {
         System.out.println("Starting to write partial sensor data for users between " + Integer.toString(rangeFrom) + " and "
                 + Integer.toString(rangeTo) + " and dates between "
                 + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
@@ -437,7 +436,7 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished writing partial sensor data!");
     }
 
-    protected static void writeFullTestLivingHabitsData(int rangeFrom, int rangeTo, Date startDate, Date endDate) {
+    protected void writeFullTestLivingHabitsData(int rangeFrom, int rangeTo, Date startDate, Date endDate) {
         System.out.println("Starting to full living habits for users between " + Integer.toString(rangeFrom) + " and "
                 + Integer.toString(rangeTo) + " and dates between "
                 + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));
@@ -488,7 +487,7 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished writing full living habits!");
     }
 
-    protected static void writePartialTestLivingHabitsData(int rangeFrom, int rangeTo, Date startDate, Date endDate, int completeDataPercent) {
+    protected void writePartialTestLivingHabitsData(int rangeFrom, int rangeTo, Date startDate, Date endDate, int completeDataPercent) {
         System.out.println("Starting to write partial living habits for users between " + Integer.toString(rangeFrom) + " and "
                 + Integer.toString(rangeTo) + " and dates between "
                 + dateFormat.format(startDate) + " and " + dateFormat.format(endDate));

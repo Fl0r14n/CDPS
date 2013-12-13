@@ -16,14 +16,11 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.hadoop.hbase.HbaseTemplate;
 import org.springframework.data.hadoop.hbase.RowMapper;
 import org.springframework.data.hadoop.hbase.TableCallback;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public class HRepository<T extends Object> {
+public abstract class HRepository<T extends Object> {
 
     private static final Logger L = LoggerFactory.getLogger(HRepository.class);
 
@@ -39,14 +36,15 @@ public class HRepository<T extends Object> {
      *
      * @param tableClass The class annotated with @HTable. Might be same class
      * or other
+     * @param hbaseTemplate The HBaseTemplate object because spring does not
+     * autowire in abstract classes
      */
-    public HRepository(Class<?> tableClass) {
+    public HRepository(Class<?> tableClass, HbaseTemplate hbaseTemplate) {
         this();
-        tableName = HAnnotation.getTableName(tableClass.getClass());
+        this.hbaseTemplate = hbaseTemplate;
+        tableName = HAnnotation.getTableName(tableClass);
     }
     private String tableName;
-
-    @Autowired
     private HbaseTemplate hbaseTemplate;
 
     /**
@@ -58,6 +56,9 @@ public class HRepository<T extends Object> {
      * @return same object if persisted
      */
     public <S extends T> S save(final byte[] row, final S s) {
+        if (hbaseTemplate == null) {
+            System.out.println("hbaseTemplate == null");
+        }
         return hbaseTemplate.execute(tableName, new TableCallback<S>() {
 
             @Override

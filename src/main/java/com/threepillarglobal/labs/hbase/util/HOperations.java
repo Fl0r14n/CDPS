@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 /**
  * Implements usual hbase operations
  */
-public class HOperations {
+public abstract class HOperations {
 
     /**
      * Creates an HBase table based on an annotated hbase entity

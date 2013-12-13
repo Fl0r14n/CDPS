@@ -1,4 +1,4 @@
-    package com.threepillarglobal.labs.cdps.domain;
+package com.threepillarglobal.labs.cdps.domain;
 
 import com.threepillarglobal.labs.hbase.annotation.HColumn;
 import com.threepillarglobal.labs.hbase.annotation.HColumnFamily;
@@ -11,18 +11,25 @@ import lombok.Getter;
 import lombok.ToString;
 
 @HTable(name = "location", columnFamilies = {"ld", "res"})
+@AllArgsConstructor
+@Getter
+@ToString
+@EqualsAndHashCode
 public class Location {
 
-    public static final String separator = "|";
+    private static final String separator = "|";
 
     public static byte[] toRowKey(String countryName, String countyName, String cityName) {
         return (countryName + separator + countyName + separator + cityName).getBytes();
     }
 
+    private final LocationDetails locationDetails;
+    private final Residents residents;
+    
     @HColumnFamily(name = "ld")
     @AllArgsConstructor
-    @ToString
     @Getter
+    @ToString
     @EqualsAndHashCode
     public static class LocationDetails {
 
@@ -36,8 +43,8 @@ public class Location {
 
     @HColumnFamily(name = "res")
     @AllArgsConstructor
-    @ToString
     @Getter
+    @ToString
     @EqualsAndHashCode
     public static class Residents {
 

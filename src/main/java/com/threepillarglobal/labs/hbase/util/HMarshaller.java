@@ -9,7 +9,7 @@ import org.apache.hadoop.hbase.client.Result;
 /**
  * Handless marshalling to and from HBase api
  */
-public class HMarshaller {
+public abstract class HMarshaller {
 
     /**
      * Unmarshall a Result to a POJO object
