@@ -1,11 +1,15 @@
 package com.threepillarglobal.labs.cdps.service.mock;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.Period;
 
 import com.threepillarglobal.labs.cdps.domain.HourlyData;
 import com.threepillarglobal.labs.cdps.domain.SensorData;
@@ -16,6 +20,8 @@ public class MockDataGenerator {
 
 	
 	protected static List<SensorData> generateSensorData(int rangeFrom, int rangeTo, Date startDate, Date endDate){
+		
+		
 		String[] activityType = {"Eating", "Sleeping", "Exercising"};
 		 List<SensorData> sdList = new ArrayList<SensorData>();
 		 int activityDuration;
@@ -25,7 +31,7 @@ public class MockDataGenerator {
 	        int daysInInterval2 = getDaysInInterval(startDate, endDate);
 			int daysInInterval = daysInInterval2>0 ? daysInInterval2  : 1;
 	        for (int i = 0; i < daysInInterval; i++) {
-	            for (int j = rangeFrom; j <= rangeTo; j++) {
+	            //for (int j = rangeFrom; j <= rangeTo; j++) {
 	                SensorData sd;
 
 	                List<HourlyData> dailyData = new ArrayList<>();
@@ -42,7 +48,6 @@ public class MockDataGenerator {
 	                    hh = new HourlyData(currentActivityType, activityDuration, avgHR, systolicBP, diastolicBP, calories);
 	                    dailyData.add(hh);
 	                }
-
 	                sd = new SensorData(eventDate, dailyData.get(0), dailyData.get(1), dailyData.get(2),
 	                        dailyData.get(3), dailyData.get(4), dailyData.get(5),
 	                        dailyData.get(6), dailyData.get(7), dailyData.get(8),
@@ -53,7 +58,7 @@ public class MockDataGenerator {
 	                        dailyData.get(21), dailyData.get(22), dailyData.get(23)
 	                );
 	                sdList.add(sd);
-	            }
+	            //}
 	        }
 	                
 		return sdList;
@@ -61,9 +66,7 @@ public class MockDataGenerator {
 	
 	
 	 protected static int getDaysInInterval(Date startDate, Date endDate) {
-	        //get the number of days in the specified interval
-	        final long miliSecondsInADay = 1000 * 60 * 60 * 24;
-	        return Math.round((endDate.getTime() - startDate.getTime()) / miliSecondsInADay);
+		return Days.daysBetween(new DateTime(startDate), new DateTime(endDate)).getDays() +1;
 	 }
 	 
 	

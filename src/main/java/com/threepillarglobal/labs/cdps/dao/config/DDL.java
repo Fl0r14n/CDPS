@@ -6,7 +6,9 @@ import com.threepillarglobal.labs.cdps.domain.SensorData;
 import com.threepillarglobal.labs.cdps.domain.MedicalRecords;
 import com.threepillarglobal.labs.cdps.domain.Location;
 import com.threepillarglobal.labs.hbase.util.HOperations;
+
 import javax.annotation.Resource;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.springframework.beans.factory.InitializingBean;
@@ -15,7 +17,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class DDL implements InitializingBean {
 
-    @Resource(name = "hbaseConfiguration")
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+    /*@Resource(name = "hbaseConfiguration")
     private Configuration config;
 
     private HBaseAdmin admin;
@@ -32,5 +40,5 @@ public class DDL implements InitializingBean {
         HOperations.createTable(SensorData.class, admin);
         HOperations.createTable(MedicalRecords.class, admin);
         HOperations.createTable(Location.class, admin);
-    }
+    }*/
 }

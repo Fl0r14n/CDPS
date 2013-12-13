@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.QueryParam;
@@ -28,7 +29,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 @Controller
 public class UIController {
 
-	private static DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+	private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	 
     @Autowired
     @Qualifier(value = "chartServiceMock")
@@ -71,8 +72,10 @@ public class UIController {
 	public @ResponseBody
 	CardioRisk getRiskData(@RequestParam String uid,  @QueryParam("from") String from,
             @QueryParam("to") String to) {
-    	try {
-    		return riskFactorsService.getCardioRisk(uid, dateFormat.parse(from), dateFormat.parse(to));
+    	try {    		
+    		Date sDate = dateFormat.parse(from);
+			Date eDate = dateFormat.parse(to);
+			return riskFactorsService.getCardioRisk(uid, sDate, eDate);
 		} catch (ParseException e) { e.printStackTrace();}
 		return new CardioRisk(); 		
 	}

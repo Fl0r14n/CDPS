@@ -38,21 +38,14 @@ $(document).ready(function() {
 	var fromDate = new Date().yyyymmdd();
 	var toDate = new Date().yyyymmdd();
 	
-	t();
-	
-	function t(){
-		//alert (new Date(1351720800000));
-		//alert( parseInt(01) );
-	}
 	
 	chartloaded=false;
 	renderChart();
-	getOptions();
+	selectUser();
 	
 	var chart=$('#container').highcharts();	
 	
 	$("#w-get-data").on("click",function(){
-		//getData("BP",tempdata,fromDate,toDate,"Diastolic",0);
 		if(uid != 'n/a')
 			getRiskData(fromDate,toDate);
 		else
@@ -60,31 +53,36 @@ $(document).ready(function() {
 	});
 	
 	
-	
-	function getData(api,dataset, from, to, label, axis){
+	function getRiskData(from, to){
 		$.ajax({
-			url: "/rest/getChartData?uid="+ api,
-			dataType: "json",
-			data: {
-				from: from,
-				to: to
-			},			
-			success: function( response) {	
-				
-				if (depthOf(response[0])>2) {
-					dataset=createobjects(response);
-				}
-				else {
-					dataset=createobjects1(response,"diastolicPressure");
+				url: "/rest/getRiskData?uid=" + uid,
+				dataType: "json",
+				data: {
+					from: from,
+					to: to
+				},			
+				success: function( response) {	
+					
+					$("#risk").empty();
+					
+					var out = '<div id="riskBlock"><dl>';
+					out += '<dt>' + "Stroke RISK: " + '</dt><dd>' + response.riskFactor + " (" + response.strokeRisk + ")" + '</dd>';  
+					out += '<dt>' + "Age RI: " + '</dt><dd>' + response.ageIndex + '</dd>';  
+					out += '<dt>' + "Smoking RI: " + '</dt><dd>' + response.smokingIndex + '</dd>';  
+					out += '<dt>' + "Diastolic RI: " + '</dt><dd>' + response.diastolicIndex + '</dd>';  
+					out += '<dt>' + "Systolic RI: " + '</dt><dd>' + response.systolicIndex + '</dd>';  
+					out += '</dl></div>';
+		
+					$("#risk").append( out );												
+					
+					dataset=createobjects1(response.sensorData,"diastolicPressure");
 					renderChartByMetric(dataset, "Diastolic");
-					dataset=createobjects1(response,"systolicPressure");
+					dataset=createobjects1(response.sensorData,"systolicPressure");
 					renderChartByMetric(dataset, "Systolic");
+					
 				}
-				
-							
-			}
-		});
-	}
+			});
+    }
 	
 	function renderChartByMetric(dataset, label){
 				dataset.sort(Comparator);
@@ -107,7 +105,7 @@ $(document).ready(function() {
 	}
 	
 	
-	function getOptions(){
+	function selectUser(){
 			$('#w-input-search').autocomplete({
 				serviceUrl: '/rest/getUid',
 				paramName: "userName",
@@ -142,41 +140,9 @@ $(document).ready(function() {
 	}
 	
 	
-	function getRiskData(from, to){
-		$.ajax({
-				url: "/rest/getRiskData?uid=" + uid,
-				dataType: "json",
-				data: {
-					from: from,
-					to: to
-				},			
-				success: function( response) {	
-					
-					$("#risk").empty();
-					
-					var out = '<div id="riskBlock"><dl>';
-					out += '<dt>' + "Stroke RISK: " + '</dt><dd>' + response.riskFactor + " (" + response.strokeRisk + ")" + '</dd>';  
-					out += '<dt>' + "Age RI: " + '</dt><dd>' + response.ageIndex + '</dd>';  
-					out += '<dt>' + "Smoking RI: " + '</dt><dd>' + response.smokingIndex + '</dd>';  
-					out += '<dt>' + "Diastolic RI: " + '</dt><dd>' + response.diastolicIndex + '</dd>';  
-					out += '<dt>' + "Systolic RI: " + '</dt><dd>' + response.systolicIndex + '</dd>';  
-					out += '</dl></div>';
-		
-					$("#risk").append( out );												
-					
-					dataset=createobjects1(response.sensorData,"diastolicPressure");
-					renderChartByMetric(dataset, "Diastolic");
-					dataset=createobjects1(response.sensorData,"systolicPressure");
-					renderChartByMetric(dataset, "Systolic");
-					
-				}
-			});
-    }
-	
-	
 	
 	$(document).ajaxStart(function(){
-		//chart.showLoading('Loading data from server...');
+		chart.showLoading('Loading data from server...');
 	});
 		
 	$(document).ajaxStop(function(){
@@ -211,79 +177,7 @@ $(document).ready(function() {
 	}
 	
 	
-	function createobjects1Orig(obj,metric) {
-		var returndata=[];
-		//obj = jQuery.parseJSON(obj);
-		$(".details1").empty();
-		for (var i=0; i<obj.length; i++){
-				var myDate = new Date(obj[i].date);
-				$(".details1").append(obj[i].riskInfo);
-				var offset = myDate.getTimezoneOffset() * 1000;
-				var withOffset = myDate.getTime();
-				var withoutOffset = withOffset - offset;
-				var basetimestamp = parseInt(withOffset);	
-				for (var key in obj[i]) {
-					if (key!="id" && key !="date" && key!="riskInfo"){
-						timestamp = 0;
-						var hour = parseInt(key);
-						value=parseFloat(obj[i][key][metric]);
-						if(!isNaN(value)){
-						    timestamp = basetimestamp + parseInt(hour*3600*1000)
-							returndata.push([timestamp,value]);
-						}
-					 }
-				}
-			}
-		return returndata;	
-	}
-	
-	
-	function createobjects(obj) {
-		var returndata=[];
-		//obj = jQuery.parseJSON(obj);
-		for (var i=0; i<obj.length; i++){
-				var myDate = new Date(obj[i].day);
-				var offset = myDate.getTimezoneOffset() * 1000;
-				var withOffset = myDate.getTime();
-				var withoutOffset = withOffset - offset;
-				var basetimestamp = parseInt(withOffset);				
-				for (var key in obj[i]) {
-					if (key!="id" && key !="day" && key!="_id"){
-						timestamp = 0;
-						var hour = parseInt(key*3600*1000);
-						//timestamp = basetimestamp + parseInt(key*3600*1000
-						for (var min in obj[i][key]){
-							var minute = parseInt(min*60*1000);
-							for (var milis in obj[i][key][min]){
-								var milisecond = parseInt(milis) 
-								timestamp = basetimestamp + hour+minute+milisecond;
-								value=parseFloat(obj[i][key][min][milis]);
-								//timestamps.push(timestamp+parseInt(milis));
-								//values.push(value);
-								returndata.push([timestamp,value]);
-							}
-						}
-					}
-					
-				}
-			}
-		return returndata;	
-	}
-	
-	function depthOf(object) {
-		var level = 1;
-		var key;
-		for(key in object) {
-			if (!object.hasOwnProperty(key)) continue;
-
-			if(typeof object[key] == 'object'){
-				var depth = depthOf(object[key]) + 1;
-				level = Math.max(depth, level);
-			}
-		}
-		return level;
-	}
-	
+		
 	function Comparator(a,b){
 		if (a[0] < b[0]) return -1;
 		if (a[0] > b[0]) return 1;
@@ -293,11 +187,6 @@ $(document).ready(function() {
 	
 		function renderChart() {
 		
-
-		// Create a timer
-		//var start = + new Date();
-
-		// Create the chart
 		$('#container').highcharts({
 		    chart: {
 				backgroundColor: '#EFEFEB',				
@@ -306,7 +195,6 @@ $(document).ready(function() {
 					load: function(chart) {
 						chartloaded = true;
 						this.setTitle(null, {
-							//text: 'Built chart at '+ (new Date() - start) +'ms'
 						});
 						
 					}
@@ -488,7 +376,7 @@ $(document).ready(function() {
 	
 });
 
-//getOptions();
+
 
 </script>
 </head>
