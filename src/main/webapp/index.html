@@ -46,7 +46,7 @@ $(document).ready(function() {
 	var chart=$('#container').highcharts();	
 	
 	$("#w-get-data").on("click",function(){
-		if(uid != 'n/a')
+		if(uid != 'n/a')		    
 			getRiskData(fromDate,toDate);
 		else
 			alert('Select user firstly');
@@ -62,6 +62,8 @@ $(document).ready(function() {
 					to: to
 				},			
 				success: function( response) {	
+					
+					chart.zoomOut(); 
 					
 					$("#risk").empty();
 					
