@@ -49,7 +49,7 @@ public abstract class HMarshaller {
         //get all hcolums and read value
         for (Field field : clazz.getDeclaredFields()) {
             HColumn hColumn = field.getAnnotation(HColumn.class);
-            if (hColumn != null) {
+            if (hColumn != null) {                
                 put.add(cFamily, hColumn.name().getBytes(), ReflectionUtil.getFieldValue(field, obj));
             }
         }

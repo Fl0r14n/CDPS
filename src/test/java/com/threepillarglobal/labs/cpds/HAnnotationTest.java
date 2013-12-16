@@ -4,6 +4,7 @@ import com.threepillarglobal.labs.hbase.annotation.HColumn;
 import com.threepillarglobal.labs.hbase.annotation.HColumnFamily;
 import com.threepillarglobal.labs.hbase.annotation.HTable;
 import com.threepillarglobal.labs.hbase.util.HAnnotation;
+import java.util.Map;
 import lombok.Getter;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,6 +28,7 @@ public class HAnnotationTest {
         private String col2;
     }
 
+    @HTable(name = TABLE)
     @Getter
     public static class Sample2 {
 
@@ -60,5 +62,22 @@ public class HAnnotationTest {
         String[] expected = {CFAMILY1, CFAMILY2};
         String[] result = HAnnotation.getColumnFamilyNames(Sample2.class);
         Assert.assertArrayEquals(expected, result);
+    }
+    
+    @Test
+    public void get_column_family_class_from_table() {
+        Map<String, Class<?>> result = HAnnotation.getColumnFamilies(Sample1.class);
+        Assert.assertTrue(Sample1.class.getName().equals(result.get(CFAMILY1).getName()));
+    }
+    
+    @Test
+    public void get_column_family_classes_from_table_fields() {
+        Map<String, Class<?>> result = HAnnotation.getColumnFamilies(Sample2.class);
+        Assert.assertEquals(Object.class.getName(), result.get(CFAMILY2).getName());
+    }
+    
+    public void get_cloumns() {
+        Map<String, Class<?>> result = HAnnotation.getColumns(Sample1.class);
+        Assert.assertTrue(result.get(COLUMN1).getName().equals(result.get(COLUMN1).getName()));
     }
 }
