@@ -102,10 +102,11 @@ public class HMarshallerTest {
         HMarshaller.marshall(table, put);
     }
 
-    @Test
-    @Ignore
+    @Test    
     public void unmarshall_a_table_object_with_all_cfamilies() throws Exception {
         System.out.println(res);
         Table table = HMarshaller.unmarshall(Table.class, res);
+        //TODO some assertion
+        System.out.println(table);
     }
 }
