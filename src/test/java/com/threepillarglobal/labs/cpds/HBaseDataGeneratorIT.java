@@ -20,15 +20,12 @@ import java.util.Date;
 
 import com.threepillarglobal.labs.cdps.dao.repository.*;
 import com.threepillarglobal.labs.cdps.domain.*;
-import com.threepillarglobal.labs.cdps.domain.User.MedicalNotes.INHERITED_RISK;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import com.threepillarglobal.labs.hbase.util.HOperations;
-import java.util.Collections;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
@@ -220,7 +217,7 @@ public class HBaseDataGeneratorIT {
         }
     }
 
-    @Test
+    //@Test
     public void testWriteLocations() {
         System.out.println("Starting to write locations");
         for (String location1 : location) {
@@ -233,7 +230,7 @@ public class HBaseDataGeneratorIT {
         System.out.println("Wrote locations!");
     }
 
-    @Test
+    //@Test
     public void testWriteAttachedDocument() {
         TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
         int numberOfUsers = tdgc.userCount;
@@ -253,7 +250,7 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished writing attached documents!");
     }
 
-    @Test
+    //@Test
     public void testWriteMedicalRedord() {
         TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
         int numberOfUsers = tdgc.userCount;
@@ -283,7 +280,7 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished writing medical records!");
     }
 
-    @Test
+    //@Test
     public void testWriteTestUsers() {
         TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
         int numberOfUsers = tdgc.userCount;
@@ -324,7 +321,7 @@ public class HBaseDataGeneratorIT {
         return Math.round((endDate.getTime() - startDate.getTime()) / miliSecondsInADay);
     }
 
-    @Test
+    //@Test
     public void testWriteFullTestSensorData() {
         TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
         int rangeFrom = 0;
@@ -373,7 +370,7 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished generating full sensor data!");
     }
 
-    @Test
+    //@Test
     public void testWritePartialTestSensorData() {
         TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
         int rangeFrom = Math.round(tdgc.userCount * tdgc.fullSensorDataPercent / 100) + 1;
@@ -427,7 +424,7 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished writing partial sensor data!");
     }
 
-    @Test
+    //@Test
     public void testWriteFullTestLivingHabitsData() {
         TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
         int rangeFrom = 0;
@@ -455,11 +452,11 @@ public class HBaseDataGeneratorIT {
         int alcohol;
         int softDrinks;
         BigDecimal riskFactor = new BigDecimal(1.0);
-        LivingData ld;
 
         int daysInInterval = getDaysInInterval(startDate, endDate);
         for (int i = 1; i <= daysInInterval; i++) {
             for (int j = rangeFrom; j <= rangeTo; j++) {
+                LivingData ld;
                 minsOfSleep = rand.nextInt(minsInDay);
                 minsOfExcercise = rand.nextInt(minsInDay - minsOfSleep);
                 calories = rand.nextInt(5000);

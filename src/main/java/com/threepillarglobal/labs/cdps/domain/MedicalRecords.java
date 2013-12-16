@@ -3,6 +3,7 @@ package com.threepillarglobal.labs.cdps.domain;
 import com.threepillarglobal.labs.hbase.annotation.HColumn;
 import com.threepillarglobal.labs.hbase.annotation.HColumnFamily;
 import com.threepillarglobal.labs.hbase.annotation.HTable;
+import java.text.SimpleDateFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -17,9 +18,11 @@ import lombok.EqualsAndHashCode;
 @ToString
 @EqualsAndHashCode
 public class MedicalRecords {
+    
+    private final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     public static byte[] toRowKey(String email, Date eventDate) {
-        return MD5Hash.digest(email + eventDate.toString()).getDigest();
+        return (MD5Hash.digest(email).toString() + dateFormat.format(eventDate)).getBytes();
     }
 
     @HColumnFamily(name = "mr")

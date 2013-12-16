@@ -19,12 +19,12 @@ public class MedicalRecordsRepository {
     @Autowired
     private HbaseTemplate hbaseTemplate;
 
-    public MedicalRecord saveMedicalRecord(final String email, final Date recordDate, final MedicalRecord medicalRecord) {
-        final String tableName = HAnnotation.getTableName(MedicalRecord.class);
-        final String cfamilyName = HAnnotation.getColumnFamilyName(MedicalRecord.class);
-        return hbaseTemplate.execute(tableName, new TableCallback<MedicalRecord>() {
+    public MedicalRecords.MedicalRecord saveMedicalRecord(final String email, final Date recordDate, final MedicalRecords.MedicalRecord medicalRecord) {
+        final String tableName = HAnnotation.getTableName(MedicalRecords.class);
+        final String cfamilyName = HAnnotation.getColumnFamilyName(MedicalRecords.MedicalRecord.class);
+        return hbaseTemplate.execute(tableName, new TableCallback<MedicalRecords.MedicalRecord>() {
             @Override
-            public MedicalRecord doInTable(HTableInterface table) throws Throwable {
+            public MedicalRecords.MedicalRecord doInTable(HTableInterface table) throws Throwable {
                 Put p = new Put(MedicalRecords.toRowKey(email, recordDate));
                 HMarshaller.marshall(medicalRecord, p);
                 table.put(p);
@@ -36,7 +36,7 @@ public class MedicalRecordsRepository {
 
     public DocumentsAttached saveAttachedDocument(final String email, final Date recordDate, final DocumentsAttached attachedDocument)
     {
-        final String tableName = HAnnotation.getTableName(DocumentsAttached.class);
+        final String tableName = HAnnotation.getTableName(MedicalRecords.class);
         final String cfamilyName = HAnnotation.getColumnFamilyName(DocumentsAttached.class);
         return hbaseTemplate.execute(tableName, new TableCallback<DocumentsAttached>() {
             @Override
