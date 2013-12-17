@@ -53,10 +53,11 @@ public abstract class HAnnotation {
     }
 
     /**
-     * Get all declared columns from annotated HBase entity.
-     * The entity must be annotated with @HColumnFamily
+     * Get all declared columns from annotated HBase entity. The entity must be
+     * annotated with @HColumnFamily
      *
-     * @param cFamilyClass the column family class or single column family table annotated with HColumnFamily
+     * @param cFamilyClass the column family class or single column family table
+     * annotated with HColumnFamily
      * @return a map of columns with name and associated class
      */
     public static Map<String, Class<?>> getColumns(Class<?> cFamilyClass) {
@@ -89,7 +90,10 @@ public abstract class HAnnotation {
             }
         }
         if (buf.isEmpty()) {
-            buf.add(getColumnFamilyName(clazz));
+            String cFamilyName = getColumnFamilyName(clazz);
+            if(cFamilyName!=null) {
+                buf.add(cFamilyName);
+            }
         }
         String[] result = {};
         return buf.toArray(result);
@@ -105,7 +109,9 @@ public abstract class HAnnotation {
      */
     public static String getColumnFamilyName(Class<?> clazz) {
         HColumnFamily hColumnFamily = clazz.getAnnotation(HColumnFamily.class);
-        assert hColumnFamily != null : "HColumnFamily annotation missing!";
+        if (hColumnFamily == null) {
+            return null;
+        }
         return hColumnFamily.name();
     }
 
