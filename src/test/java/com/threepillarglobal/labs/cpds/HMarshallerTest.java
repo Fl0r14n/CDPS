@@ -15,10 +15,8 @@ import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
-//TODO
 public class HMarshallerTest {
 
     @HTable(name = "table")
@@ -30,9 +28,9 @@ public class HMarshallerTest {
         private static byte[] row = "row".getBytes();
 
         @HColumnFamily(name = "cfamily1")
-        private CFamily1 cFamily1;
+        private CFamily1 cFamily1 = new CFamily1();
         @HColumnFamily(name = "cfamily2")
-        private CFamily2 cFamily2;
+        private CFamily2 cFamily2 = new CFamily2();
 
         @HColumnFamily(name = "cfamily1")
         @Getter
@@ -41,9 +39,9 @@ public class HMarshallerTest {
         public static class CFamily1 {
 
             @HColumn(name = "col01")
-            String col01 = "value0";
+            private String col01 = "value0";
             @HColumn(name = "col02")
-            String col02 = "value1";
+            private String col02 = "value1";
 
         }
 
@@ -54,9 +52,9 @@ public class HMarshallerTest {
         public static class CFamily2 {
 
             @HColumn(name = "col11")
-            String col11 = "value2";
+            private String col11 = "value2";
             @HColumn(name = "col12")
-            String col12 = "value3";
+            private String col12 = "value3";
         }
     }
 
@@ -80,7 +78,7 @@ public class HMarshallerTest {
         Table.CFamily1 obj = new Table.CFamily1();
         Put put = new Put(Table.row);
         HMarshaller.marshall(obj, put);
-        
+
         Assert.assertTrue(put.has("cfamily1".getBytes(), "col01".getBytes(), "value0".getBytes()));
         Assert.assertTrue(put.has("cfamily1".getBytes(), "col02".getBytes(), "value1".getBytes()));
     }
@@ -89,24 +87,30 @@ public class HMarshallerTest {
     public void unmarshall_a_column_family_object() throws Exception {
         Table.CFamily1 expected = new Table.CFamily1();
         Table.CFamily1 actual = HMarshaller.unmarshall(Table.CFamily1.class, res);
-        
-        Assert.assertTrue(expected.col01.equals(actual.col01));
-        Assert.assertTrue(expected.col02.equals(actual.col02));
+
+        Assert.assertTrue(expected.getCol01().equals(actual.getCol01()));
+        Assert.assertTrue(expected.getCol02().equals(actual.getCol02()));
     }
 
     @Test
-    @Ignore
     public void marshall_a_table_object_with_all_cfamilies() throws Exception {
         Put put = new Put(Table.row);
         Table table = new Table();
         HMarshaller.marshall(table, put);
+        Assert.assertTrue(put.has("cfamily1".getBytes(), "col01".getBytes(), "value0".getBytes()));
+        Assert.assertTrue(put.has("cfamily1".getBytes(), "col02".getBytes(), "value1".getBytes()));
+        Assert.assertTrue(put.has("cfamily2".getBytes(), "col11".getBytes(), "value2".getBytes()));
+        Assert.assertTrue(put.has("cfamily2".getBytes(), "col12".getBytes(), "value3".getBytes()));
     }
 
-    @Test    
+    @Test
     public void unmarshall_a_table_object_with_all_cfamilies() throws Exception {
-        System.out.println(res);
-        Table table = HMarshaller.unmarshall(Table.class, res);
-        //TODO some assertion
-        System.out.println(table);
+        Table expected = new Table();
+        Table actual = HMarshaller.unmarshall(Table.class, res);
+
+        Assert.assertTrue(expected.getCFamily1().getCol01().equals(actual.getCFamily1().getCol01()));
+        Assert.assertTrue(expected.getCFamily1().getCol02().equals(actual.getCFamily1().getCol02()));
+        Assert.assertTrue(expected.getCFamily2().getCol11().equals(actual.getCFamily2().getCol11()));
+        Assert.assertTrue(expected.getCFamily2().getCol12().equals(actual.getCFamily2().getCol12()));
     }
 }

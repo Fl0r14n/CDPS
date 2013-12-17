@@ -51,20 +51,27 @@ public abstract class HMarshaller {
      * Put object
      *
      * @param <T> Class type
-     * @param obj The annotated POJO object
+     * @param t The annotated POJO object
      * @param put The instance of a Put object. Do not forget to set the index
      * key to the Put object
      * @throws Exception
      */
-    public static <T> void marshall(T obj, Put put) throws Exception {
-        Class<?> clazz = obj.getClass();
-        //get column family
-        byte[] cFamily = getColumnFamilyName(clazz).getBytes();
-        //get all hcolums and read value
+    public static <T> void marshall(T t, Put put) throws Exception {
+        //get class type
+        Class<?> clazz = t.getClass();
         for (Field field : clazz.getDeclaredFields()) {
-            HColumn hColumn = field.getAnnotation(HColumn.class);
-            if (hColumn != null) {
-                put.add(cFamily, hColumn.name().getBytes(), ReflectionUtil.getFieldValue(field, obj));
+            HColumnFamily hColumnFamily = field.getAnnotation(HColumnFamily.class);
+            if (hColumnFamily != null) {
+                field.setAccessible(true);                
+                //recursive call
+                marshall(field.get(t), put);
+            } else {
+                //get column family from class annotation
+                HColumn hColumn = field.getAnnotation(HColumn.class);
+                if (hColumn != null) {
+                    byte[] cFamily = getColumnFamilyName(clazz).getBytes();
+                    put.add(cFamily, hColumn.name().getBytes(), ReflectionUtil.getFieldValue(field, t));
+                }
             }
         }
     }
