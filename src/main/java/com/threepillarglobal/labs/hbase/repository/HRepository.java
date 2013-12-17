@@ -115,13 +115,11 @@ public abstract class HRepository<T extends Object> {
      */
     public T findOne(byte[] row) {
         final String cfamilyName = HAnnotation.getColumnFamilyName(tClass);
-        return hbaseTemplate.get(tableName, new String(row), cfamilyName, new RowMapper<T>() {
-
-            @Override
-            public T mapRow(Result result, int i) throws Exception {
-                return HMarshaller.unmarshall(tClass, result);
-            }
-        });
+        if (cfamilyName != null) {
+            return hbaseTemplate.get(tableName, new String(row), cfamilyName, new RowMapperImpl());
+        } else {
+            return hbaseTemplate.get(tableName, new String(row), new RowMapperImpl());
+        }
     }
 
     /**
@@ -131,12 +129,11 @@ public abstract class HRepository<T extends Object> {
      */
     public List<T> findAll() {
         final String cfamilyName = HAnnotation.getColumnFamilyName(tClass);
-        return hbaseTemplate.find(tableName, cfamilyName, new RowMapper<T>() {
-            @Override
-            public T mapRow(Result result, int rowNum) throws Exception {
-                return HMarshaller.unmarshall(tClass, result);
-            }
-        });
+        if (cfamilyName != null) {
+            return hbaseTemplate.find(tableName, cfamilyName, new RowMapperImpl());
+        } else {
+            return hbaseTemplate.find(tableName, new Scan(), new RowMapperImpl());
+        }
     }
 
     /**
@@ -161,7 +158,7 @@ public abstract class HRepository<T extends Object> {
      * @param stopRow The end row key
      * @return a list of the found entities
      */
-    public List<T> findAll(byte[] startRow, byte[] stopRow) {
+    public List<T> findAll(byte[] startRow, byte[] stopRow) {        
         return hbaseTemplate.find(tableName, new Scan(startRow, stopRow), new RowMapper<T>() {
 
             @Override
@@ -232,6 +229,17 @@ public abstract class HRepository<T extends Object> {
             HOperations.createTable(tClass, admin);
         } catch (IOException ioe) {
             L.error(HRepository.class.getMethods()[0].toGenericString(), ioe);
+        }
+    }
+
+    private class RowMapperImpl implements RowMapper<T> {
+
+        public RowMapperImpl() {
+        }
+
+        @Override
+        public T mapRow(Result result, int i) throws Exception {
+            return HMarshaller.unmarshall(tClass, result);
         }
     }
 }
