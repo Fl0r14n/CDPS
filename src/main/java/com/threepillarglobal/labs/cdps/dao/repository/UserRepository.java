@@ -14,6 +14,8 @@ public class UserRepository {
 
     @Autowired
     public UserRepository(HbaseTemplate hbaseTemplate) {
+        userRepo = new HRepository<User>(User.class, hbaseTemplate) {
+        };
         accountDataRepo = new HRepository<AccountData>(User.class, hbaseTemplate) {
         };
         personalDataRepo = new HRepository<PersonalData>(User.class, hbaseTemplate) {
@@ -23,11 +25,20 @@ public class UserRepository {
         medicalNotesRepository = new HRepository<MedicalNotes>(User.class, hbaseTemplate) {
         };
     }
+    private final HRepository<User> userRepo;
     private final HRepository<AccountData> accountDataRepo;
     private final HRepository<PersonalData> personalDataRepo;
     private final HRepository<FamilyTree> familyTreeRepo;
     private final HRepository<MedicalNotes> medicalNotesRepository;
 
+    public List<User> findAllUser() {
+        return userRepo.findAll();
+    }
+    
+    public User findUser(String email) {
+        return userRepo.findOne(User.toRowKey(email));
+    }
+    
     public List<AccountData> findAllAccountData() {
         return accountDataRepo.findAll();
     }
