@@ -116,13 +116,13 @@ $(document).ready(function() {
 				onSelect: function(suggestion){
 				 //$(".details").empty();
 				 
-				uid = suggestion.data.email; 
+				uid = suggestion.data.accountData.email; 
 				$(".details").empty();
 		    
 					var out = '<dl>';
 					out += '<dt>' + "Name: " + '</dt><dd>' + suggestion.data.personalData.name + '</dd>';  
 					out += '<dt>' + "Date of birth: " + '</dt><dd>' + new Date(suggestion.data.personalData.dob).yyyymmdd() + '</dd>';  
-					out += '<dt>' + "Email: " + '</dt><dd>' + suggestion.data.email + '</dd>';
+					out += '<dt>' + "Email: " + '</dt><dd>' + suggestion.data.accountData.email + '</dd>';
 					out += '</dl>';
 					$(".details").append( out );
 				},

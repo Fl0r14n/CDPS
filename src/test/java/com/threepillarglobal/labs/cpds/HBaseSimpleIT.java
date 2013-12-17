@@ -49,7 +49,7 @@ public class HBaseSimpleIT {
     public void populate_hbase_with_some_accont_data_print_it_then_delete_it() {
         //TODO
         for (int i = 0; i < 10; i++) {
-            AccountData ad = new AccountData("secret" + i, (i % 2 == 1) ? Boolean.TRUE : Boolean.FALSE, "072900000" + i);
+            AccountData ad = new AccountData("secret" + i, (i % 2 == 1) ? Boolean.TRUE : Boolean.FALSE, "072900000" + i, "secret"+ i + "@3pg.com");
             userRepository.saveAccountData("key@" + i, ad);
         }
         for (AccountData ad : userRepository.findAllAccountData()) {

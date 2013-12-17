@@ -14,5 +14,11 @@ public class UserServiceMock implements UserService {
 	public List<User> getUsers() {
 		return MockDataGenerator.fetchMockUserData(100);
 	}
+
+	@Override
+	public User getUser(String email) {
+		// TODO Auto-generated method stub
+		return null;
+	}
     
 }

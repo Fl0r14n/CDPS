@@ -25,7 +25,6 @@ public class User {
         return MD5Hash.digest(email).getDigest();
     }
 
-    private final String email;
     @HColumnFamily(name = "ad")
     private final AccountData accountData;
     @HColumnFamily(name = "pd")
@@ -48,6 +47,8 @@ public class User {
         private final Boolean active;
         @HColumn(name = "phone")
         private final String phone;
+        @HColumn(name = "email")
+        private final String email;
     }
 
     @HColumnFamily(name = "pd")

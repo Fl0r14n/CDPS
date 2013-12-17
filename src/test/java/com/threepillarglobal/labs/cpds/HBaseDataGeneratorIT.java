@@ -45,7 +45,7 @@ public class HBaseDataGeneratorIT {
 
     private static final Logger L = LoggerFactory.getLogger(HBaseSimpleIT.class);
     private static final String emailPattern = "user<ID>@3pg.com";
-    private static final String namePrefix = "John Doe #";
+    private static final String namePrefix = "Mario Bross #";
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] location = {"Romania|Cluj|Cluj-Napoca", "Romania|Timisoara|Timisoara", "USA|Washington|Washington DC"};
     private static final String[] activityType = {"Eating", "Sleeping", "Exercising"};
@@ -298,7 +298,7 @@ public class HBaseDataGeneratorIT {
             //account data
             secretKey = secretKey + Integer.toString(i);
             userPhone = userPhone + Integer.toString(i);
-            accData = new User.AccountData(secretKey, userStatus, userPhone);
+            accData = new User.AccountData(secretKey, userStatus, userPhone, rowKey);
             userRepository.saveAccountData(rowKey, accData);
             //personal data
             locationID = rand.nextInt(location.length);

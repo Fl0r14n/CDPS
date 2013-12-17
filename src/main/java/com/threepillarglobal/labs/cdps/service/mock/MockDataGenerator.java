@@ -88,7 +88,7 @@ public class MockDataGenerator {
             //account data
             secretKey = secretKey + Integer.toString(i);
             userPhone = userPhone + Integer.toString(i);
-            accData = new User.AccountData(secretKey, userStatus, userPhone);
+            accData = new User.AccountData(secretKey, userStatus, userPhone, rowKey);
 	            //userRepo.saveAccountData(rowKey, accData);
             //personal data
             namePrefix = namePrefix + Integer.toString(i);
@@ -100,7 +100,7 @@ public class MockDataGenerator {
             medNotes = new User.MedicalNotes(null, User.MedicalNotes.SMOKER.CASUAL, INHERITED_RISK.HIGH);
 	            //userRepo.saveMedicalNotes(rowKey, medNotes);
             //TODO: family tree
-            User user = new User(rowKey, accData, persData, medNotes, null);
+            User user = new User( accData, persData, medNotes, null);
             userList.add(user);
         }
         return userList;

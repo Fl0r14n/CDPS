@@ -4,11 +4,14 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.QueryParam;
 
+import org.joda.time.DateTime;
+import org.joda.time.Seconds;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,6 +23,7 @@ import com.threepillarglobal.labs.cdps.domain.User;
 import com.threepillarglobal.labs.cdps.service.api.ChartService;
 import com.threepillarglobal.labs.cdps.service.api.RiskService;
 import com.threepillarglobal.labs.cdps.service.api.UserService;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +39,8 @@ public class UIController {
     private ChartService chartService;
 
     @Autowired
-    @Qualifier(value = "riskFactorServiceMock")
+    //@Qualifier(value = "riskFactorServiceMock")
+    @Qualifier(value = "riskFactorServiceImpl")
     private RiskService riskFactorsService;
 
     @Autowired
@@ -46,8 +51,10 @@ public class UIController {
 
     @PostConstruct
     public void init() {
+    	DateTime b = new DateTime(Calendar.getInstance().getTime());
         userList = userService.getUsers();
-        System.out.println("User size: " + userList.size());
+        DateTime e = new DateTime(Calendar.getInstance().getTime());
+        System.out.println("=== User list size: " + userList.size() + " retrieved in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " seconds");
     }
 
     @RequestMapping(value = "/getUid", method = RequestMethod.GET)
