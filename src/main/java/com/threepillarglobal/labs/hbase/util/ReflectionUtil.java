@@ -28,6 +28,12 @@ public abstract class ReflectionUtil {
     public static <T> byte[] getFieldValue(Field field, T t) throws Exception {
         field.setAccessible(true);
         Class<?> fieldType = field.getType();
+//        System.out.print(fieldType.getSimpleName());
+        //enums
+        if (fieldType.isEnum()) {
+            return field.get(t).toString().getBytes();
+        }
+        //primitives and wrappers
         switch (fieldType.getSimpleName()) {
             case "String": {
                 return Bytes.toBytes((String) field.get(t));
@@ -105,12 +111,19 @@ public abstract class ReflectionUtil {
      * @param value field value to be set as byte[]
      * @throws Exception
      */
+    @SuppressWarnings("unchecked")
     public static <T> void setFieldValue(Field field, T t, byte[] value) throws Exception {
-        if(value==null) {
+        if (value == null) {
             return;
         }
         field.setAccessible(true);
-        Class<?> fieldType = field.getType();
+        Class fieldType = field.getType();
+//        System.out.println(fieldType.getSimpleName());
+        //enums
+        if (field.isEnumConstant()) {
+            field.set(t, Enum.valueOf(fieldType, new String(value)));
+        }
+        //primitives or wrappers
         switch (fieldType.getSimpleName()) {
             case "String": {
                 field.set(t, Bytes.toString(value));
@@ -124,7 +137,7 @@ public abstract class ReflectionUtil {
                 field.set(t, Bytes.toBoolean(value));
                 return;
             }
-            case "byte": {
+            case "byte": {                
                 byte val = value.length > 0 ? (byte) (value[0] & 0xFF) : 0;
                 field.setByte(t, val);
                 return;
@@ -213,7 +226,6 @@ public abstract class ReflectionUtil {
 
     public static <T> T instantiate(Class<T> cls, Map<String, ? extends Object> args) throws Exception {
         final T instance = instantiate(cls);
-
         // Set separate fields
         for (Map.Entry<String, ? extends Object> arg : args.entrySet()) {
             Field f = cls.getDeclaredField(arg.getKey());
