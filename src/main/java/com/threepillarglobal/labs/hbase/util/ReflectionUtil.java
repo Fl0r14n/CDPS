@@ -106,6 +106,9 @@ public abstract class ReflectionUtil {
      * @throws Exception
      */
     public static <T> void setFieldValue(Field field, T t, byte[] value) throws Exception {
+        if(value==null) {
+            return;
+        }
         field.setAccessible(true);
         Class<?> fieldType = field.getType();
         switch (fieldType.getSimpleName()) {
