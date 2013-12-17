@@ -42,12 +42,17 @@ public class UIController {
     @Autowired
     //@Qualifier(value = "userServiceMock")
     @Qualifier(value = "userServiceImpl")
-    private static UserService userService;
-    private static List<User> userList = userService.getUsers();
+    private UserService userService;
+    private List<User> userList;
+    
+    public UIController(){
+    	
+    }
 
     @RequestMapping(value = "/getUid", method = RequestMethod.GET)
     public @ResponseBody
     List<User> getTags(@RequestParam String userName) {
+    	userList = userService.getUsers();
         List<User> result = new ArrayList<User>();
         // iterate a list and filter by userName
         for (User user : userList) {
