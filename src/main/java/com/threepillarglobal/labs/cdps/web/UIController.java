@@ -40,7 +40,8 @@ public class UIController {
     private RiskService riskFactorsService;
 
     @Autowired
-    @Qualifier(value = "userServiceMock")
+    //@Qualifier(value = "userServiceMock")
+    @Qualifier(value = "userServiceImpl")
     private UserService userService;
 
 
