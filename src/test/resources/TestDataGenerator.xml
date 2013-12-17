@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <CDPSDataGenerator>
-    <UserCount>5</UserCount>
+    <UserCount>500</UserCount>
     <DataAquisition> 
-        <StartDate>2013-12-01</StartDate> 
+        <StartDate>2012-12-01</StartDate> 
         <EndDate>2013-12-10</EndDate>
         <SensorData>
             <FullSensorDataPercent>70</FullSensorDataPercent>

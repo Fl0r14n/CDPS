@@ -52,6 +52,7 @@ public class HBaseDataGeneratorIT {
     private static final String[] vitaminsLookup = {"A", "B", "C", "D", "E"};
     private static final String[] mineralsLookup = {"Fe", "Zn", "Mg", "Ca", "Vn"};
     private static final String documentURLPattern = "http://docs.google.com/docID=";
+    private static TestDataGeneratorConfig tdgc;
 
     @Resource(name = "hbaseConfiguration")
     private Configuration config;
@@ -75,7 +76,7 @@ public class HBaseDataGeneratorIT {
         HOperations.createTable(LivingData.class, new HBaseAdmin(config));
         HOperations.createTable(Location.class, new HBaseAdmin(config));
         HOperations.createTable(MedicalRecords.class, new HBaseAdmin(config));
-
+        tdgc = readDataGeneratorConfig();
     }
 
     @After
@@ -217,7 +218,7 @@ public class HBaseDataGeneratorIT {
         }
     }
 
-    //@Test
+    @Test
     public void testWriteLocations() {
         System.out.println("Starting to write locations");
         for (String location1 : location) {
@@ -230,9 +231,8 @@ public class HBaseDataGeneratorIT {
         System.out.println("Wrote locations!");
     }
 
-    //@Test
+    @Test
     public void testWriteAttachedDocument() {
-        TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
         int numberOfUsers = tdgc.userCount;
         Date startDate = tdgc.startDate;
         Date endDate = tdgc.endDate;
@@ -250,9 +250,8 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished writing attached documents!");
     }
 
-    //@Test
+    @Test
     public void testWriteMedicalRedord() {
-        TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
         int numberOfUsers = tdgc.userCount;
         Date startDate = tdgc.startDate;
         Date endDate = tdgc.endDate;
@@ -280,9 +279,8 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished writing medical records!");
     }
 
-    //@Test
+    @Test
     public void testWriteTestUsers() {
-        TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
         int numberOfUsers = tdgc.userCount;
         System.out.println("Starting to write test users: " + Integer.toString(numberOfUsers));
         String rowKey;
@@ -321,9 +319,8 @@ public class HBaseDataGeneratorIT {
         return Math.round((endDate.getTime() - startDate.getTime()) / miliSecondsInADay);
     }
 
-    //@Test
+    @Test
     public void testWriteFullTestSensorData() {
-        TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
         int rangeFrom = 0;
         int rangeTo = Math.round(tdgc.userCount * tdgc.fullSensorDataPercent / 100);
         Date startDate = tdgc.startDate;
@@ -370,9 +367,8 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished generating full sensor data!");
     }
 
-    //@Test
+    @Test
     public void testWritePartialTestSensorData() {
-        TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
         int rangeFrom = Math.round(tdgc.userCount * tdgc.fullSensorDataPercent / 100) + 1;
         int rangeTo = tdgc.userCount;
         Date startDate = tdgc.startDate; 
@@ -424,9 +420,8 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished writing partial sensor data!");
     }
 
-    //@Test
+    @Test
     public void testWriteFullTestLivingHabitsData() {
-        TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
         int rangeFrom = 0;
         int rangeTo = Math.round(tdgc.userCount * tdgc.fullLivingHabitsPercent / 100);
         Date startDate = tdgc.startDate;
@@ -482,7 +477,6 @@ public class HBaseDataGeneratorIT {
 
     @Test
     public void testWritePartialTestLivingHabitsData() {
-        TestDataGeneratorConfig tdgc = readDataGeneratorConfig();
         int rangeFrom = Math.round(tdgc.userCount * tdgc.fullLivingHabitsPercent / 100) + 1;
         int rangeTo = tdgc.userCount;
         Date startDate = tdgc.startDate; 
