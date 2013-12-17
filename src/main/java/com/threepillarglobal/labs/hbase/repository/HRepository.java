@@ -14,6 +14,8 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.filter.Filter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.hadoop.hbase.HbaseTemplate;
@@ -108,12 +110,12 @@ public abstract class HRepository<T extends Object> {
     /**
      * Get an annotated entity from HBase
      *
-     * @param key the row key
+     * @param row the row key
      * @return the found object
      */
-    public T findOne(byte[] key) {
+    public T findOne(byte[] row) {
         final String cfamilyName = HAnnotation.getColumnFamilyName(tClass);
-        return hbaseTemplate.get(tableName, new String(key), cfamilyName, new RowMapper<T>() {
+        return hbaseTemplate.get(tableName, new String(row), cfamilyName, new RowMapper<T>() {
 
             @Override
             public T mapRow(Result result, int i) throws Exception {
@@ -122,7 +124,6 @@ public abstract class HRepository<T extends Object> {
         });
     }
 
-//    public boolean exists(byte[] key);
     /**
      * Get all persisted entities in the HBase table. It does a full table scan
      *
@@ -141,19 +142,52 @@ public abstract class HRepository<T extends Object> {
     /**
      * Get a list of entities by their row key
      *
-     * @param itrbl The iterable object consisting of the row keys
+     * @param rows The iterable object consisting of the row keys
      * @return a list of the found entities
      */
-    public List<T> findAll(Iterable<byte[]> itrbl) {
+    public List<T> findAll(Iterable<byte[]> rows) {
         List<T> result = new ArrayList<>();
-        for (Iterator<byte[]> it = itrbl.iterator(); it.hasNext();) {
+        for (Iterator<byte[]> it = rows.iterator(); it.hasNext();) {
             T t = findOne(it.next());
             result.add(t);
         }
         return result;
     }
 
-//    public long count();
+    /**
+     * Get a range of entities
+     *
+     * @param startRow The start row key
+     * @param stopRow The end row key
+     * @return a list of the found entities
+     */
+    public List<T> findAll(byte[] startRow, byte[] stopRow) {
+        return hbaseTemplate.find(tableName, new Scan(startRow, stopRow), new RowMapper<T>() {
+
+            @Override
+            public T mapRow(Result result, int i) throws Exception {
+                return HMarshaller.unmarshall(tClass, result);
+            }
+        });
+    }
+
+    /**
+     * Get a list of entities using a filter for row scanning
+     *
+     * @param startRow The start row key
+     * @param filter The scan filter
+     * @return a list of found entities
+     */
+    public List<T> findAll(byte[] startRow, Filter filter) {
+        return hbaseTemplate.find(tableName, new Scan(startRow, filter), new RowMapper<T>() {
+
+            @Override
+            public T mapRow(Result result, int i) throws Exception {
+                return HMarshaller.unmarshall(tClass, result);
+            }
+        });
+    }
+
     /**
      * Delete a row in the HBase table
      *
@@ -200,7 +234,4 @@ public abstract class HRepository<T extends Object> {
             L.error(HRepository.class.getMethods()[0].toGenericString(), ioe);
         }
     }
-
-//    public Iterable<T> findAll(Sort sort);
-//    public Page<T> findAll(Pageable pgbl);
 }

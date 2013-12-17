@@ -2,51 +2,31 @@ package com.threepillarglobal.labs.cdps.dao.repository;
 
 import com.threepillarglobal.labs.cdps.domain.MedicalRecords.*;
 import com.threepillarglobal.labs.cdps.domain.MedicalRecords;
-import com.threepillarglobal.labs.hbase.util.HAnnotation;
-import com.threepillarglobal.labs.hbase.util.HMarshaller;
-import org.apache.hadoop.hbase.client.HTableInterface;
-import org.apache.hadoop.hbase.client.Put;
+import com.threepillarglobal.labs.hbase.repository.HRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.hadoop.hbase.HbaseTemplate;
-import org.springframework.data.hadoop.hbase.TableCallback;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 
 @Repository
 public class MedicalRecordsRepository {
-    
+
     @Autowired
-    private HbaseTemplate hbaseTemplate;
+    public MedicalRecordsRepository(HbaseTemplate hbaseTemplate) {
+        medicalRecordRepo = new HRepository<MedicalRecord>(MedicalRecords.class, hbaseTemplate) {
+        };
+        documentsAttachedRepo = new HRepository<DocumentsAttached>(MedicalRecords.class, hbaseTemplate) {
+        };
+    }
+    private final HRepository<MedicalRecord> medicalRecordRepo;
+    private final HRepository<DocumentsAttached> documentsAttachedRepo;
 
-    public MedicalRecords.MedicalRecord saveMedicalRecord(final String email, final Date recordDate, final MedicalRecords.MedicalRecord medicalRecord) {
-        final String tableName = HAnnotation.getTableName(MedicalRecords.class);
-        final String cfamilyName = HAnnotation.getColumnFamilyName(MedicalRecords.MedicalRecord.class);
-        return hbaseTemplate.execute(tableName, new TableCallback<MedicalRecords.MedicalRecord>() {
-            @Override
-            public MedicalRecords.MedicalRecord doInTable(HTableInterface table) throws Throwable {
-                Put p = new Put(MedicalRecords.toRowKey(email, recordDate));
-                HMarshaller.marshall(medicalRecord, p);
-                table.put(p);
-                return medicalRecord;
-            }
-        });
-
+    public MedicalRecord saveMedicalRecord(final String email, final Date recordDate, final MedicalRecord medicalRecord) {
+        return medicalRecordRepo.save(MedicalRecords.toRowKey(email, recordDate), medicalRecord);
     }
 
-    public DocumentsAttached saveAttachedDocument(final String email, final Date recordDate, final DocumentsAttached attachedDocument)
-    {
-        final String tableName = HAnnotation.getTableName(MedicalRecords.class);
-        final String cfamilyName = HAnnotation.getColumnFamilyName(DocumentsAttached.class);
-        return hbaseTemplate.execute(tableName, new TableCallback<DocumentsAttached>() {
-            @Override
-            public DocumentsAttached doInTable(HTableInterface table) throws Throwable {
-                Put p = new Put(MedicalRecords.toRowKey(email, recordDate));
-                HMarshaller.marshall(attachedDocument, p);
-                table.put(p);
-                return attachedDocument;
-            }
-        });
-
+    public DocumentsAttached saveAttachedDocument(final String email, final Date recordDate, final DocumentsAttached attachedDocument) {
+        return documentsAttachedRepo.save(MedicalRecords.toRowKey(email, recordDate), attachedDocument);
     }
 }
