@@ -37,14 +37,14 @@ public class RiskFactorServiceImpl implements RiskService {
 		User user = userService.getUser(uid);
 		DateTime e = new DateTime(Calendar.getInstance().getTime());
 		if(user!=null)
-			System.out.println("User fetched: " + user.getAccountData().getEmail() + " in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " secs");
+			System.out.println("User fetched: " + uid + ' ' +  user + " in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " secs");
         
         
         b = new DateTime(Calendar.getInstance().getTime());
         List<SensorData> sensorData = sensorRepo.findSensorDataForUserInInterval(uid, from, to);
         e = new DateTime(Calendar.getInstance().getTime());
         if(sensorData!=null)
-        	System.out.println("=== Sensor data list size: " + sensorData.size() + " retrieved in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " seconds");
+        	System.out.println("=== Sensor data list [" + from + " : " + to + "] size: " + sensorData.size() + " " + sensorData.get(0).toString() + " retrieved in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " seconds");
 		
 		
 		if(user!=null && sensorData!=null)
