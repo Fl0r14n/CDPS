@@ -22,6 +22,11 @@ public abstract class HMarshaller {
      * @throws Exception
      */
     public static <T> T unmarshall(Class<T> clazz, Result result) throws Exception {
+        return unmarshall(clazz, result, null);
+    }
+
+    //for recursive call
+    private static <T> T unmarshall(Class<T> clazz, Result result, byte[] cFamily) throws Exception {
         //create new instance
         final T instance = ReflectionUtil.instantiate(clazz);
         for (Field field : clazz.getDeclaredFields()) {
@@ -30,14 +35,16 @@ public abstract class HMarshaller {
             if (hColumnFamily != null) {
                 field.setAccessible(true);
                 //recursive call
-                field.set(instance, unmarshall(field.getType(), result));
+                field.set(instance, unmarshall(field.getType(), result, hColumnFamily.name().getBytes()));
             } else {
                 //is this a HColumn field
                 HColumn hColumn = field.getAnnotation(HColumn.class);
                 if (hColumn != null) {
-                    //get the HColumnFamily class annotation
-                    byte[] cFamily = getColumnFamilyName(clazz).getBytes();
-                    byte[] val = result.getValue(cFamily, hColumn.name().getBytes());
+                    byte[] cf = cFamily;
+                    if (cf == null) {
+                        cf = getColumnFamilyName(clazz).getBytes();                        
+                    }
+                    byte[] val = result.getValue(cf, hColumn.name().getBytes());
                     //set field value to one of the known ones
                     ReflectionUtil.setFieldValue(field, instance, val);
                 }
@@ -57,20 +64,28 @@ public abstract class HMarshaller {
      * @throws Exception
      */
     public static <T> void marshall(T t, Put put) throws Exception {
+        marshall(t, put, null);
+    }
+
+    //for recursive call
+    private static <T> void marshall(T t, Put put, byte[] cFamily) throws Exception {
         //get class type
         Class<?> clazz = t.getClass();
         for (Field field : clazz.getDeclaredFields()) {
             HColumnFamily hColumnFamily = field.getAnnotation(HColumnFamily.class);
             if (hColumnFamily != null) {
-                field.setAccessible(true);                
+                field.setAccessible(true);
                 //recursive call
-                marshall(field.get(t), put);
+                marshall(field.get(t), put, hColumnFamily.name().getBytes());
             } else {
                 //get column family from class annotation
                 HColumn hColumn = field.getAnnotation(HColumn.class);
                 if (hColumn != null) {
-                    byte[] cFamily = getColumnFamilyName(clazz).getBytes();
-                    put.add(cFamily, hColumn.name().getBytes(), ReflectionUtil.getFieldValue(field, t));
+                    byte[] cf = cFamily;
+                    if (cf == null) {
+                        cf = getColumnFamilyName(clazz).getBytes();
+                    }
+                    put.add(cf, hColumn.name().getBytes(), ReflectionUtil.getFieldValue(field, t));
                 }
             }
         }

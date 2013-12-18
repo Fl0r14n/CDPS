@@ -1,5 +1,6 @@
 package com.threepillarglobal.labs.hbase.util;
 
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
