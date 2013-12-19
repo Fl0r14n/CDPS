@@ -5,6 +5,7 @@ import com.threepillarglobal.labs.hbase.annotation.HTable;
 import com.threepillarglobal.labs.hbase.annotation.HColumn;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,51 +18,63 @@ public abstract class HAnnotation {
     /**
      * Obtain HBase table name from annotated entity
      *
-     * @param tableClass The annotated class
+     * @param clazz The annotated class with @HTable
      * @return table name
      */
-    public static String getTableName(Class<?> tableClass) {
-        HTable hTable = tableClass.getAnnotation(HTable.class);
-        assert hTable != null : "HTable annotation missing";
+    public static String getTableName(Class<?> clazz) {
+        HTable hTable = clazz.getAnnotation(HTable.class);
+        //this is a must
+        assert hTable != null : "HTable annotation missing on " + clazz.getName();
         return hTable.name();
     }
 
     /**
-     * Get declared column families from annotated HBase entity
+     * Get declared column families from fields.
      *
-     * @param tableClass the HBase annotated class with @HTable
+     * @param clazz The annotated class
      * @return a map of column family name and associated class
      */
-    public static Map<String, Class<?>> getColumnFamilies(Class<?> tableClass) {
-        HTable hTable = tableClass.getAnnotation(HTable.class);
-        assert hTable != null : "HTable annotation missing";
-        Map<String, Class<?>> result = new LinkedHashMap<>();
-        //HColumnFamily at class level
-        HColumnFamily hColumnFamily = tableClass.getAnnotation(HColumnFamily.class);
-        if (hColumnFamily != null) {
-            result.put(hColumnFamily.name(), tableClass);
-        } else {
-            //HColumnFamily at field level
-            for (Field field : tableClass.getDeclaredFields()) {
-                hColumnFamily = field.getAnnotation(HColumnFamily.class);
-                if (hColumnFamily != null) {
-                    result.put(hColumnFamily.name(), field.getType());
-                }
+    public static Map<String, Class<?>> getColumnFamilies(Class<?> clazz) {
+        Map<String, Class<?>> result = new LinkedHashMap<>(5);
+        HColumnFamily hColumnFamily;
+        //HColumnFamily at field level
+        for (Field field : clazz.getDeclaredFields()) {
+            hColumnFamily = field.getAnnotation(HColumnFamily.class);
+            if (hColumnFamily != null) {
+                result.put(hColumnFamily.name(), field.getType());
             }
         }
         return result;
     }
 
     /**
-     * Get all declared columns from annotated HBase entity.
+     * Get column family annotation at class level
      *
-     * @param cFamilyClass the column family class or single column family table
-     * annotated with HColumnFamily
+     * @param clazz The supposed annotated @HColumnFamily class. 
+     * @return Map.Entity entry with column name as key and class type as value
+     * or null
+     */
+    public static Map.Entry<String, Class<?>> getColumnFamily(Class<?> clazz) {
+        HColumnFamily hColumnFamily = clazz.getAnnotation(HColumnFamily.class);
+        if (hColumnFamily != null) {
+            Map<String, Class<?>> result = new HashMap<>(1);
+            result.put(hColumnFamily.name(), clazz);
+            for (Map.Entry<String, Class<?>> entry : result.entrySet()) {
+                return entry;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get all declared columns from annotated entity.
+     *
+     * @param clazz The annotated class with @HColumn
      * @return a map of columns with name and associated class
      */
-    public static Map<String, Class<?>> getColumns(Class<?> cFamilyClass) {
+    public static Map<String, Class<?>> getColumns(Class<?> clazz) {
         Map<String, Class<?>> result = new LinkedHashMap<>();
-        for (Field field : cFamilyClass.getDeclaredFields()) {
+        for (Field field : clazz.getDeclaredFields()) {
             HColumn hColumn = field.getAnnotation(HColumn.class);
             if (hColumn != null) {
                 result.put(hColumn.name(), field.getType());
@@ -71,8 +84,8 @@ public abstract class HAnnotation {
     }
 
     /**
-     * Obtain HBase column family names from annotated fileds or methods<br/>.
-     * If also searches for column family class annotation
+     * Obtain HBase column family names from annotated fileds<br/>. If also
+     * searches for column family class annotation
      *
      * @param clazz The annotated class
      * @return array of column family names
@@ -96,18 +109,17 @@ public abstract class HAnnotation {
 
     /**
      * Obtain HBase column family name from an class annotated with
-     *
-     * @HColumnFamily
+     * HColumnFamily
      *
      * @param clazz The annotated class
-     * @return column family name
+     * @return column family name or null
      */
     public static String getColumnFamilyName(Class<?> clazz) {
         HColumnFamily hColumnFamily = clazz.getAnnotation(HColumnFamily.class);
-        if (hColumnFamily == null) {
-            return null;
+        if (hColumnFamily != null) {
+            return hColumnFamily.name();
         }
-        return hColumnFamily.name();
+        return null;
     }
 
     /**

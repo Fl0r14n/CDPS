@@ -1,6 +1,5 @@
 package com.threepillarglobal.labs.hbase.util;
 
-import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -29,7 +28,6 @@ public abstract class ReflectionUtil {
     public static <T> byte[] getFieldValue(Field field, T t) throws Exception {
         field.setAccessible(true);
         Class<?> fieldType = field.getType();
-//        System.out.print(fieldType.getSimpleName());
         //enums
         if (fieldType.isEnum()) {
             return field.get(t).toString().getBytes();
@@ -119,7 +117,6 @@ public abstract class ReflectionUtil {
         }
         field.setAccessible(true);
         Class fieldType = field.getType();
-		//System.out.println("####  " + fieldType.getSimpleName() + " -> type: " + fieldType ); 
         //enums
         if (fieldType.getGenericSuperclass()!= null && fieldType.getGenericSuperclass().toString().indexOf("java.lang.Enum")==0) {
             field.set(t, Enum.valueOf(fieldType, new String(value)));

@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * Describes an HBase Column
  */
 @Documented
-@Target(value = {ElementType.METHOD, ElementType.FIELD})
+@Target(value = {ElementType.FIELD})
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface HColumn {
 
