@@ -19,7 +19,6 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.Filter;
-import org.apache.hadoop.hbase.util.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.hadoop.hbase.HbaseTemplate;
@@ -162,7 +161,6 @@ public abstract class HRepository<T extends Object> {
      * @return a list of the found entities
      */
     public List<T> findAll(byte[] startRow, byte[] stopRow) {
-        System.out.println(Bytes.toString(startRow) + " " + Bytes.toString(stopRow));
         return hbaseTemplate.find(tableName, new Scan(/*startRow, stopRow*/), new RowMapper<T>() {
 
                     @Override
