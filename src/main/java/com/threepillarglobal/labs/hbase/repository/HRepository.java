@@ -164,7 +164,7 @@ public abstract class HRepository<T extends Object> {
      * @return a list of the found entities
      */
     public List<T> findAll(byte[] startRow, byte[] stopRow) {  
-    	System.out.println(Bytes.toString(startRow) + " " + Bytes.toString(stopRow) );
+    	//System.out.println(Bytes.toString(startRow) + " " + Bytes.toString(stopRow) );
         return hbaseTemplate.find(tableName, new Scan(/*startRow, stopRow*/), new RowMapper<T>() {
 
             @Override
