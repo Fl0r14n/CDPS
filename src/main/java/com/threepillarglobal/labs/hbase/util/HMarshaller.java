@@ -42,11 +42,13 @@ public abstract class HMarshaller {
                 if (hColumn != null) {
                     byte[] cf = cFamily;
                     if (cf == null) {
-                        cf = getColumnFamilyName(clazz).getBytes();                        
+                        cf = getColumnFamilyName(clazz).getBytes();
                     }
-                    byte[] val = result.getValue(cf, hColumn.name().getBytes());
-                    //set field value to one of the known ones
-                    ReflectionUtil.setFieldValue(field, instance, val);
+                    if (cf != null) { //only if a valid column family is found
+                        byte[] val = result.getValue(cf, hColumn.name().getBytes());
+                        //set field value to one of the known ones
+                        ReflectionUtil.setFieldValue(field, instance, val);
+                    }
                 }
             }
         }
@@ -85,7 +87,9 @@ public abstract class HMarshaller {
                     if (cf == null) {
                         cf = getColumnFamilyName(clazz).getBytes();
                     }
-                    put.add(cf, hColumn.name().getBytes(), ReflectionUtil.getFieldValue(field, t));
+                    if (cf != null) { //only if a valid column family is found
+                        put.add(cf, hColumn.name().getBytes(), ReflectionUtil.getFieldValue(field, t));
+                    }
                 }
             }
         }

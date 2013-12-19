@@ -120,8 +120,8 @@ public abstract class HRepository<T extends Object> {
         if (cfamilyName != null) {
             return hbaseTemplate.get(tableName, new String(row), cfamilyName, new RowMapperImpl());
         } else {
-         List<T> tList = hbaseTemplate.find(tableName, new Scan(new Get(row)), new RowMapperImpl());
-         return tList.get(0);
+            List<T> tList = hbaseTemplate.find(tableName, new Scan(new Get(row)), new RowMapperImpl());
+            return tList.get(0);
         }
     }
 
@@ -161,15 +161,15 @@ public abstract class HRepository<T extends Object> {
      * @param stopRow The end row key
      * @return a list of the found entities
      */
-    public List<T> findAll(byte[] startRow, byte[] stopRow) {  
-    	System.out.println(Bytes.toString(startRow) + " " + Bytes.toString(stopRow) );
+    public List<T> findAll(byte[] startRow, byte[] stopRow) {
+        System.out.println(Bytes.toString(startRow) + " " + Bytes.toString(stopRow));
         return hbaseTemplate.find(tableName, new Scan(/*startRow, stopRow*/), new RowMapper<T>() {
 
-            @Override
-            public T mapRow(Result result, int i) throws Exception {
-                return HMarshaller.unmarshall(tClass, result);
-            }
-        });
+                    @Override
+                    public T mapRow(Result result, int i) throws Exception {
+                        return HMarshaller.unmarshall(tClass, result);
+                    }
+                });
     }
 
     /**
