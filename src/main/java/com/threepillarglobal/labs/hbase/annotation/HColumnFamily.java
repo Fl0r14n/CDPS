@@ -7,10 +7,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Describes an HBase Column Family
+ * Describes an HBase Column Family.<br/>
+ * An HColumnFamily can be used on fields or at class level if let's say you
+ * have a table with only one colymn family which acts as the default column
+ * family
  */
 @Documented
-@Target(value = {ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
+@Target(value = {ElementType.TYPE, ElementType.FIELD})
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface HColumnFamily {
 

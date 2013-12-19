@@ -66,8 +66,8 @@ public class HAnnotationTest {
     
     @Test
     public void get_column_family_class_from_table() {
-        Map<String, Class<?>> result = HAnnotation.getColumnFamilies(Sample1.class);
-        Assert.assertTrue(Sample1.class.getName().equals(result.get(CFAMILY1).getName()));
+        Map.Entry<String, Class<?>> result = HAnnotation.getColumnFamily(Sample1.class);
+        Assert.assertTrue(Sample1.class.getName().equals(result.getValue().getName()));
     }
     
     @Test

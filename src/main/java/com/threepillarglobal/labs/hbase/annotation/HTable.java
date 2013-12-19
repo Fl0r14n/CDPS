@@ -20,5 +20,4 @@ public @interface HTable {
      * @return table name
      */
     public String name();
-
 }
