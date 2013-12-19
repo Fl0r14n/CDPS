@@ -47,6 +47,7 @@ public abstract class HRepository<T extends Object> {
      */
     public HRepository(Class<?> tableClass, HbaseTemplate hbaseTemplate) {
         this();
+        assert hbaseTemplate != null : "HbaseTemplate must not be null!";
         this.hbaseTemplate = hbaseTemplate;
         tableName = HAnnotation.getTableName(tableClass);
     }
@@ -62,9 +63,6 @@ public abstract class HRepository<T extends Object> {
      * @return same object if persisted
      */
     public <S extends T> S save(final byte[] row, final S s) {
-        if (hbaseTemplate == null) {
-            System.out.println("hbaseTemplate == null");
-        }
         return hbaseTemplate.execute(tableName, new TableCallback<S>() {
 
             @Override

@@ -89,12 +89,12 @@ public class HMarshallerTest {
         int i = 0;
         for (Map.Entry<String, Class<?>> cFamily : HAnnotation.getColumnFamilies(clazz).entrySet()) {
             byte[] familyName = cFamily.getKey().getBytes();
-            for (Map.Entry<String, Class<?>> column : HAnnotation.getColumns(cFamily.getValue()).entrySet()) {                
+            for (Map.Entry<String, Class<?>> column : HAnnotation.getColumns(cFamily.getValue()).entrySet()) {
                 byte[] columnName = column.getKey().getBytes();
                 kvs.add(new KeyValue(row, familyName, columnName, ("value" + i).getBytes()));
                 i++;
             }
-            i=0;
+            i = 0;
         }
         return new Result(kvs);
     }
@@ -141,7 +141,7 @@ public class HMarshallerTest {
         Assert.assertTrue(expected.getCFamily2().getCol11().equals(actual.getCFamily2().getCol11()));
         Assert.assertTrue(expected.getCFamily2().getCol12().equals(actual.getCFamily2().getCol12()));
     }
-    
+
     @Test
     public void unmarshall_a_table_with_multiple_column_families_of_same_class() throws Exception {
         Table1 expected = new Table1();
@@ -152,7 +152,7 @@ public class HMarshallerTest {
         Assert.assertTrue(expected.getCFamily2().getCol01().equals(actual.getCFamily2().getCol01()));
         Assert.assertTrue(expected.getCFamily2().getCol02().equals(actual.getCFamily2().getCol02()));
     }
-    
+
     @Test
     public void marshall_a_table_with_multiple_column_families_of_same_class() throws Exception {
         Put put = new Put(Table1.row);

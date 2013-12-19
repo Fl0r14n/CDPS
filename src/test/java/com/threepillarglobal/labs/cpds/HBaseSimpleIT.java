@@ -27,8 +27,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
@@ -41,11 +39,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = "classpath*:integrationTests-context.xml")
 public class HBaseSimpleIT {
 
-    private static final Logger L = LoggerFactory.getLogger(HBaseSimpleIT.class);
-
     @Resource(name = "hbaseConfiguration")
     private Configuration config;
-    
+
     @Autowired
     private UserRepository userRepository;
 
@@ -106,7 +102,7 @@ public class HBaseSimpleIT {
     	
         /*//TODO
         for (int i = 0; i < 10; i++) {
-            AccountData ad = new AccountData("secret" + i, (i % 2 == 1) ? Boolean.TRUE : Boolean.FALSE, "072900000" + i, "secret"+ i + "@3pg.com");
+            AccountData ad = new AccountData("secret" + i, (i % 2 == 1) ? Boolean.TRUE : Boolean.FALSE, "072900000" + i, "secret" + i + "@3pg.com");
             userRepository.saveAccountData("key@" + i, ad);
         }
         for (AccountData ad : userRepository.findAllAccountData()) {
@@ -114,11 +110,4 @@ public class HBaseSimpleIT {
         }*/
     	
     }
-
-//    public static void main(String[] args) {
-//        AbstractApplicationContext context = new ClassPathXmlApplicationContext("/META-INF/spring/application-context.xml", HBaseSimpleIT.class);
-//        L.info("HBase Application Running");
-//        context.registerShutdownHook();
-//        UserRepository userRepository = context.getBean(UserRepository.class);
-//    }
 }
