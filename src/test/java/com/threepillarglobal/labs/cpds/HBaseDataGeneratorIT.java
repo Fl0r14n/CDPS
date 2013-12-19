@@ -44,7 +44,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class HBaseDataGeneratorIT {
 
     private static final Logger L = LoggerFactory.getLogger(HBaseSimpleIT.class);
-    private static final String emailPattern = "user<ID>@3pg.com";
+    private static final String emailPattern = "Mario.Bross<ID>@3pg.com";
     private static final String namePrefix = "Mario Bross #";
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] location = {"Romania|Cluj|Cluj-Napoca", "Romania|Timisoara|Timisoara", "USA|Washington|Washington DC"};
@@ -218,7 +218,7 @@ public class HBaseDataGeneratorIT {
         }
     }
 
-    @Test
+    //@Test
     public void testWriteLocations() {
         System.out.println("Starting to write locations");
         for (String location1 : location) {
@@ -231,7 +231,7 @@ public class HBaseDataGeneratorIT {
         System.out.println("Wrote locations!");
     }
 
-    @Test
+    //@Test
     public void testWriteAttachedDocument() {
         int numberOfUsers = tdgc.userCount;
         Date startDate = tdgc.startDate;
@@ -250,7 +250,7 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished writing attached documents!");
     }
 
-    @Test
+    //@Test
     public void testWriteMedicalRedord() {
         int numberOfUsers = tdgc.userCount;
         Date startDate = tdgc.startDate;
@@ -279,7 +279,7 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished writing medical records!");
     }
 
-    @Test
+    //@Test
     public void testWriteTestUsers() {
         int numberOfUsers = tdgc.userCount;
         System.out.println("Starting to write test users: " + Integer.toString(numberOfUsers));
@@ -319,7 +319,7 @@ public class HBaseDataGeneratorIT {
         return Math.round((endDate.getTime() - startDate.getTime()) / miliSecondsInADay);
     }
 
-    @Test
+    //@Test
     public void testWriteFullTestSensorData() {
         int rangeFrom = 0;
         int rangeTo = Math.round(tdgc.userCount * tdgc.fullSensorDataPercent / 100);
@@ -367,7 +367,7 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished generating full sensor data!");
     }
 
-    @Test
+    //@Test
     public void testWritePartialTestSensorData() {
         int rangeFrom = Math.round(tdgc.userCount * tdgc.fullSensorDataPercent / 100) + 1;
         int rangeTo = tdgc.userCount;
@@ -420,7 +420,7 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished writing partial sensor data!");
     }
 
-    @Test
+    //@Test
     public void testWriteFullTestLivingHabitsData() {
         int rangeFrom = 0;
         int rangeTo = Math.round(tdgc.userCount * tdgc.fullLivingHabitsPercent / 100);
@@ -475,7 +475,7 @@ public class HBaseDataGeneratorIT {
         System.out.println("Finished writing full living habits!");
     }
 
-    @Test
+    //@Test
     public void testWritePartialTestLivingHabitsData() {
         int rangeFrom = Math.round(tdgc.userCount * tdgc.fullLivingHabitsPercent / 100) + 1;
         int rangeTo = tdgc.userCount;

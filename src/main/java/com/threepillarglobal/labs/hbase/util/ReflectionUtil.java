@@ -119,11 +119,11 @@ public abstract class ReflectionUtil {
         }
         field.setAccessible(true);
         Class fieldType = field.getType();
-//        System.out.println(fieldType.getSimpleName());
+		//System.out.println("####  " + fieldType.getSimpleName() + " -> type: " + fieldType ); 
         //enums
-        if (field.isEnumConstant()) {
+        if (fieldType.getGenericSuperclass()!= null && fieldType.getGenericSuperclass().toString().indexOf("java.lang.Enum")==0) {
             field.set(t, Enum.valueOf(fieldType, new String(value)));
-        }
+        }else{
         //primitives or wrappers
         switch (fieldType.getSimpleName()) {
             case "String": {
@@ -211,6 +211,7 @@ public abstract class ReflectionUtil {
             case "Timestamp": {
                 field.set(t, new Timestamp(Bytes.toLong(value)));
             }
+         }
         }
     }
 

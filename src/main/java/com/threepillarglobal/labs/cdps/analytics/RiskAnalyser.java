@@ -14,6 +14,7 @@ import com.threepillarglobal.labs.cdps.domain.CardioRisk;
 import com.threepillarglobal.labs.cdps.domain.HourlyData;
 import com.threepillarglobal.labs.cdps.domain.SensorData;
 import com.threepillarglobal.labs.cdps.domain.User;
+import com.threepillarglobal.labs.cdps.domain.User.MedicalNotes;
 
 public class RiskAnalyser {
 
@@ -28,10 +29,14 @@ public class RiskAnalyser {
 		
 		Integer ageIndex = RiskIndexUtils.getAgeRiskIndex(age);
 		cardioRisk.setAgeIndex(ageIndex);
-		Integer smokingIndex = RiskIndexUtils.getSmokeIndex(user.getMedicalNotes().getSmoker());
-		cardioRisk.setSmokingIndex (smokingIndex);
-		Integer inheritanceIndex = RiskIndexUtils.getInheritedRiskIndex(user.getMedicalNotes().getInheritedRisk());
-		cardioRisk.setInheritanceIndex (inheritanceIndex);
+		MedicalNotes medicalNotes = user.getMedicalNotes();
+		Integer smokingIndex =0, inheritanceIndex = 0;
+		if(medicalNotes!=null){
+			smokingIndex = RiskIndexUtils.getSmokeIndex(medicalNotes.getSmoker());
+			cardioRisk.setSmokingIndex (smokingIndex);
+			inheritanceIndex = RiskIndexUtils.getInheritedRiskIndex(medicalNotes.getInheritedRisk());
+			cardioRisk.setInheritanceIndex (inheritanceIndex);
+		}
 		
 		double meanLbpDailyValue = getBpMeanValue(sensorDataList, "getSystolicPressure");
 		Integer diastolicIndex = RiskIndexUtils.getLowBloodPressureRiskIndex(meanLbpDailyValue);

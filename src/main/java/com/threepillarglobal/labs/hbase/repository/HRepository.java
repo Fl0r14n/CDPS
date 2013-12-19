@@ -3,19 +3,23 @@ package com.threepillarglobal.labs.hbase.repository;
 import com.threepillarglobal.labs.hbase.util.HAnnotation;
 import com.threepillarglobal.labs.hbase.util.HMarshaller;
 import com.threepillarglobal.labs.hbase.util.HOperations;
+
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.hadoop.hbase.client.Delete;
+import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.util.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.hadoop.hbase.HbaseTemplate;
@@ -118,7 +122,8 @@ public abstract class HRepository<T extends Object> {
         if (cfamilyName != null) {
             return hbaseTemplate.get(tableName, new String(row), cfamilyName, new RowMapperImpl());
         } else {
-            return hbaseTemplate.get(tableName, new String(row), new RowMapperImpl());
+         List<T> tList = hbaseTemplate.find(tableName, new Scan(new Get(row)), new RowMapperImpl());
+         return tList.get(0);
         }
     }
 
@@ -158,8 +163,9 @@ public abstract class HRepository<T extends Object> {
      * @param stopRow The end row key
      * @return a list of the found entities
      */
-    public List<T> findAll(byte[] startRow, byte[] stopRow) {        
-        return hbaseTemplate.find(tableName, new Scan(startRow, stopRow), new RowMapper<T>() {
+    public List<T> findAll(byte[] startRow, byte[] stopRow) {  
+    	System.out.println(Bytes.toString(startRow) + " " + Bytes.toString(stopRow) );
+        return hbaseTemplate.find(tableName, new Scan(/*startRow, stopRow*/), new RowMapper<T>() {
 
             @Override
             public T mapRow(Result result, int i) throws Exception {

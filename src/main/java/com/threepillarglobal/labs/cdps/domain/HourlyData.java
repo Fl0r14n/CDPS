@@ -15,13 +15,13 @@ public class HourlyData {
     @HColumn(name = "activityType")
     private final String activityType;
     @HColumn(name = "duration")
-    private final int duration;
+    private final Integer duration;
     @HColumn(name = "averageHeartRate")
-    private final int averageHeartRate;
+    private final Integer averageHeartRate;
     @HColumn(name = "systolicPressure")
-    private final int systolicPressure;
+    private final Integer systolicPressure;
     @HColumn(name = "diastolicPressure")
-    private final int diastolicPressure;
+    private final Integer diastolicPressure;
     @HColumn(name = "caloriesBurned")
-    private final int caloriesBurned;
+    private final Integer caloriesBurned;
 }

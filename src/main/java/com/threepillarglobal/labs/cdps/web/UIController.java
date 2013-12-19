@@ -55,6 +55,7 @@ public class UIController {
         userList = userService.getUsers();
         DateTime e = new DateTime(Calendar.getInstance().getTime());
         System.out.println("=== User list size: " + userList.size() + " retrieved in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " seconds");
+        System.out.println(userList.get(0).toString());
     }
 
     @RequestMapping(value = "/getUid", method = RequestMethod.GET)
