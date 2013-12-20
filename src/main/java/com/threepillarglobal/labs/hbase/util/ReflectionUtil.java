@@ -16,6 +16,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 /**
  * Some helper merthods with reflection
  */
+//TODO migrate by calling setters/getters and not set/get the field value directly
 public abstract class ReflectionUtil {
 
     /**
@@ -46,10 +47,10 @@ public abstract class ReflectionUtil {
                 return Bytes.toBytes((Boolean) field.get(t));
             }
             case "byte": {
-                return Bytes.toBytes(field.getByte(t));
+                return new byte[] {field.getByte(t)};
             }
             case "Byte": {
-                return Bytes.toBytes((Byte) field.get(t)); //do not cast to short
+                return new byte[] {((Byte)field.get(t)).byteValue()};
             }
             case "byte[]": {
                 return (byte[]) field.get(t);
@@ -149,6 +150,7 @@ public abstract class ReflectionUtil {
                 return;
             }
             case "byte": {
+                System.out.println("Size:" +value.length);
                 byte val = value.length > 0 ? (byte) (value[0] & 0xFF) : 0;
                 field.setByte(t, val);
                 return;
