@@ -29,89 +29,6 @@ public abstract class HAnnotation {
     }
 
     /**
-     * Get declared column families from fields.
-     *
-     * @param clazz The annotated class
-     * @return a map of column family name and associated class
-     */
-    public static Map<String, Class<?>> getColumnFamilies(Class<?> clazz) {
-        Map<String, Class<?>> result = new LinkedHashMap<>(5);
-        HColumnFamily hColumnFamily;
-        //HColumnFamily at field level
-        for (Field field : clazz.getDeclaredFields()) {
-            hColumnFamily = field.getAnnotation(HColumnFamily.class);
-            if (hColumnFamily != null) {
-                String name = "".equals(hColumnFamily.name()) ? field.getName() : hColumnFamily.name();
-                result.put(name, field.getType());
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Get column family annotation at class level
-     *
-     * @param clazz The supposed annotated @HColumnFamily class.
-     * @return Map.Entity entry with column name as key and class type as value
-     * or null
-     */
-    public static Map.Entry<String, Class<?>> getColumnFamily(Class<?> clazz) {
-        HColumnFamily hColumnFamily = clazz.getAnnotation(HColumnFamily.class);
-        if (hColumnFamily != null) {
-            Map<String, Class<?>> result = new HashMap<>(1);
-            String name = "".equals(hColumnFamily.name()) ? clazz.getSimpleName() : hColumnFamily.name();
-            result.put(name, clazz);
-            for (Map.Entry<String, Class<?>> entry : result.entrySet()) {
-                return entry;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Get all declared columns from annotated entity.
-     *
-     * @param clazz The annotated class with @HColumn
-     * @return a map of columns with name and associated class
-     */
-    public static Map<String, Class<?>> getColumns(Class<?> clazz) {
-        Map<String, Class<?>> result = new LinkedHashMap<>();
-        for (Field field : clazz.getDeclaredFields()) {
-            HColumn hColumn = field.getAnnotation(HColumn.class);
-            if (hColumn != null) {
-                String name = "".equals(hColumn.name()) ? field.getName() : hColumn.name();
-                result.put(name, field.getType());
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Obtain HBase column family names from annotated fileds<br/>. If also
-     * searches for column family class annotation
-     *
-     * @param clazz The annotated class
-     * @return array of column family names
-     */
-    public static String[] getColumnFamilyNames(Class<?> clazz) {
-        List<String> buf = new ArrayList<>();
-        for (Field field : clazz.getDeclaredFields()) {
-            HColumnFamily hColumnFamily = field.getAnnotation(HColumnFamily.class);
-            if (hColumnFamily != null) {
-                String name = "".equals(hColumnFamily.name()) ? field.getName() : hColumnFamily.name();
-                buf.add(name);
-            }
-        }
-        //add also individual family name if found at class level
-        String cFamilyName = getColumnFamilyName(clazz);
-        if (cFamilyName != null) {
-            buf.add(cFamilyName);
-        }
-        String[] result = {};
-        return buf.toArray(result);
-    }
-
-    /**
      * Obtain HBase column family name from an class annotated with
      * HColumnFamily
      *
@@ -127,6 +44,60 @@ public abstract class HAnnotation {
     }
 
     /**
+     * Obtain HBase column family name form an annotated field with
+     * HColumnFamily
+     *
+     * @param field The annotated field
+     * @return column family name or null
+     */
+    public static String getColumnFamilyName(Field field) {
+        HColumnFamily hColumnFamily = field.getAnnotation(HColumnFamily.class);
+        if (hColumnFamily != null) {
+            return "".equals(hColumnFamily.name()) ? field.getName() : hColumnFamily.name();
+        }
+        return null;
+    }
+
+    /**
+     * Obtain HBase column name from an annotated field with HColumn
+     *
+     * @param field The annotated field
+     * @return column name or null
+     */
+    public static String getColumnName(Field field) {
+        HColumn hColumn = field.getAnnotation(HColumn.class);
+        if (hColumn != null) {
+            return "".equals(hColumn.name()) ? field.getName() : hColumn.name();
+        }
+        return null;
+    }
+
+    /**
+     * Obtain HBase column family names from annotated fileds<br/>. If also
+     * searches for column family class annotation
+     *
+     * @param clazz The annotated class
+     * @return array of column family names
+     */
+    public static String[] getColumnFamilyNames(Class<?> clazz) {
+        List<String> buf = new ArrayList<>();
+        String cFamilyName;
+        for (Field field : clazz.getDeclaredFields()) {
+            cFamilyName = getColumnFamilyName(field);
+            if (cFamilyName != null) {
+                buf.add(cFamilyName);
+            }
+        }
+        //add also individual family name if found at class level
+        cFamilyName = getColumnFamilyName(clazz);
+        if (cFamilyName != null) {
+            buf.add(cFamilyName);
+        }
+        String[] result = {};
+        return buf.toArray(result);
+    }
+
+    /**
      * Obtain HBase column names in a column family. It searches for @HColumn
      * fields
      *
@@ -135,14 +106,70 @@ public abstract class HAnnotation {
      */
     public static String[] getColumnNames(Class<?> clazz) {
         List<String> buf = new ArrayList<>();
+        String hColumnName;
         for (Field field : clazz.getDeclaredFields()) {
-            HColumn hColumn = field.getAnnotation(HColumn.class);
-            if (hColumn != null) {
-                String name = "".equals(hColumn.name()) ? field.getName() : hColumn.name();
-                buf.add(name);
+            hColumnName = getColumnName(field);
+            if (hColumnName != null) {
+                buf.add(hColumnName);
             }
         }
         String[] result = {};
         return buf.toArray(result);
+    }
+
+    /**
+     * Get declared column families from fields.
+     *
+     * @param clazz The annotated class
+     * @return a map of column family name and associated class
+     */
+    public static Map<String, Class<?>> getColumnFamilies(Class<?> clazz) {
+        Map<String, Class<?>> result = new LinkedHashMap<>(5);
+        //HColumnFamily at field level
+        String cFamilyName;
+        for (Field field : clazz.getDeclaredFields()) {
+            cFamilyName = getColumnFamilyName(field);
+            if (cFamilyName != null) {
+                result.put(cFamilyName, field.getType());
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Get column family annotation at class level
+     *
+     * @param clazz The supposed annotated @HColumnFamily class.
+     * @return Map.Entity entry with column name as key and class type as value
+     * or null
+     */
+    public static Map.Entry<String, Class<?>> getColumnFamily(Class<?> clazz) {
+        String cFamilyName = getColumnFamilyName(clazz);
+        if (cFamilyName != null) {
+            Map<String, Class<?>> result = new HashMap<>(1);
+            result.put(cFamilyName, clazz);
+            for (Map.Entry<String, Class<?>> entry : result.entrySet()) {
+                return entry;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get all declared columns from annotated entity.
+     *
+     * @param clazz The annotated class with @HColumn
+     * @return a map of columns with name and associated class
+     */
+    public static Map<String, Class<?>> getColumns(Class<?> clazz) {
+        Map<String, Class<?>> result = new LinkedHashMap<>();
+        String hColumnName;
+        for (Field field : clazz.getDeclaredFields()) {
+            hColumnName = getColumnName(field);
+            if (hColumnName != null) {
+                result.put(hColumnName, field.getType());
+            }
+        }
+        return result;
     }
 }
