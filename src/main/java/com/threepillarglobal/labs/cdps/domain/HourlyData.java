@@ -12,16 +12,16 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class HourlyData {
     
-    @HColumn(name = "activityType")
+    @HColumn
     private final String activityType;
-    @HColumn(name = "duration")
+    @HColumn
     private final Integer duration;
-    @HColumn(name = "averageHeartRate")
+    @HColumn
     private final Integer averageHeartRate;
-    @HColumn(name = "systolicPressure")
+    @HColumn
     private final Integer systolicPressure;
-    @HColumn(name = "diastolicPressure")
+    @HColumn
     private final Integer diastolicPressure;
-    @HColumn(name = "caloriesBurned")
+    @HColumn
     private final Integer caloriesBurned;
 }

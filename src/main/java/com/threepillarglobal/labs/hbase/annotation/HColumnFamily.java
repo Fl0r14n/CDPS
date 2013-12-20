@@ -22,5 +22,5 @@ public @interface HColumnFamily {
      *
      * @return column family name
      */
-    public String name();
+    public String name() default "";
 }

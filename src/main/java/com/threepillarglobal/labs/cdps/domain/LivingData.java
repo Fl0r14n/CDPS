@@ -20,43 +20,43 @@ import org.apache.hadoop.io.MD5Hash;
 @ToString
 @EqualsAndHashCode
 public class LivingData {
-    
+
     private final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    
+
     public static byte[] toRowKey(String email, Date eventDate) {
         return (MD5Hash.digest(email).toString() + dateFormat.format(eventDate)).getBytes();
     }
 
-    @HColumn(name = "minsOfSleep")
+    @HColumn
     private final int minsOfSleep;
-    @HColumn(name = "minsOfExcercise")
+    @HColumn
     private final int minsOfExcercise;
-    @HColumn(name = "calories")
+    @HColumn
     private final int calories;
-    @HColumn(name = "energy")
+    @HColumn
     private final int energy;
-    @HColumn(name = "fat")
+    @HColumn
     private final int fat;
-    @HColumn(name = "saturatedFat")
+    @HColumn
     private final int saturatedFat;
-    @HColumn(name = "sugars")
+    @HColumn
     private final int sugars;
-    @HColumn(name = "sodium")
+    @HColumn
     private final int sodium;
-    @HColumn(name = "protein")
+    @HColumn
     private final int protein;
-    @HColumn(name = "carbohydrates")
+    @HColumn
     private final int carbohydrates;
-    @HColumn(name = "vitamins")
+    @HColumn
     private final String vitamins;
-    @HColumn(name = "minerals")
+    @HColumn
     private final String minerals;
-    @HColumn(name = "water")
+    @HColumn
     private final int water;
-    @HColumn(name = "alcohol")
+    @HColumn
     private final int alcohol;
-    @HColumn(name = "softDrinks")
+    @HColumn
     private final int softDrinks;
-    @HColumn(name = "riskFactor")
+    @HColumn
     private final BigDecimal riskFactor;
 }

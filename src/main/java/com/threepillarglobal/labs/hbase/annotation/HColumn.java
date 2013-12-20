@@ -19,5 +19,5 @@ public @interface HColumn {
      *
      * @return column name
      */
-    public String name();
+    public String name() default "";
 }

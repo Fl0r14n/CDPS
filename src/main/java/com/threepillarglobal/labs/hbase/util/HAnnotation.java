@@ -25,7 +25,7 @@ public abstract class HAnnotation {
         HTable hTable = clazz.getAnnotation(HTable.class);
         //this is a must
         assert hTable != null : "HTable annotation missing on " + clazz.getName();
-        return hTable.name();
+        return "".equals(hTable.name()) ? clazz.getSimpleName() : hTable.name();
     }
 
     /**
@@ -41,7 +41,8 @@ public abstract class HAnnotation {
         for (Field field : clazz.getDeclaredFields()) {
             hColumnFamily = field.getAnnotation(HColumnFamily.class);
             if (hColumnFamily != null) {
-                result.put(hColumnFamily.name(), field.getType());
+                String name = "".equals(hColumnFamily.name()) ? field.getName() : hColumnFamily.name();
+                result.put(name, field.getType());
             }
         }
         return result;
@@ -50,7 +51,7 @@ public abstract class HAnnotation {
     /**
      * Get column family annotation at class level
      *
-     * @param clazz The supposed annotated @HColumnFamily class. 
+     * @param clazz The supposed annotated @HColumnFamily class.
      * @return Map.Entity entry with column name as key and class type as value
      * or null
      */
@@ -58,7 +59,8 @@ public abstract class HAnnotation {
         HColumnFamily hColumnFamily = clazz.getAnnotation(HColumnFamily.class);
         if (hColumnFamily != null) {
             Map<String, Class<?>> result = new HashMap<>(1);
-            result.put(hColumnFamily.name(), clazz);
+            String name = "".equals(hColumnFamily.name()) ? clazz.getSimpleName() : hColumnFamily.name();
+            result.put(name, clazz);
             for (Map.Entry<String, Class<?>> entry : result.entrySet()) {
                 return entry;
             }
@@ -77,7 +79,8 @@ public abstract class HAnnotation {
         for (Field field : clazz.getDeclaredFields()) {
             HColumn hColumn = field.getAnnotation(HColumn.class);
             if (hColumn != null) {
-                result.put(hColumn.name(), field.getType());
+                String name = "".equals(hColumn.name()) ? field.getName() : hColumn.name();
+                result.put(name, field.getType());
             }
         }
         return result;
@@ -95,7 +98,8 @@ public abstract class HAnnotation {
         for (Field field : clazz.getDeclaredFields()) {
             HColumnFamily hColumnFamily = field.getAnnotation(HColumnFamily.class);
             if (hColumnFamily != null) {
-                buf.add(hColumnFamily.name());
+                String name = "".equals(hColumnFamily.name()) ? field.getName() : hColumnFamily.name();
+                buf.add(name);
             }
         }
         //add also individual family name if found at class level
@@ -117,7 +121,7 @@ public abstract class HAnnotation {
     public static String getColumnFamilyName(Class<?> clazz) {
         HColumnFamily hColumnFamily = clazz.getAnnotation(HColumnFamily.class);
         if (hColumnFamily != null) {
-            return hColumnFamily.name();
+            return "".equals(hColumnFamily.name()) ? clazz.getSimpleName() : hColumnFamily.name();
         }
         return null;
     }
@@ -134,7 +138,8 @@ public abstract class HAnnotation {
         for (Field field : clazz.getDeclaredFields()) {
             HColumn hColumn = field.getAnnotation(HColumn.class);
             if (hColumn != null) {
-                buf.add(hColumn.name());
+                String name = "".equals(hColumn.name()) ? field.getName() : hColumn.name();
+                buf.add(name);
             }
         }
         String[] result = {};

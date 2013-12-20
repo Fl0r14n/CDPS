@@ -41,13 +41,13 @@ public class User {
     @EqualsAndHashCode
     public static class AccountData {
 
-        @HColumn(name = "secretKey")
+        @HColumn
         private final String secretKey;
-        @HColumn(name = "active")
+        @HColumn
         private final Boolean active;
-        @HColumn(name = "phone")
+        @HColumn
         private final String phone;
-        @HColumn(name = "email")
+        @HColumn
         private final String email;
     }
 
@@ -58,11 +58,11 @@ public class User {
     @EqualsAndHashCode
     public static class PersonalData {
 
-        @HColumn(name = "name")
+        @HColumn
         private final String name;
-        @HColumn(name = "dob")
+        @HColumn
         private final Date dob;
-        @HColumn(name = "locationId")
+        @HColumn
         private final String locationId;
     }
 
@@ -96,11 +96,11 @@ public class User {
             }
         }
 
-        @HColumn(name = "notes")
+        @HColumn
         private final List<String> notes; //Not sure if this is ok.
-        @HColumn(name = "smoker")
+        @HColumn
         private final SMOKER smoker;
-        @HColumn(name = "inheritedRisk")
+        @HColumn
         private final INHERITED_RISK inheritedRisk;
     }
 
@@ -111,9 +111,9 @@ public class User {
     @EqualsAndHashCode
     public static class FamilyTree {
 
-        @HColumn(name = "ancestors")
+        @HColumn
         public final List<String> ancestors; //Is this the propper way to model this
-        @HColumn(name = "descendants")
+        @HColumn
         public final List<String> descendants;
     }
 }

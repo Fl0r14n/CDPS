@@ -37,15 +37,15 @@ public class MedicalRecords {
     @EqualsAndHashCode
     public static class MedicalRecord {
 
-        @HColumn(name = "medicalRecordDate")
+        @HColumn
         private final Date medicalRecordDate;
-        @HColumn(name = "bmi")
+        @HColumn
         private final int bmi;
-        @HColumn(name = "colesterol")
+        @HColumn
         private final int cholesterol;
-        @HColumn(name = "triglycerides")
+        @HColumn
         private final int triglycerides;
-        @HColumn(name = "followUp")
+        @HColumn
         private final String followUp;
     }
 
@@ -56,7 +56,7 @@ public class MedicalRecords {
     @EqualsAndHashCode
     public static class DocumentsAttached {
 
-        @HColumn(name = "documentURL")
+        @HColumn
         private final String documentURL;
     }
 }

@@ -19,5 +19,5 @@ public @interface HTable {
      *
      * @return table name
      */
-    public String name();
+    public String name() default "";
 }

@@ -11,7 +11,7 @@ import org.junit.Test;
 
 public class HAnnotationTest {
 
-    private static final String TABLE = "table";
+    private static final String TABLE = "Sample2"; //class Sample2 will not have explitic table name
     private static final String CFAMILY1 = "cf1";
     private static final String CFAMILY2 = "cf2";
     private static final String COLUMN1 = "col1";
@@ -24,18 +24,18 @@ public class HAnnotationTest {
 
         @HColumn(name = COLUMN1)
         private String col1;
-        @HColumn(name = COLUMN2)
-        private String col2;
+        @HColumn
+        private String col2; //field name should be the same as COLUMN2
     }
 
-    @HTable(name = TABLE)
+    @HTable
     @Getter
     public static class Sample2 {
 
         @HColumnFamily(name = CFAMILY1)
         private Object cFamily1;
-        @HColumnFamily(name = CFAMILY2)
-        private Object cFamily2;
+        @HColumnFamily
+        private Object cf2; //field shoudl be the same as CFAMILY2
     }
 
     @Test

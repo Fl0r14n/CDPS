@@ -35,11 +35,11 @@ public class Location {
     @EqualsAndHashCode
     public static class LocationDetails {
 
-        @HColumn(name = "city")
+        @HColumn
         private final String city;
-        @HColumn(name = "county")
+        @HColumn
         private final String county;
-        @HColumn(name = "country")
+        @HColumn
         private final String country;
     }
 
@@ -50,7 +50,7 @@ public class Location {
     @EqualsAndHashCode
     public static class Residents {
 
-        @HColumn(name = "residents")
+        @HColumn
         private final List<String> residents;
         //we might add the username as column descriptor and the hash value as payload or vice versa,
         // but I don't know how to incorporate this in the model

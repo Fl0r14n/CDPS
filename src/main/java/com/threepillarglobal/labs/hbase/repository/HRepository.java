@@ -136,6 +136,7 @@ public abstract class HRepository<T extends Object> {
         } else {
             return hbaseTemplate.find(tableName, new Scan(), new RowMapperImpl());
         }
+//        hbaseTemplate.find(tableName, cfamilyName, qualifier, null);
     }
 
     /**

@@ -27,54 +27,54 @@ public class SensorData {
     }
     
     //helps UI to plot the graph, it reduces the processing, so we don't deduce the date from the rowkey
-    @HColumn(name = "eventDate")
+    @HColumn
     private final Date eventDate;
-    @HColumnFamily(name = "h00")
+    @HColumnFamily
     private final HourlyData h00;
-    @HColumnFamily(name = "h01")
+    @HColumnFamily
     private final HourlyData h01;
-    @HColumnFamily(name = "h02")
+    @HColumnFamily
     private final HourlyData h02;
-    @HColumnFamily(name = "h03")
+    @HColumnFamily
     private final HourlyData h03;
-    @HColumnFamily(name = "h04")
+    @HColumnFamily
     private final HourlyData h04;
-    @HColumnFamily(name = "h05")
+    @HColumnFamily
     private final HourlyData h05;
-    @HColumnFamily(name = "h06")
+    @HColumnFamily
     private final HourlyData h06;
-    @HColumnFamily(name = "h07")
+    @HColumnFamily
     private final HourlyData h07;
-    @HColumnFamily(name = "h08")
+    @HColumnFamily
     private final HourlyData h08;
-    @HColumnFamily(name = "h09")
+    @HColumnFamily
     private final HourlyData h09;
-    @HColumnFamily(name = "h10")
+    @HColumnFamily
     private final HourlyData h10;
-    @HColumnFamily(name = "h11")
+    @HColumnFamily
     private final HourlyData h11;
-    @HColumnFamily(name = "h12")
+    @HColumnFamily
     private final HourlyData h12;
-    @HColumnFamily(name = "h13")
+    @HColumnFamily
     private final HourlyData h13;
-    @HColumnFamily(name = "h14")
+    @HColumnFamily
     private final HourlyData h14;
-    @HColumnFamily(name = "h15")
+    @HColumnFamily
     private final HourlyData h15;
-    @HColumnFamily(name = "h16")
+    @HColumnFamily
     private final HourlyData h16;
-    @HColumnFamily(name = "h17")
+    @HColumnFamily
     private final HourlyData h17;
-    @HColumnFamily(name = "h18")
+    @HColumnFamily
     private final HourlyData h18;
-    @HColumnFamily(name = "h19")
+    @HColumnFamily
     private final HourlyData h19;
-    @HColumnFamily(name = "h20")
+    @HColumnFamily
     private final HourlyData h20;
-    @HColumnFamily(name = "h21")
+    @HColumnFamily
     private final HourlyData h21;
-    @HColumnFamily(name = "h22")
+    @HColumnFamily
     private final HourlyData h22;
-    @HColumnFamily(name = "h23")
+    @HColumnFamily
     private final HourlyData h23;
 }
