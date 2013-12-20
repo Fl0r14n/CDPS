@@ -33,6 +33,8 @@ public class RiskFactorServiceImpl implements RiskService {
 	@Override
 	public CardioRisk getCardioRisk(String uid, Date from, Date to) {
 		
+		//System.err.println("=== From: " + from + " To: " + to);
+		
 		DateTime b = new DateTime(Calendar.getInstance().getTime());
 		User user = userService.getUser(uid);
 		DateTime e = new DateTime(Calendar.getInstance().getTime());
@@ -40,6 +42,7 @@ public class RiskFactorServiceImpl implements RiskService {
 		//	System.out.println("User fetched: " + uid + ' ' +  user + " in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " secs");
         
         
+		
         b = new DateTime(Calendar.getInstance().getTime());
         List<SensorData> sensorData = sensorRepo.findSensorDataForUserInInterval(uid, from, to);
         e = new DateTime(Calendar.getInstance().getTime());

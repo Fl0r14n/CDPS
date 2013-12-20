@@ -58,7 +58,7 @@ h1 {
 	position:absolute;
 	height:100%;
 	width:20%;
-	background-color:#01A9DB;
+	background-color:#FAFAFA;
 }
 
 
@@ -95,7 +95,7 @@ h1 {
 	height:100%;
 	width:80%;
 	left:20%;
-	background-color:#01A9DB;
+	background-color:#FAFAFA;
 	-webkit-box-sizing:border-box;
 	-moz-box-sizing:border-box;
 	box-sizing:border-box;
@@ -218,7 +218,7 @@ dl {
 }
  
 dl dt {
-    background-color:#0489B1;
+    background-color:#E6E6E6;
     float:left; 
     font-weight:bold; 
     margin-right:10px; 

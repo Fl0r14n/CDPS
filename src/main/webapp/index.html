@@ -29,6 +29,11 @@ globaldata={};
 
 $(document).ready(function() {
 	
+	$("#search").hide();
+	$("#fsmednotes").hide();
+	$("#fspdata").hide();	
+	$("#fsrisk").hide();	
+	
 	var uid="n/a";
 	var personalData;
 	var speeddata=[];
@@ -76,6 +81,7 @@ $(document).ready(function() {
 					out += '</dl></div>';
 		
 					$("#risk").append( out );												
+					$("#fsrisk").show();
 					
 					dataset=createobjects1(response.sensorData,"diastolicPressure");
 					renderChartByMetric(dataset, "Diastolic");
@@ -114,17 +120,31 @@ $(document).ready(function() {
 				delimiter: ",",
 				
 				onSelect: function(suggestion){
-				 //$(".details").empty();
-				 
-				uid = suggestion.data.accountData.email; 
-				$(".details").empty();
+				 					 
+					uid = suggestion.data.accountData.email; 
+					
+					$(".pdata").empty();
 		    
 					var out = '<dl>';
 					out += '<dt>' + "Name: " + '</dt><dd>' + suggestion.data.personalData.name + '</dd>';  
 					out += '<dt>' + "Date of birth: " + '</dt><dd>' + new Date(suggestion.data.personalData.dob).yyyymmdd() + '</dd>';  
+					out += '<dt>' + "Phone: " + '</dt><dd>' + suggestion.data.accountData.phone + '</dd>';
 					out += '<dt>' + "Email: " + '</dt><dd>' + suggestion.data.accountData.email + '</dd>';
+					out += '<dt>' + "Location: " + '</dt><dd>' + suggestion.data.personalData.locationId + '</dd>';
 					out += '</dl>';
-					$(".details").append( out );
+					$(".pdata").append( out );
+					$("#fspdata").show();
+					
+					$(".mednotes").empty();
+					
+					var out = '<dl>';
+					out += '<dt>' + "Smoker: " + '</dt><dd>' + suggestion.data.medicalNotes.smoker + '</dd>';
+					out += '<dt>' + "Inherited risks: " + '</dt><dd>' + suggestion.data.medicalNotes.inheritedRisk + '</dd>';
+					out += '</dl>';
+					$(".mednotes").append( out );
+					$("#fsmednotes").show();
+					
+					$("#search").show();
 				},
 				
 			    transformResult: function(response) {
@@ -187,11 +207,12 @@ $(document).ready(function() {
 	}
 	
 	
-		function renderChart() {
+	function renderChart() {
 		
 		$('#container').highcharts({
+			colors: ['#DF0101','#610B0B'],
 		    chart: {
-				backgroundColor: '#EFEFEB',				
+				backgroundColor: '#E6E6E6',				
 				
 				events: {
 					load: function(chart) {
@@ -225,7 +246,7 @@ $(document).ready(function() {
 			
 			legend: {
 				enabled : true,
-				title: {text:'Legend'},
+				title: {text:''},
                 layout: 'vertical',
                 align: 'right',
                 verticalAlign: 'middle',
@@ -386,47 +407,62 @@ $(document).ready(function() {
 <body>
 
 <div id="wrapper">
+
 	<div id="sidebar">
-	<fieldset>
-		<legend>Search criteria</legend>
-		<fieldset>
-		<legend>User</legend>
-		<label for="from">User id</label><input type="text"  id="w-input-search" value="">	
+		<img style="margin-left:5px;margin-top:40px;margin-bottom:20px;" src="images/logo.png" align="left">		
+		
+		<fieldset style="margin-top:10px;">			
+			<legend>Select user</legend>
+			<input type="text"  id="w-input-search" value="">	
 		</fieldset>
-		<fieldset>
-		<legend>Dates</legend>		
-			<div class="range-selectors">
-			<table>
-			<tr>
-				<td><label for="from">From</label></td>
-				<td><input id="from" type="text"/></td>
-			</tr>
-			<tr>
-				<td><label for="to">To</label></td>
-				<td><input id="to" type="text"/></td>
-			</tr>	
-			</table>
-			</div>
-		</fieldset>
-		<div>
-			<span>
-				<button id="w-get-data" type="button">Load data</button>
-			</span>
+				
+		<fieldset  id="fspdata" style="margin-top:10px;">
+			<legend>Personal data</legend>
+			<div class="pdata"></div>
+		</fieldset> 
+		
+		<fieldset id="fsmednotes" style="margin-top:10px;">
+			<legend>Medical notes</legend>
+			<div class="mednotes"></div>
+		</fieldset> 
+		
+		<div id="search" style="margin-top:10px;">
+			<fieldset style="margin-top:10px;">
+				<legend>Analyse data within the timeframe </legend>		
+					<div class="range-selectors">
+					<table>
+					<tr>
+						<td><label for="from">From</label></td>
+						<td><input id="from" type="text"/></td>
+					</tr>
+					<tr>
+						<td><label for="to">To</label></td>
+						<td><input id="to" type="text"/></td>
+					</tr>	
+					</table>
+					</div>
+					<div style="margin-top:10px;">
+					<span>
+						<input type="image" src="images/loadData.png" id="w-get-data" alt="Evaluate risk"></input>
+					</span>
+					</div>
+				</fieldset>
+				
+			</fieldset>
 		</div>
-	</fieldset>		
-	<fieldset>
-		<legend>Personal data</legend>
-		<div class="details">
-		</div>
-	</fieldset> 
+		
 	</div>
+	
+	
 	<div id="content">
 		<div id="inner-content">
-			<h1>Data graph</h1>			
-			<div id="container"></div>
 			<fieldset>
-				<legend>Cardiovascular risks</legend>					
-				<div id="risk"></div>
+				<legend>Cardiovascular assesment dashboard</legend>		
+				<div id="container"></div>
+				<fieldset id="fsrisk">
+					<legend>Risk assessment</legend>					
+					<div id="risk"></div>
+				</fieldset> 
 			</fieldset> 
 		</div>
 	</div>

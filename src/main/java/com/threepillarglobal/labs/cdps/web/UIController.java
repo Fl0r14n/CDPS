@@ -47,20 +47,29 @@ public class UIController {
     //@Qualifier(value = "userServiceMock")
     @Qualifier(value = "userServiceImpl")
     private UserService userService;
-    private List<User> userList;
+    private static List<User> userList;
 
 //    @PostConstruct
     public void init() {
-    	DateTime b = new DateTime(Calendar.getInstance().getTime());
-        userList = userService.getUsers();
-        DateTime e = new DateTime(Calendar.getInstance().getTime());
-        //System.out.println("=== User list size: " + userList.size() + " retrieved in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " seconds");
+    	//DateTime b = new DateTime(Calendar.getInstance().getTime());
+        //userList = userService.getUsers();
+        //DateTime e = new DateTime(Calendar.getInstance().getTime());
+        //System.out.println("!!! User list size: " + userList.size() + " retrieved in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " seconds");
         //System.out.println(userList.get(0).toString());
     }
 
     @RequestMapping(value = "/getUid", method = RequestMethod.GET)
     public @ResponseBody
     List<User> getTags(@RequestParam String userName) {
+    	if (userList==null)
+    	{
+    		DateTime b = new DateTime(Calendar.getInstance().getTime());
+            userList = userService.getUsers();
+            DateTime e = new DateTime(Calendar.getInstance().getTime());
+            System.out.println("=== User list size: " + userList.size() + " retrieved in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " seconds");
+            System.out.println(userList.get(0).toString());
+    	}
+    	
         List<User> result = new ArrayList<>();
         // iterate a list and filter by userName
         for (User user : userList) {
@@ -77,6 +86,7 @@ public class UIController {
         try {
             Date sDate = dateFormat.parse(from);
             Date eDate = dateFormat.parse(to);
+            //System.err.println("+++ From: " + sDate + " To: " + eDate);
             return riskFactorsService.getCardioRisk(uid, sDate, eDate);
         } catch (ParseException e) {
             e.printStackTrace();
