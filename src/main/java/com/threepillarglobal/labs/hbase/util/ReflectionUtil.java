@@ -1,5 +1,6 @@
 package com.threepillarglobal.labs.hbase.util;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * Some helper merthods with reflection
@@ -97,6 +99,16 @@ public abstract class ReflectionUtil {
             case "Timestamp": {
                 return Bytes.toBytes(((Date) field.get(t)).getTime());
             }
+            default: {
+                //for all the rest do a json marshalling
+                Object o = field.get(t);
+                if (o != null) {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.writeValue(baos, o);
+                    return baos.toByteArray();
+                }
+            }
         }
         return null;
     }
@@ -118,9 +130,10 @@ public abstract class ReflectionUtil {
         field.setAccessible(true);
         Class fieldType = field.getType();
         //enums
-        if (fieldType.getGenericSuperclass()!= null && fieldType.getGenericSuperclass().toString().indexOf("java.lang.Enum")==0) {
+        if (fieldType.getGenericSuperclass() != null && fieldType.getGenericSuperclass().toString().indexOf("java.lang.Enum") == 0) {
             field.set(t, Enum.valueOf(fieldType, new String(value)));
-        }else{
+            return;
+        }
         //primitives or wrappers
         switch (fieldType.getSimpleName()) {
             case "String": {
@@ -135,7 +148,7 @@ public abstract class ReflectionUtil {
                 field.set(t, Bytes.toBoolean(value));
                 return;
             }
-            case "byte": {                
+            case "byte": {
                 byte val = value.length > 0 ? (byte) (value[0] & 0xFF) : 0;
                 field.setByte(t, val);
                 return;
@@ -207,8 +220,13 @@ public abstract class ReflectionUtil {
             }
             case "Timestamp": {
                 field.set(t, new Timestamp(Bytes.toLong(value)));
+                return;
             }
-         }
+            default: {
+                ObjectMapper mapper = new ObjectMapper();
+                Object o = mapper.readValue(value, 0, value.length, fieldType);
+                field.set(t, o);
+            }
         }
     }
 

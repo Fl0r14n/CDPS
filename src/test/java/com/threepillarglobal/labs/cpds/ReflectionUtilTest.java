@@ -4,7 +4,10 @@ import com.threepillarglobal.labs.hbase.util.ReflectionUtil;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import lombok.Data;
 import lombok.Getter;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.junit.Assert;
@@ -52,20 +55,42 @@ public class ReflectionUtilTest {
         private final Timestamp ts = new Timestamp(dt.getTime());
         private final ENUM e = ENUM.MEDIUM;
         private final Object o = new Object();
+        private final Sample1 sample1 = new Sample1();
+
+        @Data
+        public static class Sample1 {
+
+            public Sample1() {
+                list = new ArrayList<>();
+                for (int i = 0; i < 4; i++) {
+                    list.add(i);
+                }
+            }
+
+            private String str = "Hello";
+
+            private List<Integer> list;
+
+            @Data
+            public static class Sample2 {
+
+                private final String string = "World!";
+            }
+        }
     }
 
     @Test
     public void set_values_into_fields() throws Exception {
         SampleClass a = new SampleClass();
         //do a loopback like test
-        for (Field f : SampleClass.class.getDeclaredFields()) {
+        for (Field field : SampleClass.class.getDeclaredFields()) {
             //old value
-            byte[] expected = ReflectionUtil.getFieldValue(f, a);
+            byte[] expected = ReflectionUtil.getFieldValue(field, a);
             //set as new value
-            ReflectionUtil.setFieldValue(f, a, expected);
-            byte[] actual = ReflectionUtil.getFieldValue(f, a);
+            ReflectionUtil.setFieldValue(field, a, expected);
+            byte[] actual = ReflectionUtil.getFieldValue(field, a);
 
-            System.out.println(f.getName() + "|" + Bytes.toStringBinary(actual));
+            System.out.println(field.getName() + "|" + Bytes.toStringBinary(actual));
             Assert.assertArrayEquals(expected, actual);
         }
     }

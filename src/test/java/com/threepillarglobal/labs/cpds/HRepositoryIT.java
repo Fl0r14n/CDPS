@@ -8,13 +8,12 @@ import com.threepillarglobal.labs.hbase.util.HOperations;
 import java.io.IOException;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import lombok.Data;
+import lombok.Getter;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +22,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 //used to test te functionality of HRepository
-@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:integrationTests-context.xml")
 public class HRepositoryIT {
 
     @HTable(name = "hrepoit")
     @HColumnFamily(name = "df") //a default column table at class level
-    @Data
+    @Getter
     public static class Table {
 
         private static byte[] row = "row".getBytes();
@@ -44,7 +42,7 @@ public class HRepositoryIT {
         //colum family is defined at class level
         private CFamily2 cf2 = new CFamily2();
 
-        @Data
+        @Getter
         public static class CFamily1 {
 
             @HColumn(name = "col01")
@@ -54,7 +52,7 @@ public class HRepositoryIT {
         }
 
         @HColumnFamily(name = "cf2")
-        @Data
+        @Getter
         public static class CFamily2 {
 
             @HColumn(name = "col11")
