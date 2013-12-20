@@ -36,80 +36,84 @@ public abstract class ReflectionUtil {
             return field.get(t).toString().getBytes();
         }
         //primitives and wrappers
-        switch (fieldType.getSimpleName()) {
-            case "String": {
-                return Bytes.toBytes((String) field.get(t));
-            }
-            case "boolean": {
-                return Bytes.toBytes(field.getBoolean(t));
-            }
-            case "Boolean": {
-                return Bytes.toBytes((Boolean) field.get(t));
-            }
-            case "byte": {
-                return new byte[] {field.getByte(t)};
-            }
-            case "Byte": {
-                return new byte[] {((Byte)field.get(t)).byteValue()};
-            }
-            case "byte[]": {
-                return (byte[]) field.get(t);
-            }
-            case "char": {
-                return Bytes.toBytes(field.getChar(t));
-            }
-            case "Character": {
-                return Bytes.toBytes((Character) field.get(t)); //do not cast to int
-            }
-            case "short": {
-                return Bytes.toBytes(field.getShort(t));
-            }
-            case "Short": {
-                return Bytes.toBytes((Short) field.get(t));
-            }
-            case "int": {
-                return Bytes.toBytes(field.getInt(t));
-            }
-            case "Integer": {
-                return Bytes.toBytes((Integer) field.get(t));
-            }
-            case "long": {
-                return Bytes.toBytes(field.getLong(t));
-            }
-            case "Long": {
-                return Bytes.toBytes((Long) field.get(t));
-            }
-            case "float": {
-                return Bytes.toBytes(field.getFloat(t));
-            }
-            case "Float": {
-                return Bytes.toBytes((Float) field.get(t));
-            }
-            case "double": {
-                return Bytes.toBytes(field.getDouble(t));
-            }
-            case "Double": {
-                return Bytes.toBytes((Double) field.get(t));
-            }
-            case "BigDecimal": {
-                return Bytes.toBytes((BigDecimal) field.get(t));
-            }
-            case "Date": {
-                return Bytes.toBytes(((Date) field.get(t)).getTime());
-            }
-            case "Timestamp": {
-                return Bytes.toBytes(((Date) field.get(t)).getTime());
-            }
-            default: {
-                //for all the rest do a json marshalling
-                Object o = field.get(t);
-                if (o != null) {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    ObjectMapper mapper = new ObjectMapper();
-                    mapper.writeValue(baos, o);
-                    return baos.toByteArray();
+        try {
+            switch (fieldType.getSimpleName()) {
+                case "String": {
+                    return Bytes.toBytes((String) field.get(t));
+                }
+                case "boolean": {
+                    return Bytes.toBytes(field.getBoolean(t));
+                }
+                case "Boolean": {
+                    return Bytes.toBytes((Boolean) field.get(t));
+                }
+                case "byte": {
+                    return new byte[]{field.getByte(t)};
+                }
+                case "Byte": {
+                    return new byte[]{((Byte) field.get(t)).byteValue()};
+                }
+                case "byte[]": {
+                    return (byte[]) field.get(t);
+                }
+                case "char": {
+                    return Bytes.toBytes(field.getChar(t));
+                }
+                case "Character": {
+                    return Bytes.toBytes((Character) field.get(t)); //do not cast to int
+                }
+                case "short": {
+                    return Bytes.toBytes(field.getShort(t));
+                }
+                case "Short": {
+                    return Bytes.toBytes((Short) field.get(t));
+                }
+                case "int": {
+                    return Bytes.toBytes(field.getInt(t));
+                }
+                case "Integer": {
+                    return Bytes.toBytes((Integer) field.get(t));
+                }
+                case "long": {
+                    return Bytes.toBytes(field.getLong(t));
+                }
+                case "Long": {
+                    return Bytes.toBytes((Long) field.get(t));
+                }
+                case "float": {
+                    return Bytes.toBytes(field.getFloat(t));
+                }
+                case "Float": {
+                    return Bytes.toBytes((Float) field.get(t));
+                }
+                case "double": {
+                    return Bytes.toBytes(field.getDouble(t));
+                }
+                case "Double": {
+                    return Bytes.toBytes((Double) field.get(t));
+                }
+                case "BigDecimal": {
+                    return Bytes.toBytes((BigDecimal) field.get(t));
+                }
+                case "Date": {
+                    return Bytes.toBytes(((Date) field.get(t)).getTime());
+                }
+                case "Timestamp": {
+                    return Bytes.toBytes(((Date) field.get(t)).getTime());
+                }
+                default: {
+                    //for all the rest do a json marshalling
+                    Object o = field.get(t);
+                    if (o != null) {
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        ObjectMapper mapper = new ObjectMapper();
+                        mapper.writeValue(baos, o);
+                        return baos.toByteArray();
+                    }
                 }
             }
+        } catch (NullPointerException npe) {
+            return new byte[]{};
         }
         return null;
     }
@@ -150,7 +154,7 @@ public abstract class ReflectionUtil {
                 return;
             }
             case "byte": {
-                System.out.println("Size:" +value.length);
+                System.out.println("Size:" + value.length);
                 byte val = value.length > 0 ? (byte) (value[0] & 0xFF) : 0;
                 field.setByte(t, val);
                 return;

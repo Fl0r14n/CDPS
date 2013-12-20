@@ -84,6 +84,9 @@ public abstract class HAnnotation {
         String cFamilyName;
         for (Field field : clazz.getDeclaredFields()) {
             cFamilyName = getColumnFamilyName(field);
+            if (cFamilyName == null) { //might be annotated at field class level
+                cFamilyName = getColumnFamilyName(field.getType());
+            }
             if (cFamilyName != null) {
                 buf.add(cFamilyName);
             }

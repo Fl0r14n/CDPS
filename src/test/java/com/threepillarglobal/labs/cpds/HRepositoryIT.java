@@ -8,7 +8,7 @@ import com.threepillarglobal.labs.hbase.util.HOperations;
 import java.io.IOException;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import lombok.Getter;
+import lombok.Data;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.junit.After;
@@ -28,7 +28,7 @@ public class HRepositoryIT {
 
     @HTable(name = "hrepoit")
     @HColumnFamily(name = "df") //a default column table at class level
-    @Getter
+    @Data
     public static class Table {
 
         private static byte[] row = "row".getBytes();
@@ -42,21 +42,21 @@ public class HRepositoryIT {
         //colum sfamily is defined at class level
         private CFamily2 cf2 = new CFamily2();
 
-        @Getter
+        @Data
         public static class CFamily1 {
 
             @HColumn(name = "col01")
-            private String col01;
+            private String col01 = "value0";
             @HColumn(name = "col02")
-            private String col02;
+            private String col02 = "value1";
         }
 
         @HColumnFamily(name = "cf2")
-        @Getter
+        @Data
         public static class CFamily2 {
 
             @HColumn(name = "col11")
-            private String col11;
+            private String col11 = "value0";
             @HColumn(name = "col12")
             private String col12;
         }
