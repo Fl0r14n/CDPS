@@ -34,8 +34,9 @@ public abstract class HMarshaller {
             HColumnFamily hColumnFamily = field.getAnnotation(HColumnFamily.class);
             if (hColumnFamily != null) {
                 field.setAccessible(true);
+                String hColumnFamilyName = "".equals(hColumnFamily.name()) ? field.getName() : hColumnFamily.name();
                 //recursive call
-                field.set(instance, unmarshall(field.getType(), result, hColumnFamily.name().getBytes()));
+                field.set(instance, unmarshall(field.getType(), result, hColumnFamilyName.getBytes()));
             } else {
                 //is this a HColumn field
                 HColumn hColumn = field.getAnnotation(HColumn.class);
@@ -45,7 +46,8 @@ public abstract class HMarshaller {
                         cf = getColumnFamilyName(clazz).getBytes();
                     }
                     if (cf != null) { //only if a valid column family is found
-                        byte[] val = result.getValue(cf, hColumn.name().getBytes());
+                        String hColumnName = "".equals(hColumn.name()) ? field.getName() : hColumn.name();
+                        byte[] val = result.getValue(cf, hColumnName.getBytes());
                         //set field value to one of the known ones
                         ReflectionUtil.setFieldValue(field, instance, val);
                     }
@@ -77,8 +79,9 @@ public abstract class HMarshaller {
             HColumnFamily hColumnFamily = field.getAnnotation(HColumnFamily.class);
             if (hColumnFamily != null) {
                 field.setAccessible(true);
+                String hColumnFamilyName = "".equals(hColumnFamily.name()) ? field.getName() : hColumnFamily.name();
                 //recursive call
-                marshall(field.get(t), put, hColumnFamily.name().getBytes());
+                marshall(field.get(t), put, hColumnFamilyName.getBytes());
             } else {
                 //get column family from class annotation
                 HColumn hColumn = field.getAnnotation(HColumn.class);
@@ -88,7 +91,8 @@ public abstract class HMarshaller {
                         cf = getColumnFamilyName(clazz).getBytes();
                     }
                     if (cf != null) { //only if a valid column family is found
-                        put.add(cf, hColumn.name().getBytes(), ReflectionUtil.getFieldValue(field, t));
+                        String hColumnName = "".equals(hColumn.name()) ? field.getName() : hColumn.name();
+                        put.add(cf, hColumnName.getBytes(), ReflectionUtil.getFieldValue(field, t));
                     }
                 }
             }

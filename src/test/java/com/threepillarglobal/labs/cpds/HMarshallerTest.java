@@ -27,33 +27,33 @@ public class HMarshallerTest {
 
         private static byte[] row = "row".getBytes();
 
-        @HColumnFamily(name = "cfamily1")
+        @HColumnFamily(name = "cf1")
         private CFamily1 cFamily1 = new CFamily1();
-        @HColumnFamily(name = "cfamily2")
+        @HColumnFamily(name = "cf2")
         private CFamily2 cFamily2 = new CFamily2();
 
-        @HColumnFamily(name = "cfamily1")
+        @HColumnFamily(name = "cf1")
         @Getter
         @EqualsAndHashCode
         @ToString
         public static class CFamily1 {
 
-            @HColumn(name = "col01")
+            @HColumn
             private String col01 = "value0";
-            @HColumn(name = "col02")
+            @HColumn
             private String col02 = "value1";
 
         }
 
-        @HColumnFamily(name = "cfamily2")
+        @HColumnFamily(name = "cf2")
         @Getter
         @EqualsAndHashCode
         @ToString
         public static class CFamily2 {
 
-            @HColumn(name = "col11")
+            @HColumn
             private String col11 = "value0";
-            @HColumn(name = "col12")
+            @HColumn
             private String col12 = "value1";
         }
     }
@@ -66,17 +66,17 @@ public class HMarshallerTest {
 
         private static byte[] row = "row".getBytes();
 
-        @HColumnFamily(name = "cfamily1")
-        private CFamily cFamily1 = new Table1.CFamily();
-        @HColumnFamily(name = "cfamily2")
-        private CFamily cFamily2 = new Table1.CFamily();
+        @HColumnFamily
+        private CFamily cf1 = new Table1.CFamily();
+        @HColumnFamily
+        private CFamily cf2 = new Table1.CFamily();
 
         @Getter
         @EqualsAndHashCode
         @ToString
         public static class CFamily {
 
-            @HColumn(name = "col01")
+            @HColumn
             private String col01 = "value0";
             @HColumn(name = "col02")
             private String col02 = "value1";
@@ -104,9 +104,8 @@ public class HMarshallerTest {
         Table.CFamily1 obj = new Table.CFamily1();
         Put put = new Put(Table.row);
         HMarshaller.marshall(obj, put);
-
-        Assert.assertTrue(put.has("cfamily1".getBytes(), "col01".getBytes(), "value0".getBytes()));
-        Assert.assertTrue(put.has("cfamily1".getBytes(), "col02".getBytes(), "value1".getBytes()));
+        Assert.assertTrue(put.has("cf1".getBytes(), "col01".getBytes(), "value0".getBytes()));
+        Assert.assertTrue(put.has("cf1".getBytes(), "col02".getBytes(), "value1".getBytes()));
     }
 
     @Test
@@ -124,10 +123,10 @@ public class HMarshallerTest {
         Put put = new Put(Table.row);
         Table table = new Table();
         HMarshaller.marshall(table, put);
-        Assert.assertTrue(put.has("cfamily1".getBytes(), "col01".getBytes(), "value0".getBytes()));
-        Assert.assertTrue(put.has("cfamily1".getBytes(), "col02".getBytes(), "value1".getBytes()));
-        Assert.assertTrue(put.has("cfamily2".getBytes(), "col11".getBytes(), "value0".getBytes()));
-        Assert.assertTrue(put.has("cfamily2".getBytes(), "col12".getBytes(), "value1".getBytes()));
+        Assert.assertTrue(put.has("cf1".getBytes(), "col01".getBytes(), "value0".getBytes()));
+        Assert.assertTrue(put.has("cf1".getBytes(), "col02".getBytes(), "value1".getBytes()));
+        Assert.assertTrue(put.has("cf2".getBytes(), "col11".getBytes(), "value0".getBytes()));
+        Assert.assertTrue(put.has("cf2".getBytes(), "col12".getBytes(), "value1".getBytes()));
     }
 
     @Test
@@ -147,10 +146,10 @@ public class HMarshallerTest {
         Table1 expected = new Table1();
         Result res = constructResult(Table1.class, Table1.row);
         Table1 actual = HMarshaller.unmarshall(Table1.class, res);
-        Assert.assertTrue(expected.getCFamily1().getCol01().equals(actual.getCFamily1().getCol01()));
-        Assert.assertTrue(expected.getCFamily1().getCol02().equals(actual.getCFamily1().getCol02()));
-        Assert.assertTrue(expected.getCFamily2().getCol01().equals(actual.getCFamily2().getCol01()));
-        Assert.assertTrue(expected.getCFamily2().getCol02().equals(actual.getCFamily2().getCol02()));
+        Assert.assertTrue(expected.getCf1().getCol01().equals(actual.getCf1().getCol01()));
+        Assert.assertTrue(expected.getCf1().getCol02().equals(actual.getCf1().getCol02()));
+        Assert.assertTrue(expected.getCf2().getCol01().equals(actual.getCf2().getCol01()));
+        Assert.assertTrue(expected.getCf2().getCol02().equals(actual.getCf2().getCol02()));
     }
 
     @Test
@@ -158,9 +157,9 @@ public class HMarshallerTest {
         Put put = new Put(Table1.row);
         Table1 table = new Table1();
         HMarshaller.marshall(table, put);
-        Assert.assertTrue(put.has("cfamily1".getBytes(), "col01".getBytes(), "value0".getBytes()));
-        Assert.assertTrue(put.has("cfamily1".getBytes(), "col02".getBytes(), "value1".getBytes()));
-        Assert.assertTrue(put.has("cfamily2".getBytes(), "col01".getBytes(), "value0".getBytes()));
-        Assert.assertTrue(put.has("cfamily2".getBytes(), "col02".getBytes(), "value1".getBytes()));
+        Assert.assertTrue(put.has("cf1".getBytes(), "col01".getBytes(), "value0".getBytes()));
+        Assert.assertTrue(put.has("cf1".getBytes(), "col02".getBytes(), "value1".getBytes()));
+        Assert.assertTrue(put.has("cf2".getBytes(), "col01".getBytes(), "value0".getBytes()));
+        Assert.assertTrue(put.has("cf2".getBytes(), "col02".getBytes(), "value1".getBytes()));
     }
 }

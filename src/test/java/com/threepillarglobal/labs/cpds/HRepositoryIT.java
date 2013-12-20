@@ -33,13 +33,13 @@ public class HRepositoryIT {
 
         private static byte[] row = "row".getBytes();
 
-        @HColumn(name = "id")
+        @HColumn
         private String id;
-        @HColumnFamily(name = "cf1")
+        @HColumnFamily
         private CFamily1 cf1 = new CFamily1();
-        @HColumnFamily(name = "cf11")
+        @HColumnFamily
         private CFamily1 cf11 = new CFamily1();
-        //colum family is defined at class level
+        //colum sfamily is defined at class level
         private CFamily2 cf2 = new CFamily2();
 
         @Getter
