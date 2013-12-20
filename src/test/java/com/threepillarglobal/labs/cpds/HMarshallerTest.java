@@ -8,6 +8,7 @@ import com.threepillarglobal.labs.hbase.util.HMarshaller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -20,9 +21,7 @@ import org.junit.Test;
 public class HMarshallerTest {
 
     @HTable(name = "table")
-    @Getter
-    @EqualsAndHashCode
-    @ToString
+    @Data
     public static class Table {
 
         private static byte[] row = "row".getBytes();
@@ -33,9 +32,7 @@ public class HMarshallerTest {
         private CFamily2 cFamily2 = new CFamily2();
 
         @HColumnFamily(name = "cf1")
-        @Getter
-        @EqualsAndHashCode
-        @ToString
+        @Data
         public static class CFamily1 {
 
             @HColumn
@@ -46,9 +43,7 @@ public class HMarshallerTest {
         }
 
         @HColumnFamily(name = "cf2")
-        @Getter
-        @EqualsAndHashCode
-        @ToString
+        @Data
         public static class CFamily2 {
 
             @HColumn
@@ -59,9 +54,7 @@ public class HMarshallerTest {
     }
 
     @HTable(name = "table")
-    @Getter
-    @EqualsAndHashCode
-    @ToString
+    @Data
     public static class Table1 {
 
         private static byte[] row = "row".getBytes();
@@ -70,10 +63,10 @@ public class HMarshallerTest {
         private CFamily cf1 = new Table1.CFamily();
         @HColumnFamily
         private CFamily cf2 = new Table1.CFamily();
+        //not annotated with HColumnFamily in field
+        private CFamily3 cf3 = new Table1.CFamily3();
 
-        @Getter
-        @EqualsAndHashCode
-        @ToString
+        @Data
         public static class CFamily {
 
             @HColumn
@@ -82,6 +75,13 @@ public class HMarshallerTest {
             private String col02 = "value1";
         }
 
+        @HColumnFamily(name = "cf3")
+        @Data
+        public static class CFamily3 {
+
+            @HColumn
+            private String col01 = "value0";
+        }
     }
 
     private Result constructResult(Class<?> clazz, byte[] row) {
@@ -140,6 +140,17 @@ public class HMarshallerTest {
         Assert.assertTrue(expected.getCFamily2().getCol11().equals(actual.getCFamily2().getCol11()));
         Assert.assertTrue(expected.getCFamily2().getCol12().equals(actual.getCFamily2().getCol12()));
     }
+    
+    @Test
+    public void marshall_a_table_with_multiple_column_families_of_same_class() throws Exception {
+        Put put = new Put(Table1.row);
+        Table1 table = new Table1();
+        HMarshaller.marshall(table, put);
+        Assert.assertTrue(put.has("cf1".getBytes(), "col01".getBytes(), "value0".getBytes()));
+        Assert.assertTrue(put.has("cf1".getBytes(), "col02".getBytes(), "value1".getBytes()));
+        Assert.assertTrue(put.has("cf2".getBytes(), "col01".getBytes(), "value0".getBytes()));
+        Assert.assertTrue(put.has("cf2".getBytes(), "col02".getBytes(), "value1".getBytes()));
+    }
 
     @Test
     public void unmarshall_a_table_with_multiple_column_families_of_same_class() throws Exception {
@@ -152,14 +163,20 @@ public class HMarshallerTest {
         Assert.assertTrue(expected.getCf2().getCol02().equals(actual.getCf2().getCol02()));
     }
 
+    
     @Test
-    public void marshall_a_table_with_multiple_column_families_of_same_class() throws Exception {
+    public void marshal_a_table_which_contains_a_column_family_without_annotation_at_field_level() throws Exception {
         Put put = new Put(Table1.row);
         Table1 table = new Table1();
         HMarshaller.marshall(table, put);
-        Assert.assertTrue(put.has("cf1".getBytes(), "col01".getBytes(), "value0".getBytes()));
-        Assert.assertTrue(put.has("cf1".getBytes(), "col02".getBytes(), "value1".getBytes()));
-        Assert.assertTrue(put.has("cf2".getBytes(), "col01".getBytes(), "value0".getBytes()));
-        Assert.assertTrue(put.has("cf2".getBytes(), "col02".getBytes(), "value1".getBytes()));
+        Assert.assertTrue(put.has("cf3".getBytes(), "col01".getBytes(), "value0".getBytes()));
+    }
+    
+    @Test
+    public void unmarshal_a_table_which_contains_a_column_family_without_annotation_at_field_level() throws Exception {
+        Table1 expected = new Table1();
+        Result res = constructResult(Table1.class, Table1.row);
+        Table1 actual = HMarshaller.unmarshall(Table1.class, res);
+        Assert.assertTrue(expected.getCf3().getCol01().equals(actual.getCf3().getCol01()));
     }
 }

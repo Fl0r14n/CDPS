@@ -49,7 +49,7 @@ public class UIController {
     private UserService userService;
     private List<User> userList;
 
-    @PostConstruct
+//    @PostConstruct
     public void init() {
     	DateTime b = new DateTime(Calendar.getInstance().getTime());
         userList = userService.getUsers();

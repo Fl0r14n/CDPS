@@ -29,6 +29,10 @@ public abstract class HMarshaller {
         for (Field field : clazz.getDeclaredFields()) {
             //is this field a HColumnFamily field?
             String fieldTypeName = HAnnotation.getColumnFamilyName(field);
+            if(fieldTypeName == null) {
+                //the field might be null but the field type class might be annotated with HColumnFamily
+                fieldTypeName = HAnnotation.getColumnFamilyName(field.getType());
+            }
             if (fieldTypeName != null) {
                 field.setAccessible(true);
                 //recursive call
@@ -73,7 +77,11 @@ public abstract class HMarshaller {
         String fieldTypeName;
         for (Field field : clazz.getDeclaredFields()) {
             //is this field a HColumnFamily field?
-            fieldTypeName = HAnnotation.getColumnFamilyName(field);            
+            fieldTypeName = HAnnotation.getColumnFamilyName(field);    
+            if(fieldTypeName == null) {
+                //the field might be null but the field type class might be annotated with HColumnFamily
+                fieldTypeName = HAnnotation.getColumnFamilyName(field.getType());
+            }
             if (fieldTypeName != null) {
                 field.setAccessible(true);
                 //recursive call

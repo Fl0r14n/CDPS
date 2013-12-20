@@ -129,30 +129,14 @@ public abstract class HAnnotation {
         String cFamilyName;
         for (Field field : clazz.getDeclaredFields()) {
             cFamilyName = getColumnFamilyName(field);
+            if (cFamilyName == null) {
+                cFamilyName = getColumnFamilyName(field.getType());
+            }
             if (cFamilyName != null) {
                 result.put(cFamilyName, field.getType());
             }
         }
         return result;
-    }
-
-    /**
-     * Get column family annotation at class level
-     *
-     * @param clazz The supposed annotated @HColumnFamily class.
-     * @return Map.Entity entry with column name as key and class type as value
-     * or null
-     */
-    public static Map.Entry<String, Class<?>> getColumnFamily(Class<?> clazz) {
-        String cFamilyName = getColumnFamilyName(clazz);
-        if (cFamilyName != null) {
-            Map<String, Class<?>> result = new HashMap<>(1);
-            result.put(cFamilyName, clazz);
-            for (Map.Entry<String, Class<?>> entry : result.entrySet()) {
-                return entry;
-            }
-        }
-        return null;
     }
 
     /**
