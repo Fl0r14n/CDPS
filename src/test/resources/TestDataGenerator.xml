@@ -3,8 +3,8 @@
 <CDPSDataGenerator>
     <UserCount>10</UserCount>
     <DataAquisition> 
-        <StartDate>2013-12-20</StartDate> 
-        <EndDate>2014-06-29</EndDate>
+        <StartDate>2013-12-23</StartDate> 
+        <EndDate>2014-01-10</EndDate>
         <SensorData>
             <FullSensorDataPercent>70</FullSensorDataPercent>
             <PartialSensorDataFillPercent>30</PartialSensorDataFillPercent> 

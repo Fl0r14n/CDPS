@@ -107,7 +107,7 @@ public class HBaseDataGeneratorIT {
                 fullLivingHabitsPercent = -1,
                 partialLivingHabitsFillPercent = -1;
         try {
-            InputStream configFile2Validate = new FileInputStream(new File("src/test/resources/TestDataGenerator.xml"));
+            InputStream configFile2Validate = new FileInputStream(new File("src/test/resources/testdatagenerator.xml"));
             InputStream schemaFile2Validate = new FileInputStream(new File("src/test/resources/TestDataGenerator.xsd"));
 
             InputStream configFile = new FileInputStream(new File("src/test/resources/TestDataGenerator.xml"));

@@ -49,14 +49,14 @@ public class UIController {
     private UserService userService;
     private static List<User> userList;
 
-//    @PostConstruct
+    /*@PostConstruct
     public void init() {
-    	//DateTime b = new DateTime(Calendar.getInstance().getTime());
-        //userList = userService.getUsers();
-        //DateTime e = new DateTime(Calendar.getInstance().getTime());
-        //System.out.println("!!! User list size: " + userList.size() + " retrieved in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " seconds");
-        //System.out.println(userList.get(0).toString());
-    }
+    	DateTime b = new DateTime(Calendar.getInstance().getTime());
+        userList = userService.getUsers();
+        DateTime e = new DateTime(Calendar.getInstance().getTime());
+        System.out.println("!!! User list size: " + userList.size() + " retrieved in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " seconds");
+        System.out.println(userList.get(0).toString());
+    }*/
 
     @RequestMapping(value = "/getUid", method = RequestMethod.GET)
     public @ResponseBody

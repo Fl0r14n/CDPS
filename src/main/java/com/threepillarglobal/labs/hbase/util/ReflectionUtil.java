@@ -228,11 +228,11 @@ public abstract class ReflectionUtil {
                 field.set(t, new Timestamp(Bytes.toLong(value)));
                 return;
             }
-            default: {
+            /*default: {
                 ObjectMapper mapper = new ObjectMapper();
                 Object o = mapper.readValue(value, 0, value.length, fieldType);
                 field.set(t, o);
-            }
+            }*/
         }
     }
 
