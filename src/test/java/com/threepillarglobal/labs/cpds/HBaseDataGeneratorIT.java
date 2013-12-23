@@ -44,8 +44,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class HBaseDataGeneratorIT {
 
     private static final Logger L = LoggerFactory.getLogger(HBaseSimpleIT.class);
-    private static final String emailPattern = "Mario.Bross<ID>@3pg.com";
-    private static final String namePrefix = "Mario Bross #";
+    private static final String emailPattern = "Gino.Romano<ID>@3pg.com";
+    private static final String namePrefix = "Gino Romano #";
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static final String[] location = {"Romania|Cluj|Cluj-Napoca", "Romania|Timisoara|Timisoara", "USA|Washington|Washington DC"};
     private static final String[] activityType = {"Eating", "Sleeping", "Exercising"};
@@ -107,7 +107,7 @@ public class HBaseDataGeneratorIT {
                 fullLivingHabitsPercent = -1,
                 partialLivingHabitsFillPercent = -1;
         try {
-            InputStream configFile2Validate = new FileInputStream(new File("src/test/resources/testdatagenerator.xml"));
+            InputStream configFile2Validate = new FileInputStream(new File("src/test/resources/TestDataGenerator.xml"));
             InputStream schemaFile2Validate = new FileInputStream(new File("src/test/resources/TestDataGenerator.xsd"));
 
             InputStream configFile = new FileInputStream(new File("src/test/resources/TestDataGenerator.xml"));
@@ -206,6 +206,7 @@ public class HBaseDataGeneratorIT {
                 return new TestDataGeneratorConfig();
             }
         } catch (Exception ex) {
+        	ex.printStackTrace();
             if (userCount != -1 && startDate != new Date(0) && endDate != new Date(0)
                     && fullSensorDataPercent != -1 && partialSensorDataFillPercent != -1 && fullLivingHabitsPercent != -1
                     && partialLivingHabitsFillPercent != -1) {
