@@ -1,0 +1,1 @@
+mvn -Dtest=com.threepillarglobal.labs.cpds.HBaseDataGeneratorIT test
