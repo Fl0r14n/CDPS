@@ -133,6 +133,7 @@ public abstract class ReflectionUtil {
             return;
         }
         field.setAccessible(true);
+        @SuppressWarnings("rawtypes")
         Class fieldType = field.getType();
         //enums
         if (fieldType.getGenericSuperclass() != null && fieldType.getGenericSuperclass().toString().indexOf("java.lang.Enum") == 0) {
@@ -228,11 +229,11 @@ public abstract class ReflectionUtil {
                 field.set(t, new Timestamp(Bytes.toLong(value)));
                 return;
             }
-            /*default: {
+            default: {
                 ObjectMapper mapper = new ObjectMapper();
                 Object o = mapper.readValue(value, 0, value.length, fieldType);
                 field.set(t, o);
-            }*/
+            }
         }
     }
 

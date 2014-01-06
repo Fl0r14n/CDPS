@@ -12,6 +12,7 @@ public abstract class HOperations {
 
     /**
      * Creates an HBase table based on an annotated hbase entity
+     *
      * @param clazz The annotated hbase pojo
      * @param admin An instance of HBaseAdmin
      * @throws IOException
@@ -31,9 +32,10 @@ public abstract class HOperations {
 
     /**
      * Deletes an existing HBase table based on an annotated hbase entity
+     *
      * @param clazz The annotated hbase pojo
      * @param admin An instance of HBaseAdmin
-     * @throws IOException 
+     * @throws IOException
      */
     public static void deleteTable(Class<?> clazz, HBaseAdmin admin) throws IOException {
         String tableName = HAnnotation.getTableName(clazz);

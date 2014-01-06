@@ -5,7 +5,6 @@ import com.threepillarglobal.labs.hbase.annotation.HTable;
 import com.threepillarglobal.labs.hbase.annotation.HColumn;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
