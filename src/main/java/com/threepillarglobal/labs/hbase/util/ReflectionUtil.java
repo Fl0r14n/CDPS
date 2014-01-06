@@ -106,16 +106,16 @@ public abstract class ReflectionUtil {
                     Object o = field.get(t);
                     if (o != null) {
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        ObjectMapper mapper = new ObjectMapper();
+                        ObjectMapper mapper = new ObjectMapper();                        
                         mapper.writeValue(baos, o);
                         return baos.toByteArray();
                     }
                 }
             }
         } catch (NullPointerException npe) {
-            return new byte[]{};
         }
         return null;
+        //return new byte[]{};
     }
 
     /**

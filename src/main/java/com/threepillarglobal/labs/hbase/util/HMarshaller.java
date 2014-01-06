@@ -29,7 +29,7 @@ public abstract class HMarshaller {
         for (Field field : clazz.getDeclaredFields()) {
             //is this field a HColumnFamily field?
             String fieldTypeName = HAnnotation.getColumnFamilyName(field);
-            if(fieldTypeName == null) {
+            if (fieldTypeName == null) {
                 //the field might be null but the field type class might be annotated with HColumnFamily
                 fieldTypeName = HAnnotation.getColumnFamilyName(field.getType());
             }
@@ -47,8 +47,10 @@ public abstract class HMarshaller {
                     }
                     if (cf != null) {
                         //only if a valid column family is found
-                        byte[] val = result.getValue(cf.getBytes(), fieldTypeName.getBytes());
-                        ReflectionUtil.setFieldValue(field, instance, val);
+                        byte[] value = result.getValue(cf.getBytes(), fieldTypeName.getBytes());
+                        if (value != null) {
+                            ReflectionUtil.setFieldValue(field, instance, value);
+                        }
                     }
                 }
             }
@@ -77,8 +79,8 @@ public abstract class HMarshaller {
         String fieldTypeName;
         for (Field field : clazz.getDeclaredFields()) {
             //is this field a HColumnFamily field?
-            fieldTypeName = HAnnotation.getColumnFamilyName(field);    
-            if(fieldTypeName == null) {
+            fieldTypeName = HAnnotation.getColumnFamilyName(field);
+            if (fieldTypeName == null) {
                 //the field might be null but the field type class might be annotated with HColumnFamily
                 fieldTypeName = HAnnotation.getColumnFamilyName(field.getType());
             }
@@ -94,9 +96,12 @@ public abstract class HMarshaller {
                     if (cf == null) {
                         cf = HAnnotation.getColumnFamilyName(clazz);
                     }
+                    //only if a valid column family is found
                     if (cf != null) {
-                        //only if a valid column family is found
-                        put.add(cf.getBytes(), fieldTypeName.getBytes(), ReflectionUtil.getFieldValue(field, t));
+                        byte[] value = ReflectionUtil.getFieldValue(field, t);
+                        if (value != null) {
+                            put.add(cf.getBytes(), fieldTypeName.getBytes(), value);
+                        }
                     }
                 }
             }

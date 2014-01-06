@@ -19,7 +19,6 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.Filter;
-import org.apache.hadoop.hbase.util.Bytes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.hadoop.hbase.HbaseTemplate;
@@ -47,6 +46,8 @@ public abstract class HRepository<T extends Object> {
      */
     public HRepository(Class<?> tableClass, HbaseTemplate hbaseTemplate) {
         this();
+        assert tableClass !=null : "HTable annotated class should not be null!";
+        assert hbaseTemplate != null : "HbaseTemplate argument is null on " + tableClass.getName() + " repository";
         this.hbaseTemplate = hbaseTemplate;
         tableName = HAnnotation.getTableName(tableClass);
     }
@@ -62,15 +63,15 @@ public abstract class HRepository<T extends Object> {
      * @return same object if persisted
      */
     public <S extends T> S save(final byte[] row, final S s) {
-        if (hbaseTemplate == null) {
-            System.out.println("hbaseTemplate == null");
-        }
         return hbaseTemplate.execute(tableName, new TableCallback<S>() {
 
             @Override
             public S doInTable(HTableInterface hti) throws Throwable {
                 Put p = new Put(row);
                 HMarshaller.marshall(s, p);
+                if(p.isEmpty()) {
+                    return null;
+                }
                 hti.put(p);
                 return s;
             }
@@ -122,8 +123,8 @@ public abstract class HRepository<T extends Object> {
         if (cfamilyName != null) {
             return hbaseTemplate.get(tableName, new String(row), cfamilyName, new RowMapperImpl());
         } else {
-         List<T> tList = hbaseTemplate.find(tableName, new Scan(new Get(row)), new RowMapperImpl());
-         return tList.get(0);
+            List<T> tList = hbaseTemplate.find(tableName, new Scan(new Get(row)), new RowMapperImpl());
+            return tList.get(0);
         }
     }
 
@@ -163,8 +164,8 @@ public abstract class HRepository<T extends Object> {
      * @param stopRow The end row key
      * @return a list of the found entities
      */
-    public List<T> findAll(byte[] startRow, byte[] stopRow) {  
-    	//System.out.println(Bytes.toString(startRow) + " " + Bytes.toString(stopRow) );
+    public List<T> findAll(byte[] startRow, byte[] stopRow) {
+        //System.out.println(Bytes.toString(startRow) + " " + Bytes.toString(stopRow) );
         return hbaseTemplate.find(tableName, new Scan(startRow, stopRow), new RowMapper<T>() {
 
             @Override
@@ -239,9 +240,6 @@ public abstract class HRepository<T extends Object> {
     }
 
     private class RowMapperImpl implements RowMapper<T> {
-
-        public RowMapperImpl() {
-        }
 
         @Override
         public T mapRow(Result result, int i) throws Exception {

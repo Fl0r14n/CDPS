@@ -55,6 +55,8 @@ public class ReflectionUtilTest {
         private final ENUM _ENUM = ENUM.MEDIUM;
         private final Object _Object = new Object();
         private final Sample1 _Sample1 = new Sample1();
+        private String emptyString;
+        private final String nullString = null;
 
         @Data
         public static class Sample1 {
