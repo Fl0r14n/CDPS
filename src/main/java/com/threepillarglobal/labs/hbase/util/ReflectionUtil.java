@@ -101,16 +101,16 @@ public abstract class ReflectionUtil {
                 case "Timestamp": {
                     return Bytes.toBytes(((Date) field.get(t)).getTime());
                 }
-                /*default: {
+                default: {
                     //for all the rest do a json marshalling
-                    Object o = field.get(t);
+                    Object o = field.get(t);                    
                     if (o != null) {
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         ObjectMapper mapper = new ObjectMapper();                        
                         mapper.writeValue(baos, o);
                         return baos.toByteArray();
                     }
-                }*/
+                }
             }
         } catch (NullPointerException npe) {
         }
@@ -229,11 +229,13 @@ public abstract class ReflectionUtil {
                 field.set(t, new Timestamp(Bytes.toLong(value)));
                 return;
             }
-           /* default: {
-                ObjectMapper mapper = new ObjectMapper();
-                Object o = mapper.readValue(value, 0, value.length, fieldType);
-                field.set(t, o);
-            }*/
+           default: {
+               if(value.length>2) { //at least {} from json
+                   ObjectMapper mapper = new ObjectMapper();
+                   Object o = mapper.readValue(value, 0, value.length, fieldType);
+                   field.set(t, o);
+               }
+            }
         }
     }
 
