@@ -29,14 +29,12 @@
 
     <dependencies>
     
-   
-    
-    	<!-- Apache commons maths lib-->
+        <!-- Apache commons maths lib-->
         <dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-math3</artifactId>
-			<version>3.2</version>
-		</dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.2</version>
+        </dependency>
 
         <!-- lombok - for getter/setter annotations on DTOs -->
         <dependency>
@@ -135,7 +133,6 @@
         </dependency>
         
         <!--Spring data-->
-        
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-hadoop</artifactId>
@@ -143,6 +140,12 @@
         </dependency>
                        
         <!--Hadoop stack-->
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase</artifactId>
+            <version>0.94.6-cdh4.5.0</version>
+            <scope>compile</scope>
+        </dependency>
         
         <dependency>
             <groupId>org.apache.hadoop</groupId>
@@ -158,19 +161,29 @@
             <scope>compile</scope>
         </dependency>
         
-        <dependency>
-            <groupId>org.apache.hbase</groupId>
-            <artifactId>hbase</artifactId>
-            <version>0.94.6-cdh4.5.0</version>
-            <scope>compile</scope>
-        </dependency>
-        
         <!--Javax Servlet specifications-->            
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>3.1.0</version>
             <scope>provided</scope>
+        </dependency>
+        
+        <!--Jackson-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.3.0</version>
         </dependency>
         
     </dependencies>
@@ -219,20 +232,15 @@
                 </executions>
             </plugin>
             
-            <!--plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>com.threepillarglobal.labs.cdps.mapreduce.RiskMRDriver</mainClass>
-                        </manifest>
-                    </archive>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>                    
                 </configuration>
-            </plugin-->
+            </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -246,7 +254,6 @@
                     </archive>
                 </configuration>
             </plugin>
-
             
             <plugin>
                 <groupId>com.googlecode.t7mp</groupId>

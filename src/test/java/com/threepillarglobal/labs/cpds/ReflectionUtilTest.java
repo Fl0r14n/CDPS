@@ -53,7 +53,6 @@ public class ReflectionUtilTest {
         private final Date _Date = new Date();
         private final Timestamp _Timestamp = new Timestamp(_Date.getTime());
         private final ENUM _ENUM = ENUM.MEDIUM;
-        private final Object _Object = new Object();
         private final Sample1 _Sample1 = new Sample1();
         private String emptyString;
         private final String nullString = null;

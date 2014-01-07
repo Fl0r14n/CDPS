@@ -48,7 +48,7 @@ public abstract class HRepository<T extends Object> {
         this();
         assert tableClass !=null : "HTable annotated class should not be null!";
         assert hbaseTemplate != null : "HbaseTemplate argument is null on " + tableClass.getName() + " repository";
-        this.hbaseTemplate = hbaseTemplate;
+        this.hbaseTemplate = hbaseTemplate;        
         tableName = HAnnotation.getTableName(tableClass);
     }
     private String tableName;
