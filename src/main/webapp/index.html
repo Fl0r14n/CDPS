@@ -98,7 +98,7 @@ $(document).ready(function() {
 						id: label,
 						name: label,
 						data: dataset,
-						yAxis: label+"Axis",						
+						yAxis: "BloodPressureAxis",						
 						dataGrouping: {
 							enabled: true
 							}
@@ -260,13 +260,7 @@ $(document).ready(function() {
 
 			yAxis:[
 				{
-				id:"DiastolicAxis",
-				title:{
-					text:"mmHg"
-					}
-				},
-				{
-				id:"SystolicAxis",
+				id:"BloodPressureAxis",
 				title:{
 					text:"mmHg"
 					}
@@ -322,14 +316,14 @@ $(document).ready(function() {
 		var series = getseriesbyname("Systolic");
 		if (series.visible){
 			series.hide();
-			chart.get("SystolicAxis").update({				
+			chart.get("BloodPressureAxis").update({				
 				title: {
 					text: null
 				}
 			});
 		}else {
 			series.show();
-			chart.get("SystolicAxis").update({				
+			chart.get("BloodPressureAxis").update({				
 				title:{
 					text:"mg/L"
 					}
