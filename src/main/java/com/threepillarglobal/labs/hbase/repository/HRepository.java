@@ -165,7 +165,7 @@ public abstract class HRepository<T extends Object> {
      * @return a list of the found entities
      */
     public List<T> findAll(byte[] startRow, byte[] stopRow) {
-        //System.out.println(Bytes.toString(startRow) + " " + Bytes.toString(stopRow) );
+        //TODO how do I get a column family slice without the whole table objects?
         return hbaseTemplate.find(tableName, new Scan(startRow, stopRow), new RowMapper<T>() {
 
             @Override

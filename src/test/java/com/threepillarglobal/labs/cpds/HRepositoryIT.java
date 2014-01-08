@@ -6,6 +6,10 @@ import com.threepillarglobal.labs.hbase.annotation.HTable;
 import com.threepillarglobal.labs.hbase.repository.HRepository;
 import com.threepillarglobal.labs.hbase.util.HOperations;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import lombok.Data;
@@ -120,5 +124,102 @@ public class HRepositoryIT {
         System.out.println("ACTUAL===========================================");
         System.out.println(actual);
         Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void save_and_read_multiple_table_objects() {
+        Map<byte[], Table> map = generateTableEntities(10);
+        tableRepo.save(map);
+        List<Table> result = tableRepo.findAll();
+        int i = 0;
+        for (Table actual : result) {
+            System.out.println("ACTUAL===========================================");
+            System.out.println(actual);
+            Assert.assertEquals("ID" + i, actual.getId());
+            i++;
+        }
+    }
+
+    @Test
+    public void save_and_read_multiple_column_family_objects() {
+        Map<byte[], Table.CFamily2> map = generateColumnFamilyEntities(10);
+        cf2Repo.save(map);
+        List<Table.CFamily2> result = cf2Repo.findAll();
+        int i = 0;
+        for (Table.CFamily2 actual : result) {
+            System.out.println("ACTUAL===========================================");
+            System.out.println(actual);
+            Assert.assertEquals("val" + i, result.get(i).getCol11());
+            i++;
+        }
+    }
+    
+    @Test
+    public void save_and_read_slice_of_table_objects() {
+        Map<byte[], Table> map = generateTableEntities(10);
+        tableRepo.save(map);
+        List<Table> result = tableRepo.findAll("row3".getBytes(),"row7".getBytes());
+        Assert.assertEquals(4, result.size());
+        Assert.assertEquals("ID5", result.get(2).getId());
+    }
+    
+    @Test
+    public void save_and_read_slice_of_column_family_objects() {
+        Map<byte[], Table.CFamily2> map = generateColumnFamilyEntities(10);
+        cf2Repo.save(map);        
+        List<Table.CFamily2> result = cf2Repo.findAll("row3".getBytes(),"row7".getBytes());
+        Assert.assertEquals(4, result.size());
+        Assert.assertEquals("val5", result.get(2).getCol11());
+    }
+    
+    @Test
+    public void save_and_delete_one() {
+        Table expected = new Table();
+        tableRepo.save(Table.row, expected);
+        tableRepo.delete(Table.row);
+        List<Table> result = tableRepo.findAll();
+        Assert.assertEquals(0, result.size());
+    }
+    
+    @Test
+    public void save_and_delete_iterable() {
+        Map<byte[], Table> map = generateTableEntities(10);
+        tableRepo.save(map);
+        tableRepo.delete(map.keySet());
+        List<Table> result = tableRepo.findAll();
+        Assert.assertEquals(0, result.size());
+    }
+    
+    @Test
+    public void save_and_delete_all() {
+        Map<byte[], Table> map = generateTableEntities(10);
+        tableRepo.save(map);
+        tableRepo.deleteAll();
+        List<Table> result = tableRepo.findAll();
+        Assert.assertEquals(0, result.size());
+    }
+    
+
+    //##########################################################################
+    private Map<byte[], Table> generateTableEntities(int size) {
+        Map<byte[], Table> map = new HashMap<>();
+        Table table;
+        for (int i = 0; i < size; i++) {
+            table = new Table();
+            table.setId("ID" + i);
+            map.put(("row" + i).getBytes(), table);
+        }
+        return map;
+    }
+
+    private Map<byte[], Table.CFamily2> generateColumnFamilyEntities(int size) {
+        Map<byte[], Table.CFamily2> map = new HashMap<>();
+        Table.CFamily2 cf;
+        for (int i = 0; i < size; i++) {
+            cf = new Table.CFamily2();
+            cf.setCol11("val" + i);
+            map.put(("row" + i).getBytes(), cf);
+        }
+        return map;
     }
 }
