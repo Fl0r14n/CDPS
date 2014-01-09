@@ -16,6 +16,10 @@
 	    
     <hdp:configuration id="hadoopConfiguration">        
         fs.defaultFS=hdfs://${hdfs.host}:${hdfs.port}
+        mapred.job.tracker=${mapreduce.host}:${mapreduce.port}
+        fs.hdfs.impl=org.apache.hadoop.hdfs.DistributedFileSystem
+        dfs.client.read.shortcircuit=false
+        dfs.block.local-path-access.user=hdfs
     </hdp:configuration>
 	
     <hdp:hbase-configuration configuration-ref="hadoopConfiguration" zk-quorum="${zookeeper.host}" zk-port="${zookeeper.port}"/>

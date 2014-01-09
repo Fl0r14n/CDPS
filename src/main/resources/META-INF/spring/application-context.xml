@@ -17,6 +17,7 @@
 	    
     <hdp:configuration id="hadoopConfiguration">        
         fs.defaultFS=hdfs://${hdfs.host}:${hdfs.port}
+        mapred.job.tracker=${mapreduce.host}:${mapreduce.port}
     </hdp:configuration>
 	
     <hdp:hbase-configuration configuration-ref="hadoopConfiguration" zk-quorum="${zookeeper.host}" zk-port="${zookeeper.port}"/>
