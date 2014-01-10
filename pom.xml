@@ -12,12 +12,15 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <source.version>1.7</source.version>
-        <target.version>1.7</target.version>
+        <source.version>1.6</source.version>
+        <target.version>1.6</target.version>
         <spring.version>3.2.5.RELEASE</spring.version>
         <slf4j.version>1.7.5</slf4j.version>
         <jackson.version>1.9.13</jackson.version>
-       
+        <jdk.version>jdk1.6.0_45</jdk.version>
+        <java.home>c:\\Program Files\\Java\\jdk1.6.0_45\\</java.home>
+
+        
     </properties>
     
     <repositories>
@@ -29,12 +32,14 @@
 
     <dependencies>
     
-        <!-- Apache commons maths lib-->
+   		
+    
+    	<!-- Apache commons maths lib-->
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <version>3.2</version>
-        </dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.2</version>
+		</dependency>
 
         <!-- lombok - for getter/setter annotations on DTOs -->
         <dependency>
@@ -133,6 +138,7 @@
         </dependency>
         
         <!--Spring data-->
+        
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-hadoop</artifactId>
@@ -140,19 +146,6 @@
         </dependency>
                        
         <!--Hadoop stack-->
-        <dependency>
-            <groupId>org.apache.hbase</groupId>
-            <artifactId>hbase</artifactId>
-            <version>0.94.6-cdh4.5.0</version>
-            <scope>compile</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-client</artifactId>
-            <version>2.0.0-mr1-cdh4.5.0</version>
-            <scope>compile</scope>
-        </dependency>
         
         <dependency>
             <groupId>org.apache.hadoop</groupId>
@@ -169,9 +162,9 @@
         </dependency>
         
         <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-hdfs</artifactId>
-            <version>2.0.0-cdh4.5.0</version>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase</artifactId>
+            <version>0.94.6-cdh4.5.0</version>
             <scope>compile</scope>
         </dependency>
         
@@ -183,22 +176,6 @@
             <scope>provided</scope>
         </dependency>
         
-        <!--Jackson-->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>2.3.0</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -214,6 +191,31 @@
                     <compilerArguments>
                         <endorseddirs>${endorsed.dir}</endorseddirs>
                     </compilerArguments>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2.2</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>net.petrikainulainen.spring.data.apachehadoop.Main</mainClass>
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
             
@@ -245,20 +247,12 @@
                 </executions>
             </plugin>
             
-            <plugin>
+            <!--plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>                    
-                </configuration>
-            </plugin>
-            
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
@@ -266,8 +260,7 @@
                         </manifest>
                     </archive>
                 </configuration>
-            </plugin>
-            
+            </plugin-->
             <plugin>
                 <groupId>com.googlecode.t7mp</groupId>
                 <artifactId>maven-t7-plugin</artifactId>

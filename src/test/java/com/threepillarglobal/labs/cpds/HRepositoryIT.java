@@ -202,7 +202,7 @@ public class HRepositoryIT {
 
     //##########################################################################
     private Map<byte[], Table> generateTableEntities(int size) {
-        Map<byte[], Table> map = new HashMap<>();
+        Map<byte[], Table> map = new HashMap<byte[], Table>();
         Table table;
         for (int i = 0; i < size; i++) {
             table = new Table();
@@ -213,7 +213,7 @@ public class HRepositoryIT {
     }
 
     private Map<byte[], Table.CFamily2> generateColumnFamilyEntities(int size) {
-        Map<byte[], Table.CFamily2> map = new HashMap<>();
+        Map<byte[], Table.CFamily2> map = new HashMap<byte[], Table.CFamily2>();
         Table.CFamily2 cf;
         for (int i = 0; i < size; i++) {
             cf = new Table.CFamily2();

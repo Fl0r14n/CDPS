@@ -14,10 +14,11 @@
     <!--autowireing-->
     <context:component-scan base-package="com.threepillarglobal.labs.cdps"/>
 	    
+	<!--commented out because of MR running local only-->    
     <hdp:configuration id="hadoopConfiguration">        
-        fs.defaultFS=hdfs://${hdfs.host}:${hdfs.port}
+        <!--fs.defaultFS=hdfs://${hdfs.host}:${hdfs.port}
         mapred.job.tracker=${mapreduce.host}:${mapreduce.port}
-        fs.hdfs.impl=org.apache.hadoop.hdfs.DistributedFileSystem
+        fs.hdfs.impl=org.apache.hadoop.hdfs.DistributedFileSystem-->
         <!--dfs.client.read.shortcircuit=false-->
         <!--dfs.block.local-path-access.user=hdfs-->
     </hdp:configuration>

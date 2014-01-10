@@ -70,7 +70,7 @@ public class UIController {
             System.out.println(userList.get(0).toString());
     	}
     	
-        List<User> result = new ArrayList<>();
+        List<User> result = new ArrayList<User>();
         // iterate a list and filter by userName
         for (User user : userList) {
             if (user.getPersonalData().getName().contains(userName)) {

@@ -27,7 +27,7 @@ public class ChartServiceMock implements ChartService {
 
     private List<SensorData> generateSensorData(int rangeFrom, int rangeTo, Date startDate, Date endDate) {
         String[] activityType = {"Eating", "Sleeping", "Exercising"};
-        List<SensorData> sdList = new ArrayList<>();
+        List<SensorData> sdList = new ArrayList<SensorData>();
         int activityDuration;
         Random rand = new Random();
         int avgHR, diastolicBP, systolicBP, calories;
@@ -37,7 +37,7 @@ public class ChartServiceMock implements ChartService {
             for (int j = rangeFrom; j <= rangeTo; j++) {
                 SensorData sd;
 
-                List<HourlyData> dailyData = new ArrayList<>();
+                List<HourlyData> dailyData = new ArrayList<HourlyData>();
                 Date eventDate = DateUtils.addDays(startDate, i);
 
                 for (int k = 0; k < 24; k++) {

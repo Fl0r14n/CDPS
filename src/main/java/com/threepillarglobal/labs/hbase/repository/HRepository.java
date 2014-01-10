@@ -86,8 +86,8 @@ public abstract class HRepository<T extends Object> {
      * @return an Iterable of persisted objects
      */
     public <S extends T> Iterable<S> save(Map<byte[], S> map) {
-        final List<Put> puts = new ArrayList<>();
-        final List<S> objectsWritten = new ArrayList<>();
+        final List<Put> puts = new ArrayList<Put>();
+        final List<S> objectsWritten = new ArrayList<S>();
         for (Map.Entry<byte[], S> entry : map.entrySet()) {
             try {
                 S s = entry.getValue();
@@ -149,7 +149,7 @@ public abstract class HRepository<T extends Object> {
      * @return a list of the found entities
      */
     public List<T> findAll(Iterable<byte[]> rows) {
-        List<T> result = new ArrayList<>();
+        List<T> result = new ArrayList<T>();
         for (Iterator<byte[]> it = rows.iterator(); it.hasNext();) {
             T t = findOne(it.next());
             result.add(t);

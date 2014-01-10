@@ -30,7 +30,7 @@ public class MockDataGenerator {
             //for (int j = rangeFrom; j <= rangeTo; j++) {
             SensorData sd;
 
-            List<HourlyData> dailyData = new ArrayList<>();
+            List<HourlyData> dailyData = new ArrayList<HourlyData>();
             Date eventDate = DateUtils.addDays(startDate, i);
 
             for (int k = 0; k < 24; k++) {

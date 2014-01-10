@@ -85,7 +85,7 @@ public class HMarshallerTest {
     }
 
     private Result constructResult(Class<?> clazz, byte[] row) {
-        List<KeyValue> kvs = new ArrayList<>();
+        List<KeyValue> kvs = new ArrayList<KeyValue>();
         int i = 0;
         for (Map.Entry<String, Class<?>> cFamily : HAnnotation.getColumnFamilies(clazz).entrySet()) {
             byte[] familyName = cFamily.getKey().getBytes();

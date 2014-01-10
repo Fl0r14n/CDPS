@@ -79,7 +79,7 @@ public abstract class HAnnotation {
      * @return array of column family names
      */
     public static String[] getColumnFamilyNames(Class<?> clazz) {
-        List<String> buf = new ArrayList<>();
+        List<String> buf = new ArrayList<String>();
         String cFamilyName;
         for (Field field : clazz.getDeclaredFields()) {
             cFamilyName = getColumnFamilyName(field);
@@ -107,7 +107,7 @@ public abstract class HAnnotation {
      * @return array of column names
      */
     public static String[] getColumnNames(Class<?> clazz) {
-        List<String> buf = new ArrayList<>();
+        List<String> buf = new ArrayList<String>();
         String hColumnName;
         for (Field field : clazz.getDeclaredFields()) {
             hColumnName = getColumnName(field);
@@ -126,7 +126,7 @@ public abstract class HAnnotation {
      * @return a map of column family name and associated class
      */
     public static Map<String, Class<?>> getColumnFamilies(Class<?> clazz) {
-        Map<String, Class<?>> result = new LinkedHashMap<>(5);
+        Map<String, Class<?>> result = new LinkedHashMap<String, Class<?>>(5);
         //HColumnFamily at field level
         String cFamilyName;
         for (Field field : clazz.getDeclaredFields()) {
@@ -148,7 +148,7 @@ public abstract class HAnnotation {
      * @return a map of columns with name and associated class
      */
     public static Map<String, Class<?>> getColumns(Class<?> clazz) {
-        Map<String, Class<?>> result = new LinkedHashMap<>();
+        Map<String, Class<?>> result = new LinkedHashMap<String, Class<?>>();
         String hColumnName;
         for (Field field : clazz.getDeclaredFields()) {
             hColumnName = getColumnName(field);

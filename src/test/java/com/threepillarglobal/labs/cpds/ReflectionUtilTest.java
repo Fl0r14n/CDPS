@@ -61,7 +61,7 @@ public class ReflectionUtilTest {
         public static class Sample1 {
 
             public Sample1() {
-                list = new ArrayList<>();
+                list = new ArrayList<Integer>();
                 for (int i = 0; i < 4; i++) {
                     list.add(i);
                 }

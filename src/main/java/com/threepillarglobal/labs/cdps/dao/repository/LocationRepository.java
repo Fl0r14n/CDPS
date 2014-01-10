@@ -1,8 +1,12 @@
 package com.threepillarglobal.labs.cdps.dao.repository;
 
+import java.util.List;
+
 import com.threepillarglobal.labs.cdps.domain.Location;
+import com.threepillarglobal.labs.cdps.domain.User;
 import com.threepillarglobal.labs.cdps.domain.Location.*;
 import com.threepillarglobal.labs.hbase.repository.HRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.hadoop.hbase.HbaseTemplate;
 import org.springframework.stereotype.Repository;
@@ -27,4 +31,9 @@ public class LocationRepository {
     public Residents saveLocationResidents(final String countryName, final String countyName, final String cityName, final Residents locationResidents) {
         return residentsRepo.save(Location.toRowKey(countryName, countyName, cityName), locationResidents);
     }
+    
+    public List<Location.LocationDetails> findAllLocations() {
+        return locationDetailsRepo.findAll();
+    }
+    
 }

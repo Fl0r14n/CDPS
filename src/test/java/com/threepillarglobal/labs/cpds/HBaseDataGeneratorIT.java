@@ -338,7 +338,7 @@ public class HBaseDataGeneratorIT {
             for (int j = rangeFrom; j <= rangeTo; j++) {
                 SensorData sd;
 
-                List<HourlyData> dailyData = new ArrayList<>();
+                List<HourlyData> dailyData = new ArrayList<HourlyData>();
                 Date eventDate = DateUtils.addDays(startDate, i);
 
                 for (int k = 0; k < 24; k++) {
@@ -390,7 +390,7 @@ public class HBaseDataGeneratorIT {
                 SensorData sd;
                 Date eventDate = DateUtils.addDays(startDate, i);
 
-                List<HourlyData> dailyData = new ArrayList<>();
+                List<HourlyData> dailyData = new ArrayList<HourlyData>();
 
                 for (int k = 0; k < 24; k++) {
                     HourlyData hourlyData;
