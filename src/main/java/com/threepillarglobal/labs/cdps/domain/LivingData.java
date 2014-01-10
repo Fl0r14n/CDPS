@@ -28,35 +28,35 @@ public class LivingData {
     }
 
     @HColumn
-    private final int minsOfSleep;
+    private final Integer minsOfSleep;
     @HColumn
-    private final int minsOfExcercise;
+    private final Integer minsOfExcercise;
     @HColumn
-    private final int calories;
+    private final Integer calories;
     @HColumn
-    private final int energy;
+    private final Integer energy;
     @HColumn
-    private final int fat;
+    private final Integer fat;
     @HColumn
-    private final int saturatedFat;
+    private final Integer saturatedFat;
     @HColumn
-    private final int sugars;
+    private final Integer sugars;
     @HColumn
-    private final int sodium;
+    private final Integer sodium;
     @HColumn
-    private final int protein;
+    private final Integer protein;
     @HColumn
-    private final int carbohydrates;
+    private final Integer carbohydrates;
     @HColumn
     private final String vitamins;
     @HColumn
     private final String minerals;
     @HColumn
-    private final int water;
+    private final Integer water;
     @HColumn
-    private final int alcohol;
+    private final Integer alcohol;
     @HColumn
-    private final int softDrinks;
+    private final Integer softDrinks;
     @HColumn
     private final BigDecimal riskFactor;
 }

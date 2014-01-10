@@ -40,11 +40,11 @@ public class MedicalRecords {
         @HColumn
         private final Date medicalRecordDate;
         @HColumn
-        private final int bmi;
+        private final Integer bmi;
         @HColumn
-        private final int cholesterol;
+        private final Integer cholesterol;
         @HColumn
-        private final int triglycerides;
+        private final Integer triglycerides;
         @HColumn
         private final String followUp;
     }
