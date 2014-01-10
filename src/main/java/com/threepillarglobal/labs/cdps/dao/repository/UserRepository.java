@@ -4,6 +4,7 @@ import com.threepillarglobal.labs.cdps.domain.User;
 import com.threepillarglobal.labs.cdps.domain.User.*;
 import com.threepillarglobal.labs.hbase.repository.HRepository;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.hadoop.hbase.HbaseTemplate;
@@ -31,6 +32,10 @@ public class UserRepository {
     private final HRepository<FamilyTree> familyTreeRepo;
     private final HRepository<MedicalNotes> medicalNotesRepository;
 
+    public void saveUsers(Map<byte[], User> users) {
+        userRepo.save(users);
+    }
+    
     public List<User> findAllUser() {
         return userRepo.findAll();
     }

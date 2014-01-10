@@ -6,7 +6,7 @@ import com.threepillarglobal.labs.cdps.domain.Location;
 import com.threepillarglobal.labs.cdps.domain.User;
 import com.threepillarglobal.labs.cdps.domain.Location.*;
 import com.threepillarglobal.labs.hbase.repository.HRepository;
-
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.hadoop.hbase.HbaseTemplate;
 import org.springframework.stereotype.Repository;
@@ -24,6 +24,10 @@ public class LocationRepository {
     private final HRepository<LocationDetails> locationDetailsRepo;
     private final HRepository<Residents> residentsRepo;
 
+    public void saveLocationDetails(Map<byte[], LocationDetails> locations) {
+        locationDetailsRepo.save(locations);
+    }
+    
     public LocationDetails saveLocation(final String countryName, final String countyName, final String cityName, final LocationDetails locationDetails) {
         return locationDetailsRepo.save(Location.toRowKey(countryName, countyName, cityName), locationDetails);
     }
