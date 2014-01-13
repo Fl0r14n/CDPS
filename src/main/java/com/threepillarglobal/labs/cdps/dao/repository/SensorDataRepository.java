@@ -4,6 +4,7 @@ import com.threepillarglobal.labs.cdps.domain.SensorData;
 import com.threepillarglobal.labs.hbase.repository.HRepository;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.hadoop.hbase.HbaseTemplate;
@@ -23,6 +24,10 @@ public class SensorDataRepository {
         return sensorDataRepo.save(SensorData.toRowKey(email, eventDate), sensorData);
     }
 
+    public void saveSensorData(Map<byte[], SensorData> sensorData) {
+        sensorDataRepo.save(sensorData);
+    }
+    
     public SensorData findSensorDataForUserAtDate(final String email, final Date eventDate) {
         return sensorDataRepo.findOne(SensorData.toRowKey(email, eventDate));
 

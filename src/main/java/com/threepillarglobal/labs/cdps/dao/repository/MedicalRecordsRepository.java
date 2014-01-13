@@ -8,6 +8,7 @@ import org.springframework.data.hadoop.hbase.HbaseTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.Map;
 
 @Repository
 public class MedicalRecordsRepository {
@@ -25,8 +26,16 @@ public class MedicalRecordsRepository {
     public MedicalRecord saveMedicalRecord(final String email, final Date recordDate, final MedicalRecord medicalRecord) {
         return medicalRecordRepo.save(MedicalRecords.toRowKey(email, recordDate), medicalRecord);
     }
+    
+    public void saveMedicalRecords(Map<byte[], MedicalRecord> medicalRecords) {
+        medicalRecordRepo.save(medicalRecords);
+    }
 
     public DocumentsAttached saveAttachedDocument(final String email, final Date recordDate, final DocumentsAttached attachedDocument) {
         return documentsAttachedRepo.save(MedicalRecords.toRowKey(email, recordDate), attachedDocument);
+    }
+    
+    public void saveAttachedDocuments(Map<byte[], DocumentsAttached> attachedDocuments) {
+        documentsAttachedRepo.save(attachedDocuments);
     }
 }

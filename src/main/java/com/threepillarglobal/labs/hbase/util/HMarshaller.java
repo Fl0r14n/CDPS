@@ -24,32 +24,35 @@ public abstract class HMarshaller {
 
     //for recursive call
     private static <T> T unmarshall(Class<T> clazz, Result result, String cFamilyName) throws Exception {
-        //create new instance
-        final T instance = ReflectionUtil.instantiate(clazz);
-        for (Field field : clazz.getDeclaredFields()) {
-            //is this field a HColumnFamily field?
-            String fieldTypeName = HAnnotation.getColumnFamilyName(field);
-            if (fieldTypeName == null) {
-                //the field might be null but the field type class might be annotated with HColumnFamily
-                fieldTypeName = HAnnotation.getColumnFamilyName(field.getType());
-            }
-            if (fieldTypeName != null) {
-                field.setAccessible(true);
-                //recursive call
-                field.set(instance, unmarshall(field.getType(), result, fieldTypeName));
-            } else {
-                //is this a HColumn field?
-                fieldTypeName = HAnnotation.getColumnName(field);
+        T instance = null;
+        if (clazz != null && result != null) {
+            //create new instance
+            instance = ReflectionUtil.instantiate(clazz);
+            for (Field field : clazz.getDeclaredFields()) {
+                //is this field a HColumnFamily field?
+                String fieldTypeName = HAnnotation.getColumnFamilyName(field);
+                if (fieldTypeName == null) {
+                    //the field might be null but the field type class might be annotated with HColumnFamily
+                    fieldTypeName = HAnnotation.getColumnFamilyName(field.getType());
+                }
                 if (fieldTypeName != null) {
-                    String cf = cFamilyName;
-                    if (cf == null) {
-                        cf = HAnnotation.getColumnFamilyName(clazz);
-                    }
-                    if (cf != null) {
-                        //only if a valid column family is found
-                        byte[] value = result.getValue(cf.getBytes(), fieldTypeName.getBytes());
-                        if (value != null) {
-                            ReflectionUtil.setFieldValue(field, instance, value);
+                    field.setAccessible(true);
+                    //recursive call
+                    field.set(instance, unmarshall(field.getType(), result, fieldTypeName));
+                } else {
+                    //is this a HColumn field?
+                    fieldTypeName = HAnnotation.getColumnName(field);
+                    if (fieldTypeName != null) {
+                        String cf = cFamilyName;
+                        if (cf == null) {
+                            cf = HAnnotation.getColumnFamilyName(clazz);
+                        }
+                        if (cf != null) {
+                            //only if a valid column family is found
+                            byte[] value = result.getValue(cf.getBytes(), fieldTypeName.getBytes());
+                            if (value != null) {
+                                ReflectionUtil.setFieldValue(field, instance, value);
+                            }
                         }
                     }
                 }
@@ -74,33 +77,36 @@ public abstract class HMarshaller {
 
     //for recursive call
     private static <T> void marshall(T t, Put put, String cFamilyName) throws Exception {
-        //get class type
-        Class<?> clazz = t.getClass();
-        String fieldTypeName;
-        for (Field field : clazz.getDeclaredFields()) {
-            //is this field a HColumnFamily field?
-            fieldTypeName = HAnnotation.getColumnFamilyName(field);
-            if (fieldTypeName == null) {
-                //the field might be null but the field type class might be annotated with HColumnFamily
-                fieldTypeName = HAnnotation.getColumnFamilyName(field.getType());
-            }
-            if (fieldTypeName != null) {
-                field.setAccessible(true);
-                //recursive call
-                marshall(field.get(t), put, fieldTypeName);
-            } else {
-                //is this a HColumn field?
-                fieldTypeName = HAnnotation.getColumnName(field);
+        //Allow some entity fields to be null. In this case, avoid unwanted NPE's
+        if (t != null && put != null) {
+            //get class type
+            Class<?> clazz = t.getClass();
+            String fieldTypeName;
+            for (Field field : clazz.getDeclaredFields()) {
+                //is this field a HColumnFamily field?
+                fieldTypeName = HAnnotation.getColumnFamilyName(field);
+                if (fieldTypeName == null) {
+                    //the field might be null but the field type class might be annotated with HColumnFamily
+                    fieldTypeName = HAnnotation.getColumnFamilyName(field.getType());
+                }
                 if (fieldTypeName != null) {
-                    String cf = cFamilyName;
-                    if (cf == null) {
-                        cf = HAnnotation.getColumnFamilyName(clazz);
-                    }
-                    //only if a valid column family is found
-                    if (cf != null) {
-                        byte[] value = ReflectionUtil.getFieldValue(field, t);
-                        if (value != null) {
-                            put.add(cf.getBytes(), fieldTypeName.getBytes(), value);
+                    field.setAccessible(true);
+                    //recursive call
+                    marshall(field.get(t), put, fieldTypeName);
+                } else {
+                    //is this a HColumn field?
+                    fieldTypeName = HAnnotation.getColumnName(field);
+                    if (fieldTypeName != null) {
+                        String cf = cFamilyName;
+                        if (cf == null) {
+                            cf = HAnnotation.getColumnFamilyName(clazz);
+                        }
+                        //only if a valid column family is found
+                        if (cf != null) {
+                            byte[] value = ReflectionUtil.getFieldValue(field, t);
+                            if (value != null) {
+                                put.add(cf.getBytes(), fieldTypeName.getBytes(), value);
+                            }
                         }
                     }
                 }
