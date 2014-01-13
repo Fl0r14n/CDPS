@@ -65,6 +65,8 @@ public class HMarshallerTest {
         private CFamily cf2 = new Table1.CFamily();
         //not annotated with HColumnFamily in field
         private CFamily3 cf3 = new Table1.CFamily3();
+        @HColumnFamily
+        private CFamily cf4; //null column family
 
         @Data
         public static class CFamily {

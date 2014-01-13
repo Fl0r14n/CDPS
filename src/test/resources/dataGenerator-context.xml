@@ -7,9 +7,17 @@
                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd">
     
     <util:properties id="configurationProperties">
-        <prop key="fromDate">2013-12-23</prop>
-        <prop key="toDate">2014-01-10</prop>
+        <prop key="writeToDatabase">true</prop>
+        <prop key="generateLocations">true</prop>
+        <prop key="generateUsers">true</prop>
+        <prop key="generateSensorData">true</prop>
+        <prop key="generateLivingHabits">true</prop>
+        <prop key="generateMedicalRecors">true</prop>
+        <prop key="generateAttachedDocuments">true</prop>
+        <prop key="fromDate">2014-01-06</prop>
+        <prop key="toDate">2014-01-13</prop>
         <prop key="userCount">10</prop>
+        <prop key="documentURLPrefix">http://docs.google.com/docID=</prop>
     </util:properties>
             
     <util:list id="namePrefixList">
@@ -22,11 +30,32 @@
         <value>Vladimir Putin</value>
         <value>Barak Obama</value>
     </util:list>
-        
     
     <util:list id="locationList">
         <value>Romania|Cluj|Cluj-Napoca</value>
         <value>Romania|Timis|Timisoara</value>
         <value>USA|Washington|Washington DC</value>
+    </util:list>  
+    
+    <util:list id="activityTypeList">
+        <value>Eating</value>
+        <value>Sleeping</value>
+        <value>Exercising</value>
     </util:list>    
+    
+    <util:list id="vitaminList">
+        <value>A</value>
+        <value>B</value>
+        <value>C</value>
+        <value>D</value>
+        <value>E</value>
+    </util:list>
+    
+    <util:list id="mineralList">
+        <value>Fe</value>
+        <value>Zn</value>
+        <value>Mg</value>
+        <value>Ca</value>
+        <value>Vn</value>
+    </util:list>
 </beans>
