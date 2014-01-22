@@ -4,7 +4,8 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd" xmlns:aop="http://www.springframework.org/schema/aop">
     
     <util:properties id="configurationProperties">
         <prop key="writeToDatabase">true</prop>
@@ -14,9 +15,9 @@
         <prop key="generateLivingHabits">true</prop>
         <prop key="generateMedicalRecors">true</prop>
         <prop key="generateAttachedDocuments">true</prop>
-        <prop key="fromDate">2014-01-06</prop>
-        <prop key="toDate">2014-01-13</prop>
-        <prop key="userCount">10</prop>
+        <prop key="fromDate">2014-01-01</prop>
+        <prop key="toDate">2014-12-31</prop>
+        <prop key="userCount">500</prop>
         <prop key="documentURLPrefix">http://docs.google.com/docID=</prop>
     </util:properties>
             
@@ -27,14 +28,69 @@
         <value>Justin Bieber</value>
         <value>Lady Gaga</value>
         <value>Kim Kardashian</value>
+        <value>Mila Kunis</value>
+        <value>Miley Cyrus</value>      
+        <value>Leonardo DiCaprio</value>
+        <value>Scarlett Johanson</value>
+        <value>Christian Bale</value>
+        <value>Zac Efron</value>
+        <value>Brad Pitt</value>      
+        <value>Angelina Jolie</value>
+        <value>Ryan Gosling</value>
+        <value>Bradley Cooper</value>
+        <value>Sandra Bullock</value>
+        <value>Kristen Stewart</value>
+        <value>Sylvester Stallone</value>
+        <value>Robert Downey Jr.</value>
+        <value>Channing Tatum</value>
+        <value>Tom Cruise</value>
+        <value>Robert de Niro</value>
+        <value>Dwayne Johnson</value>
+        <value>Nicole Kidman</value>
+        <value>Nicolas Cage</value>
         <value>Vladimir Putin</value>
         <value>Barak Obama</value>
     </util:list>
     
+    <util:list id="emailList">
+        <value>mercury.com</value>
+        <value>venus.com</value>
+        <value>earth.com</value>
+        <value>mars.com</value>
+        <value>jupiter.com</value>
+        <value>saturn.com</value>
+        <value>uranus.com</value>
+        <value>neptune.com</value>
+        <value>ceres.com</value>
+        <value>pluto.com</value>
+        <value>haumea.com</value>
+        <value>eris.com</value>
+    </util:list>
+    
     <util:list id="locationList">
+        <value>Romania|Alba|Alba Iulia</value>
+        <value>Romania|Arad|Arad</value>
+        <value>Romania|Arges|Pitesti</value>
+        <value>Romania|Bacau|Bacau</value>
+        <value>Romania|Bihor|Oradea</value>        
+        <value>Romania|Timis|Timisoara</value>                
+        <value>Romania|Hunedoara|Deva</value>        
         <value>Romania|Cluj|Cluj-Napoca</value>
-        <value>Romania|Timis|Timisoara</value>
-        <value>USA|Washington|Washington DC</value>
+        <value>Romania|Ilfov|Bucuresti</value>
+        <value>Romania|Iasi|Iasi</value>
+        <value>Romania|Constanta|Constanta</value>        
+        <value>USA|New York|New York</value>
+        <value>USA|California|Los Angeles</value>
+        <value>USA|Illinois|Chicago</value>
+        <value>USA|Texas|Huston</value>
+        <value>USA|Pennsylvania|Philadelphia</value>
+        <value>USA|Arizona|Phoenix</value>
+        <value>USA|Texas|San Antonio</value>
+        <value>USA|California|San Diego</value>
+        <value>USA|Texas|Dallas</value>
+        <value>USA|California|San Jose</value>
+        <value>USA|Texas|Austin</value>
+        <value>USA|District of Columbia|Washington</value>
     </util:list>  
     
     <util:list id="activityTypeList">

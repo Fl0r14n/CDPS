@@ -65,12 +65,14 @@ public class DataGeneratorIT {
     private List<String> locationList;
     @Resource(name = "namePrefixList")
     private List<String> namePrefixList;
+    @Resource(name = "emailList")
+    private List<String> emailList;
     @Resource(name = "activityTypeList")
     private List<String> activityTypeList;
     @Resource(name = "vitaminList")
     private List<String> vitaminList;
     @Resource(name = "mineralList")
-    private List<String> mineralList;
+    private List<String> mineralList;    
     private Date startDate;
     private Date stopDate;
     private int totalDays;
@@ -254,21 +256,7 @@ public class DataGeneratorIT {
     private static final long miliSecondsInADay = 1000 * 60 * 60 * 24;
     
     private String getEmailSufix(int id) {
-        switch (id % 4) {
-            case 0: {
-                return "@earth.com";
-            }
-            case 1: {
-                return "@mars.com";
-            }
-            case 2: {
-                return "@jupiter.com";
-            }
-            case 3: {
-                return "@moon.com";
-            }
-        }
-        return "";
+        return "@"+emailList.get(id % emailList.size());
     }
     
     private String getPhone() {
