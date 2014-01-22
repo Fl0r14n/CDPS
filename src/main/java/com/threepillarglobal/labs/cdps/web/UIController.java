@@ -19,12 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.threepillarglobal.labs.cdps.domain.CardioRisk;
+import com.threepillarglobal.labs.cdps.domain.DemographicReport;
 import com.threepillarglobal.labs.cdps.domain.User;
 import com.threepillarglobal.labs.cdps.service.api.ChartService;
+import com.threepillarglobal.labs.cdps.service.api.ReportService;
 import com.threepillarglobal.labs.cdps.service.api.RiskService;
 import com.threepillarglobal.labs.cdps.service.api.UserService;
 
-import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -49,6 +50,10 @@ public class UIController {
     private UserService userService;
     private static List<User> userList;
 
+    @Autowired
+    @Qualifier(value = "reportServiceImpl")
+    private ReportService reportService;
+    
     /*@PostConstruct
     public void init() {
     	DateTime b = new DateTime(Calendar.getInstance().getTime());
@@ -66,8 +71,7 @@ public class UIController {
     		DateTime b = new DateTime(Calendar.getInstance().getTime());
             userList = userService.getUsers();
             DateTime e = new DateTime(Calendar.getInstance().getTime());
-            System.out.println("=== User list size: " + userList.size() + " retrieved in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " seconds");
-            System.out.println(userList.get(0).toString());
+            System.out.println("=== User list size: " + userList.size() + " retrieved in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " seconds");            
     	}
     	
         List<User> result = new ArrayList<User>();
@@ -94,13 +98,10 @@ public class UIController {
         return new CardioRisk();
     }
 
-    /*@RequestMapping(value = "/getChartData", method = RequestMethod.GET)
-     public @ResponseBody
-     List<SensorData> getChartData(@RequestParam String uid, @QueryParam("from") String from,
-     @QueryParam("to") String to) {
-     try {
-     return chartService.getSensorData(dateFormat.parse(from), dateFormat.parse(to));
-     } catch (ParseException e) { e.printStackTrace();}
-     return new ArrayList<>();        
-     }*/
+    @RequestMapping(value = "/displayReport", method = RequestMethod.GET)
+    public @ResponseBody
+    List<DemographicReport> displayReport() {
+    	return reportService.display();
+    }
+    
 }

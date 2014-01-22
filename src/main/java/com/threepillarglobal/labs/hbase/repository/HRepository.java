@@ -239,7 +239,7 @@ public abstract class HRepository<T extends Object> {
         }
     }
 
-    private class RowMapperImpl implements RowMapper<T> {
+    public class RowMapperImpl implements RowMapper<T> {
 
         @Override
         public T mapRow(Result result, int i) throws Exception {

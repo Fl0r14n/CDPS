@@ -33,25 +33,30 @@ public class RiskFactorServiceImpl implements RiskService {
 	@Override
 	public CardioRisk getCardioRisk(String uid, Date from, Date to) {
 		
-		//System.err.println("=== From: " + from + " To: " + to);
+		System.err.println("=== From: " + from + " To: " + to);
 		
 		DateTime b = new DateTime(Calendar.getInstance().getTime());
 		User user = userService.getUser(uid);
 		DateTime e = new DateTime(Calendar.getInstance().getTime());
-		//if(user!=null)
-		//	System.out.println("User fetched: " + uid + ' ' +  user + " in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " secs");
+		if(user!=null)
+			System.out.println("=== User fetched: " + uid + ' ' +  user + " in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " secs");
         
         
 		
         b = new DateTime(Calendar.getInstance().getTime());
         List<SensorData> sensorData = sensorRepo.findSensorDataForUserInInterval(uid, from, to);
         e = new DateTime(Calendar.getInstance().getTime());
-        //if(sensorData!=null)
-        //	System.out.println("=== Sensor data list [" + from + " : " + to + "] size: " + sensorData.size() + " " + sensorData.get(0).toString() + " retrieved in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " seconds");
+        if(sensorData!=null)
+        	System.out.println("=== Sensor data list [" + from + " : " + to + "] size: " + sensorData.size() + " retrieved in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " seconds");
 		
 		
-		if(user!=null && sensorData!=null)
-			return new RiskAnalyser().calculateRiskFactor(user, sensorData );
+		if(user!=null && sensorData!=null){
+			b = new DateTime(Calendar.getInstance().getTime());
+			CardioRisk cR = new RiskAnalyser().calculateRiskFactor(user, sensorData );
+			e = new DateTime(Calendar.getInstance().getTime());
+			System.out.println("=== Cardio risk computed in: " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " seconds");
+			return cR;
+		}
 		else
 			return new CardioRisk();
 	}

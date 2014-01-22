@@ -3,6 +3,7 @@ package com.threepillarglobal.labs.cpds;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,8 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.MD5Hash;
 import org.apache.hadoop.mapreduce.Job;
+import org.joda.time.DateTime;
+import org.joda.time.Seconds;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -93,9 +96,13 @@ public class HBaseMapReduceIT {
     @Test
     public void run_mapreduce_job() throws IOException, InterruptedException, ClassNotFoundException {
 
+    	DateTime b = new DateTime(Calendar.getInstance().getTime());
     	//fetch all users
     	userList = userService.findAllUser();
-        
+    	DateTime e = new DateTime(Calendar.getInstance().getTime());
+    	System.out.println("=== User list size: " + userList.size() + " retrieved in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " seconds");
+    	
+    	
     	if(userList.size()==0)
     		return;
 
@@ -108,6 +115,7 @@ public class HBaseMapReduceIT {
          scan.setFilter(new FirstKeyOnlyFilter());
         }
 		
+        
         
 		 TableMapReduceUtil.initTableMapperJob(
 				Bytes.toString("sensorData".getBytes()),
@@ -135,7 +143,9 @@ public class HBaseMapReduceIT {
     //key out, value out
     public static class UserByLocationMapper extends TableMapper<ImmutableBytesWritable, Put> {
 
-   		
+    	DateTime b;
+    	DateTime e;
+    		
 
 	@Override
 	protected void setup(org.apache.hadoop.mapreduce.Mapper<ImmutableBytesWritable,Result,ImmutableBytesWritable,Put>.Context context) throws IOException ,InterruptedException {
@@ -147,12 +157,15 @@ public class HBaseMapReduceIT {
 				userMap.put(u, new ArrayList<SensorData>());
 			}
 		}
-		
+		b = new DateTime(Calendar.getInstance().getTime());
+    	System.out.println("=== Mapping started... " + b.toString());
 	};
     
 	@Override
 	protected void cleanup(org.apache.hadoop.mapreduce.Mapper<ImmutableBytesWritable,Result,ImmutableBytesWritable,Put>.Context context) throws IOException ,InterruptedException {
 		 //outputStatistics();
+		e = new DateTime(Calendar.getInstance().getTime());
+		System.out.println("=== Mapper done in : " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " seconds");
 	};
 	
 	   
@@ -205,8 +218,10 @@ public class HBaseMapReduceIT {
     							System.out.println("Patient " + aKey.getPersonalData().getName() + " [" + aKey.getPersonalData().getLocationId() + "]" + 
      		    							" .... stroke risk index=" + cardioRisk.getRiskFactor() + ", risk:" + cardioRisk.getStrokeRisk() + "" );
     							
-    							if(cardioRisk.getRiskFactor()>3.0)
-    								riskByLocation.get(aKey.getPersonalData().getLocationId()).incrementAndGet();
+    							if(cardioRisk.getRiskFactor()>3.0){
+    								if(aKey.getPersonalData()!=null && aKey.getPersonalData().getLocationId()!=null && riskByLocation.get(aKey.getPersonalData().getLocationId())!=null)
+    						             riskByLocation.get(aKey.getPersonalData().getLocationId()).incrementAndGet();
+    							}
     							
      		    	}/*else{
      		    		System.out.println("*** no data for user: " + aKey.getPersonalData().getName());
@@ -237,6 +252,7 @@ public class HBaseMapReduceIT {
     		          new ImmutableBytesWritable(new Put(locId.getBytes()).getRow()); 
     		
             Put put = new Put(outkey.get());
+            put.add(Bytes.toBytes("details"), Bytes.toBytes("loc_id"), Bytes.toBytes(locId));
             put.add(Bytes.toBytes("details"), Bytes.toBytes("total"), Bytes.toBytes(value));
             context.write(outkey, put);
             

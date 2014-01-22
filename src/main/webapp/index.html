@@ -50,6 +50,56 @@
 
                 var chart = $('#container').highcharts();
 
+				$("#report").on("click", function() {
+                    $.ajax({ 
+						 type: "GET",
+						 dataType: "json",
+						 url: '/rest/displayReport' ,						 
+						 success: function(data){        
+							
+							
+							var ret = "";
+							$.each(data,function(i,element){
+								ret += element.loc_id  + "            " + element.total  + "\n";
+							});
+							addTable();
+							alert(ret);
+							
+							var results = document.getElementById("results");
+							if (results.firstChild) {
+								results.removeChild(results.firstChild);
+							}
+						 }
+					});
+                });
+								
+
+				function addTable() {
+					var table = document.createElement("table"),
+						row, cell, i;
+					
+					table.id = "results_table";
+					
+					for (i = 15; i < 26; i++) {
+						row = table.insertRow(-1);
+					
+						cell = row.insertCell(-1);
+						cell.innerHTML = i;
+					
+						cell = row.insertCell(-1);
+						cell.innerHTML = i*i;
+					
+						cell = row.insertCell(-1);
+						cell.innerHTML = i*i*i;
+					}
+
+					var results = document.getElementById("results");
+					if (results.firstChild) {
+						results.removeChild(results.firstChild);
+					}
+					results.appendChild(table);
+				}
+
                 $("#w-get-data").on("click", function() {
                     if (uid !== 'n/a')
                         getRiskData(fromDate, toDate);
@@ -383,11 +433,13 @@
                 });
 
             });
+			
+			
         </script>
     </head>
 
     <body>
-
+		
         <div id="wrapper">
 
             <div id="sidebar">
@@ -397,7 +449,7 @@
                     <legend>Select user</legend>
                     <input type="text"  id="w-input-search" value="">	
                 </fieldset>
-
+												
                 <fieldset  id="fspdata" style="margin-top:10px;">
                     <legend>Personal data</legend>
                     <div class="pdata"></div>
@@ -431,6 +483,11 @@
                     </fieldset>
 
                 </div>
+				
+				<fieldset style="margin-top:10px;">			
+					<legend>High stroke risk demographic report</legend>
+					<input type="submit" value="Show" id="report"/>
+				</fieldset>
 
             </div>
 
@@ -448,7 +505,7 @@
                 </div>
             </div>
         </div>
-
+		<div id="results"></div>
 
     </body>
 </html>
