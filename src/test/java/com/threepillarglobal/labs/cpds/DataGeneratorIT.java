@@ -14,6 +14,7 @@ import com.threepillarglobal.labs.cdps.domain.MedicalRecords.MedicalRecord;
 import com.threepillarglobal.labs.cdps.domain.SensorData;
 import com.threepillarglobal.labs.cdps.domain.User;
 import com.threepillarglobal.labs.hbase.util.HOperations;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -25,11 +26,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
+
 import javax.annotation.Resource;
+
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -158,7 +162,7 @@ public class DataGeneratorIT {
                     String locationId = "" + locationList.get(random.nextInt(locationList.size()));
                     User.AccountData accountData = new User.AccountData("hackme", Boolean.TRUE, getPhone(), email);
                     User.PersonalData personalData = new User.PersonalData(name, new Date(), locationId);
-                    User.MedicalNotes medicalNotes = new User.MedicalNotes(null, User.MedicalNotes.SMOKER.getRandom(), User.MedicalNotes.INHERITED_RISK.getRandom());
+                    User.MedicalNotes medicalNotes = new User.MedicalNotes(null, User.MedicalNotes.SMOKER.getRandom(), User.MedicalNotes.INHERITED_RISK.getRandom(), "");
                     User user = new User(accountData, personalData, medicalNotes, null);
                     L.debug("id:" + i + ":" + user.toString());
                     users.put(User.toRowKey(email), user);

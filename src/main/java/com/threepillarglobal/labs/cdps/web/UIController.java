@@ -71,7 +71,7 @@ public class UIController {
     		DateTime b = new DateTime(Calendar.getInstance().getTime());
             userList = userService.getUsers();
             DateTime e = new DateTime(Calendar.getInstance().getTime());
-            System.out.println("=== User list size: " + userList.size() + " retrieved in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " seconds");            
+            System.out.println("Caching: " + userList.size() + "users. <retrieved in " + Seconds.secondsBetween(b, e).getSeconds() % 60 + " seconds>");            
     	}
     	
         List<User> result = new ArrayList<User>();

@@ -43,7 +43,9 @@
                 var fromDate = new Date().yyyymmdd();
                 var toDate = new Date().yyyymmdd();
 
-
+ 				var ffromDate = new Date();
+                var ftoDate = new Date();
+                
                 chartloaded = false;
                 renderChart();
                 selectUser();
@@ -133,11 +135,21 @@
                             $("#risk").append(out);
                             $("#fsrisk").show();
 
-                            dataset = createobjects1(response.sensorData, "diastolicPressure");
-                            renderChartByMetric(dataset, "Diastolic");
-                            dataset = createobjects1(response.sensorData, "systolicPressure");
-                            renderChartByMetric(dataset, "Systolic");
-
+							var noDays = Math.floor((ftoDate.getTime() - ffromDate.getTime())/(1000*60*60*24)) +1 ;
+							
+							//alert(noDays);
+							
+							//if(noDays>=30){
+								dataset = createobjects2(response.eventData, "diastolicPressure");
+	                            renderChartByMetric(dataset, "Diastolic");
+	                            dataset = createobjects2(response.eventData, "systolicPressure");
+	                            renderChartByMetric(dataset, "Systolic");
+							//}else{
+	                        //    dataset = createobjects1(response.sensorData, "diastolicPressure");
+	                        //   renderChartByMetric(dataset, "Diastolic");
+	                        //   dataset = createobjects1(response.sensorData, "systolicPressure");
+	                        //   renderChartByMetric(dataset, "Systolic");
+							//}
                         }
                     });
                 }
@@ -246,6 +258,21 @@
                 }
 
 
+				function createobjects2(obj, metric) {
+                    var returndata = [];
+                    //obj = jQuery.parseJSON(obj);
+                    $(".details1").empty();
+                    for (var i = 0; i < obj.length; i++) {
+                        var myDate = new Date(obj[i].eventdate);
+                        //var offset = myDate.getTimezoneOffset() * 1000;
+                        //var withOffset = myDate.getTime();
+                        //var withoutOffset = withOffset - offset;
+                        //var basetimestamp = parseInt(withOffset);
+                        //returndata.push([basetimestamp, parseFloat(obj[i][metric])]);
+                        returndata.push([obj[i].eventdate, parseFloat(obj[i][metric])]);
+                    }
+                    return returndata;
+                }
 
                 function Comparator(a, b) {
                     if (a[0] < b[0])
@@ -394,7 +421,8 @@
                 $(".range-selectors input#from").datepicker({
                     dateFormat: "M d, yy",
                     onSelect: function() {
-                        fromDate = new Date($(this).val()).yyyymmdd();
+                        ffromDate = new Date($(this).val()); 
+                        fromDate = ffromDate.yyyymmdd();
                         $(".range-selectors input#to").datepicker("option", "minDate", new Date($(this).val()));
                         //getData("Temp",tempdata,fromDate,toDate,"Diastolic",0)
                     }
@@ -403,7 +431,8 @@
                 $(".range-selectors input#to").datepicker({
                     dateFormat: "M d, yy",
                     onSelect: function() {
-                        toDate = new Date($(this).val()).yyyymmdd();
+                        ftoDate = new Date($(this).val());
+                        toDate = ftoDate.yyyymmdd();
                         $(".range-selectors input#from").datepicker("option", "maxDate", new Date($(this).val()));
                         //getData("Temp",tempdata,fromDate,toDate,"Diastolic",0)
                     }

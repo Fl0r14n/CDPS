@@ -25,4 +25,7 @@ public class CardioRisk {
 	private  String strokeRisk;
 	
 	private List<SensorData> sensorData;
+	
+	private List<Eventdate> eventData;
+	
 }

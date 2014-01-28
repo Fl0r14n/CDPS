@@ -13,7 +13,7 @@ public class RiskFactorServiceMock implements RiskService {
 	
 	@Override
 	public CardioRisk getCardioRisk(String uid, Date from, Date to) {
-		return new RiskAnalyser().calculateRiskFactor(MockDataGenerator.fetchMockUserData(2).get(0), MockDataGenerator.fetchMockSensorData( from, to) );
+		return null;//new RiskAnalyser().calculateRiskFactor(MockDataGenerator.fetchMockUserData(2).get(0), MockDataGenerator.fetchMockSensorData( from, to) );
 	}
     
 }

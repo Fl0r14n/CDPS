@@ -1,10 +1,20 @@
 package com.threepillarglobal.labs.cdps.analytics;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.math3.stat.descriptive.moment.Mean;
+
+import com.threepillarglobal.labs.cdps.domain.Eventdate;
+import com.threepillarglobal.labs.cdps.domain.HourlyData;
+import com.threepillarglobal.labs.cdps.domain.SensorData;
 import com.threepillarglobal.labs.cdps.domain.User;
 
 public class RiskIndexUtils {
@@ -129,5 +139,62 @@ public class RiskIndexUtils {
     public static String getStrokeRisk(Double dbl){
     	return STROKE_RISK.get(STROKE_RISK.floorKey(dbl));
     }
+    
+    /**
+     * unify UI
+     * @param sdList
+     * @return
+     */
+    public static List<Eventdate> convert(List<SensorData> sdList){
+    	List<Eventdate> edList = null;
+    	if(sdList!=null && !sdList.isEmpty()){
+    		edList = new ArrayList<Eventdate>();
+	    	for (SensorData sd : sdList) {	    		
+				hourlyDataToEvent(edList, sd.getH00(), sd.getEventDate(), 0);
+				hourlyDataToEvent(edList, sd.getH01(), sd.getEventDate(), 1);
+				hourlyDataToEvent(edList, sd.getH02(), sd.getEventDate(), 2);
+				hourlyDataToEvent(edList, sd.getH03(), sd.getEventDate(), 3);
+				hourlyDataToEvent(edList, sd.getH04(), sd.getEventDate(), 4);
+				hourlyDataToEvent(edList, sd.getH05(), sd.getEventDate(), 5);
+				hourlyDataToEvent(edList, sd.getH06(), sd.getEventDate(), 6);
+				hourlyDataToEvent(edList, sd.getH07(), sd.getEventDate(), 7);
+				hourlyDataToEvent(edList, sd.getH08(), sd.getEventDate(), 8);
+				hourlyDataToEvent(edList, sd.getH09(), sd.getEventDate(), 9);
+				hourlyDataToEvent(edList, sd.getH10(), sd.getEventDate(), 10);
+				hourlyDataToEvent(edList, sd.getH11(), sd.getEventDate(), 11);
+				hourlyDataToEvent(edList, sd.getH12(), sd.getEventDate(), 12);
+				hourlyDataToEvent(edList, sd.getH13(), sd.getEventDate(), 13);
+				hourlyDataToEvent(edList, sd.getH14(), sd.getEventDate(), 14);
+				hourlyDataToEvent(edList, sd.getH15(), sd.getEventDate(), 15);
+				hourlyDataToEvent(edList, sd.getH16(), sd.getEventDate(), 16);
+				hourlyDataToEvent(edList, sd.getH17(), sd.getEventDate(), 17);
+				hourlyDataToEvent(edList, sd.getH18(), sd.getEventDate(), 18);
+				hourlyDataToEvent(edList, sd.getH19(), sd.getEventDate(), 19);
+				hourlyDataToEvent(edList, sd.getH20(), sd.getEventDate(), 20);
+				hourlyDataToEvent(edList, sd.getH21(), sd.getEventDate(), 21);
+				hourlyDataToEvent(edList, sd.getH22(), sd.getEventDate(), 22);
+				hourlyDataToEvent(edList, sd.getH23(), sd.getEventDate(), 23);
+			}
+    	}
+    	return edList;
+    }
+
+	private static void hourlyDataToEvent(List<Eventdate> edList, HourlyData hd, Date d, int offset) {
+		if(hd!=null){
+			Eventdate ed = new Eventdate();
+			ed.setEventdate(dateHourInc(d,offset));
+			ed.setSystolicPressure(hd.getSystolicPressure());
+			ed.setDiastolicPressure(hd.getDiastolicPressure());
+			edList.add(ed);
+		}
+	}
+    
+    private static final long hoursInMillis = 60L * 60L * 1000L;
+    private static Date dateHourInc(Date inDate, int h){
+    	return new Date(inDate.getTime() + 
+                (h * hoursInMillis));
+    }
+   
+    
     
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 
@@ -97,7 +98,7 @@ public class MockDataGenerator {
 	            //userRepo.savePersonalData(rowKey, persData);
             //medical notes
             smoker = rand.nextBoolean();
-            medNotes = new User.MedicalNotes(null, User.MedicalNotes.SMOKER.CASUAL, INHERITED_RISK.HIGH);
+            medNotes = new User.MedicalNotes(null, User.MedicalNotes.SMOKER.CASUAL, INHERITED_RISK.HIGH, "");
 	            //userRepo.saveMedicalNotes(rowKey, medNotes);
             //TODO: family tree
             User user = new User( accData, persData, medNotes, null);

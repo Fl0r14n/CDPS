@@ -1,5 +1,6 @@
 package com.threepillarglobal.labs.cdps.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.threepillarglobal.labs.hbase.annotation.HColumn;
 import com.threepillarglobal.labs.hbase.annotation.HColumnFamily;
 import com.threepillarglobal.labs.hbase.annotation.HTable;
@@ -10,6 +11,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 import org.apache.hadoop.io.MD5Hash;
@@ -69,6 +71,7 @@ public class User {
     @HColumnFamily(name = "mn")
     @AllArgsConstructor
     @Getter
+    @Setter
     @ToString
     @EqualsAndHashCode
     public static class MedicalNotes {
@@ -102,6 +105,10 @@ public class User {
         private final SMOKER smoker;
         @HColumn
         private final INHERITED_RISK inheritedRisk;
+        
+        @HColumn
+        @JsonIgnore
+        private String dailyAvg;
     }
 
     @HColumnFamily(name = "ft")
