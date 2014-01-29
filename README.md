@@ -9,3 +9,6 @@ Mapreduce saves reports data as (locationId, noOfPatients) in the summary_user t
 
 hbase shell
   create 'summary_user', {NAME=>'details', VERSIONS=>1}
+
+ hive --auxpath /usr/lib/hive/lib/hive-hbase-handler-0.10.0-cdh4.5.0.jar,/usr/lib/hive/lib/hbase.jar
+ 
